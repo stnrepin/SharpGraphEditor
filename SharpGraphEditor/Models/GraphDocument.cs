@@ -1,0 +1,258 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+
+using Caliburn.Micro;
+
+using SharpGraphEditor.Graph.Core;
+using SharpGraphEditor.Graph.Core.Elements;
+
+using SharpGraphEditor.Extentions;
+
+namespace SharpGraphEditor.Models
+{
+    public enum GraphSourceFileType
+    {
+        None,
+        Gxml
+    }
+
+    public class GraphDocument : PropertyChangedBase, IGraph, ICloneable
+    {
+        // Fields
+        //
+        private bool _isModified;
+
+        public string SourceFile { get; private set; }
+        public GraphSourceFileType SourceFileType { get; private set; }
+
+        public ObservableCollection<IVertex> ObservableVertices { get; private set; }
+        public ObservableCollection<IEdge> ObservableEdges { get; private set; }
+
+        public IEnumerable<IVertex> Vertices => (ObservableVertices);
+        public IEnumerable<IEdge> Edges => (ObservableEdges);
+
+        // Constructor
+        //
+        public GraphDocument()
+        {
+            ObservableVertices = new ObservableCollection<IVertex>();
+            ObservableEdges = new ObservableCollection<IEdge>();
+
+            IsModified = false;
+            SourceFile = "";
+            SourceFileType = GraphSourceFileType.None;
+        }
+
+
+        // Public properties 
+        //
+        public bool IsDirected
+        {
+            get
+            {
+                if (ObservableEdges.Count == 0)
+                {
+                    return false;
+                }
+                return ObservableEdges.All(x => x.IsDirected);
+            }
+            set { ObservableEdges.ForEach(x => x.IsDirected = value); }
+        }
+
+        public bool IsModified
+        {
+            get { return _isModified; }
+            set
+            {
+                if (_isModified == value) return;
+                _isModified = value;
+                NotifyOfPropertyChange(() => IsModified);
+            }
+        }
+
+        // Public methods
+        //
+        public IVertex AddVertex(double x, double y)
+        {
+            return AddVertex(x, y, GetNewVertexIndex());
+        }
+
+        public IVertex AddVertex(double x, double y, int index)
+        {
+            if (FindVertexByIndex(index) != null)
+            {
+                throw new ArgumentException($"Vertex with index \"{index}\" is alredy existing");
+            }
+            var newVertex = new Vertex(x, y, index);
+            Execute.OnUIThreadAsync(() => ObservableVertices.Add(newVertex));
+            IsModified = true;
+            return newVertex;
+        }
+
+        public IEdge AddEdge(IVertex source, IVertex target)
+        {
+            return AddEdge(source, target, IsDirected);
+        }
+
+        public IEdge AddEdge(IVertex source, IVertex target, bool isDirected)
+        {
+            if (source == target) return null;
+
+            var isEdgeExist = ObservableEdges.Any(x => (x.Source == source && x.Target == target) ||
+                                             (x.Source == target && x.Target == source));
+
+            if (!isEdgeExist)
+            {
+                var newEdge = new Edge(source, target, isDirected);
+                Execute.OnUIThreadAsync(() => ObservableEdges.Add(newEdge));
+                IsModified = true;
+                return newEdge;
+            }
+            return null;
+        }
+
+        public void Remove(IGraphElement element)
+        {
+            if (element is IVertex)
+            {
+                var vertex = element as IVertex;
+                Execute.OnUIThreadAsync(() => ObservableVertices.Remove(vertex));
+                ObservableEdges.Where(x => x.Source == vertex || x.Target == vertex).ToList()
+                    .ForEach(x => ObservableEdges.Remove(x));
+                IsModified = true;
+            }
+            else if (element is IEdge)
+            {
+                Execute.OnUIThreadAsync(() => ObservableEdges.Remove(element as IEdge));
+                IsModified = true;
+            }
+        }
+
+        public void Clear()
+        {
+            Execute.OnUIThreadAsync(() => ObservableEdges.Clear());
+            Execute.OnUIThreadAsync(() => ObservableVertices.Clear());
+            _isModified = false;
+            SourceFile = String.Empty;
+            SourceFileType = GraphSourceFileType.None;
+        }
+
+        public Object Clone()
+        {
+            return new GraphDocument()
+            {
+                ObservableVertices = new ObservableCollection<IVertex>(Vertices),
+                ObservableEdges = new ObservableCollection<IEdge>(Edges),
+                IsDirected = IsDirected,
+                IsModified = IsModified,
+                IsNotifying = IsNotifying,
+                SourceFile = SourceFile,
+                SourceFileType = SourceFileType
+            };
+        }
+
+        public void LoadFrom(string path, GraphSourceFileType fileType)
+        {
+            List<IGraphElement> graph = null;
+            switch (fileType)
+            {
+                case GraphSourceFileType.None:
+                    throw new ArgumentException("Type of source file can't be none");
+                case GraphSourceFileType.Gxml:
+                    graph = GraphReader.FromGxml(path);
+                    break;
+                default:
+                    throw new NotSupportedException($"{fileType.ToString()} not support");
+            }
+
+            var vertices = new ObservableCollection<IVertex>();
+            var edges = new ObservableCollection<IEdge>();
+            foreach (var el in graph)
+            {
+                if (el is IVertex)
+                {
+                    vertices.Add(el as IVertex);
+                }
+                else if (el is IEdge)
+                {
+                    edges.Add(el as IEdge);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Try add to graph invalid element");
+                }
+            }
+
+            ObservableVertices = vertices;
+            ObservableEdges = edges;
+            NotifyOfPropertyChange(() => ObservableVertices);
+            NotifyOfPropertyChange(() => ObservableEdges);
+
+            SourceFile = path;
+            SourceFileType = fileType;
+
+            IsModified = false;
+        }
+
+        public void SaveTo(string path, GraphSourceFileType fileType)
+        {
+            switch (fileType)
+            {
+                case GraphSourceFileType.None:
+                    throw new ArgumentException("Type of source file can't be none");
+                case GraphSourceFileType.Gxml:
+                    GraphWriter.ToGxml(path, this);
+                    break;
+                default:
+                    throw new NotSupportedException($"{fileType.ToString()} not support");
+            }
+            if (path != SourceFile) SourceFile = path;
+            if (fileType != SourceFileType) SourceFileType = fileType;
+
+            IsModified = false;
+        }
+
+        // DICTIONARY
+        public List<List<IVertex>> ToAdjList()
+        {
+            var res = new List<List<IVertex>>();
+            foreach (var v in ObservableVertices)
+            {
+                res.Add(new List<IVertex>() { v });
+            }
+
+            foreach (var e in ObservableEdges)
+            {
+                res[e.Source.Index - 1]?.Add(e.Target);
+                if (!e.IsDirected)
+                {
+                    res[e.Target.Index - 1]?.Add(e.Source);
+                }
+            }
+            return res;
+        }
+
+        public IVertex FindVertexByIndex(int index)
+        {
+            foreach (var i in ObservableVertices)
+            {
+                if (i.Index == index) return i;
+            }
+            return null;
+        }
+
+        // Private methods
+        //
+        private int GetNewVertexIndex()
+        {
+            var newIndex = 1;
+            while (FindVertexByIndex(newIndex) != null)
+            {
+                newIndex++;
+            }
+            return newIndex;
+        }
+    }
+}

@@ -1,0 +1,74 @@
+﻿<Thumb x:Class="SharpGraphEditor.Controls.GraphElements.EdgeControl"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+       xmlns:local="clr-namespace:SharpGraphEditor.Controls.GraphElements"
+       xmlns:cal="http://www.caliburnproject.org"
+       xmlns:controls="clr-namespace:SharpGraphEditor.Controls"
+       x:Name="Thumb"
+       mc:Ignorable="d">
+
+    <Thumb.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/MainViewStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Thumb.Resources>
+
+    <Thumb.Template>
+        <ControlTemplate TargetType="Thumb">
+            <Grid>
+                <controls:ConnectorShape x:Name="Arrow"
+                                         X1="{Binding Source.X}" X2="{Binding Target.X}"
+                                         Y1="{Binding Source.Y}" Y2="{Binding Target.Y}"
+                                         IsDirected="{Binding IsDirected}"
+                                         HeadWidth="15" HeadHeight="5" EndPositionOffset="14"
+                                         Stroke="Black" Fill="Black"  StrokeThickness="3" />
+                <!-- Эта линия необходима для утолщения Grid для событии MouseOver -->
+                <Line x:Name="BackLine"
+                      X1="{Binding Source.X}" X2="{Binding Target.X}"
+                      Y1="{Binding Source.Y}" Y2="{Binding Target.Y}"
+                      Stroke="Black" StrokeThickness="15" Opacity="0" />
+
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="MouseOver">
+                            <Storyboard>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="StrokeThickness"
+                                                               Storyboard.TargetName="Arrow">
+                                    <SplineDoubleKeyFrame KeyTime="0" Value="4" />
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </Grid>
+
+            <ControlTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsAdding}" Value="True">
+                    <Setter TargetName="Arrow" Property="IsHitTestVisible" Value="False" />
+                    <Setter TargetName="BackLine" Property="IsHitTestVisible" Value="False" />
+
+                    <Setter TargetName="Arrow" Property="Opacity" Value="0.5" />
+                </DataTrigger>
+
+                <DataTrigger>
+                    <DataTrigger.Binding>
+                        <MultiBinding Converter="{StaticResource IsEquals}">
+                            <Binding Path="DataContext.SelectedElement" ElementName="MainWindow" />
+                            <Binding />
+                        </MultiBinding>
+                    </DataTrigger.Binding>
+                    <DataTrigger.Value>
+                        True
+                    </DataTrigger.Value>
+
+                    <Setter TargetName="Arrow" Property="StrokeThickness" Value="4"/>
+                </DataTrigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Thumb.Template>
+</Thumb>
