@@ -116,6 +116,8 @@ namespace SharpGraphEditor.ViewModels
             if (CheckGraphForClearing())
             {
                 Document.Clear();
+                Terminal?.Clear();
+                ViewLoaded();
                 Init();
             }
         }
@@ -240,6 +242,7 @@ namespace SharpGraphEditor.ViewModels
         {
             var param = new AlgorithmParameter()
             {
+                Output = Terminal,
                 MaxElementX = MaxElementX,
                 MaxElementY = MaxElementY,
                 MinElementX = MinElementX,
@@ -259,7 +262,7 @@ namespace SharpGraphEditor.ViewModels
             (e) => 
             {
                 Terminal?.WriteLine("During algorithm working an error occured:");
-                Terminal?.WriteLine($"\t{e.ToString()}\n");
+                Terminal?.WriteLine($"\t{e.Message}\n");
             })
                 .Execute(null);
         }

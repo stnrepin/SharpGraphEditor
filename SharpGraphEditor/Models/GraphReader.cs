@@ -11,7 +11,7 @@ namespace SharpGraphEditor.Models
 {
     public static class GraphReader
     {
-        // Переписать под формат https://ru.wikipedia.org/wiki/GraphML
+        // Rewrite for format https://ru.wikipedia.org/wiki/GraphML
         // Serialization
         public static List<IGraphElement> FromGxml(string path)
         {

@@ -86,7 +86,7 @@ namespace SharpGraphEditor.Models
                 throw new ArgumentException($"Vertex with index \"{index}\" is alredy existing");
             }
             var newVertex = new Vertex(x, y, index);
-            Execute.OnUIThreadAsync(() => ObservableVertices.Add(newVertex));
+            Execute.OnUIThread(() => ObservableVertices.Add(newVertex));
             IsModified = true;
             return newVertex;
         }
@@ -106,7 +106,7 @@ namespace SharpGraphEditor.Models
             if (!isEdgeExist)
             {
                 var newEdge = new Edge(source, target, isDirected);
-                Execute.OnUIThreadAsync(() => ObservableEdges.Add(newEdge));
+                Execute.OnUIThread(() => ObservableEdges.Add(newEdge));
                 IsModified = true;
                 return newEdge;
             }
@@ -118,22 +118,22 @@ namespace SharpGraphEditor.Models
             if (element is IVertex)
             {
                 var vertex = element as IVertex;
-                Execute.OnUIThreadAsync(() => ObservableVertices.Remove(vertex));
+                Execute.OnUIThread(() => ObservableVertices.Remove(vertex));
                 ObservableEdges.Where(x => x.Source == vertex || x.Target == vertex).ToList()
                     .ForEach(x => ObservableEdges.Remove(x));
                 IsModified = true;
             }
             else if (element is IEdge)
             {
-                Execute.OnUIThreadAsync(() => ObservableEdges.Remove(element as IEdge));
+                Execute.OnUIThread(() => ObservableEdges.Remove(element as IEdge));
                 IsModified = true;
             }
         }
 
         public void Clear()
         {
-            Execute.OnUIThreadAsync(() => ObservableEdges.Clear());
-            Execute.OnUIThreadAsync(() => ObservableVertices.Clear());
+            Execute.OnUIThread(() => ObservableEdges.Clear());
+            Execute.OnUIThread(() => ObservableVertices.Clear());
             _isModified = false;
             SourceFile = String.Empty;
             SourceFileType = GraphSourceFileType.None;
@@ -214,22 +214,27 @@ namespace SharpGraphEditor.Models
             IsModified = false;
         }
 
-        // DICTIONARY
-        public List<List<IVertex>> ToAdjList()
+        public Dictionary<IVertex, IEnumerable<IVertex>> ToAdjList()
         {
-            var res = new List<List<IVertex>>();
+            var adjList = new Dictionary<IVertex, List<IVertex>>();
             foreach (var v in ObservableVertices)
             {
-                res.Add(new List<IVertex>() { v });
+                adjList.Add(v, new List<IVertex>());
             }
 
             foreach (var e in ObservableEdges)
             {
-                res[e.Source.Index - 1]?.Add(e.Target);
+                adjList[e.Source]?.Add(e.Target);
                 if (!e.IsDirected)
                 {
-                    res[e.Target.Index - 1]?.Add(e.Source);
+                    adjList[e.Target]?.Add(e.Source);
                 }
+            }
+
+            var res = new Dictionary<IVertex, IEnumerable<IVertex>>();
+            foreach (var i in adjList)
+            {
+                res.Add(i.Key, i.Value);
             }
             return res;
         }

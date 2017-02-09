@@ -3,18 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using SharpGraphEditor.Graph.Core;
+
 namespace SharpGraphEditor.Controls
 {
-    public interface ITerminal
+    public interface ITerminal : IAlgorithmOutput
     {
         void Clear();
-
-        void Write(string text);
-
-        void WriteLine();
-
-        void WriteLine(string text);
-
-        string ReadLine();
     }
 }

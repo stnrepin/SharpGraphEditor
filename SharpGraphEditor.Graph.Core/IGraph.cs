@@ -22,7 +22,7 @@ namespace SharpGraphEditor.Graph.Core
 
         void Clear();
 
-        List<List<IVertex>> ToAdjList();
+        Dictionary<IVertex, IEnumerable<IVertex>> ToAdjList();
 
         IVertex FindVertexByIndex(int index);
     }

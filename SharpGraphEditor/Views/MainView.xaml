@@ -199,7 +199,7 @@
                     
                     <controls:Terminal x:Name="OutputTerminal" 
                                        Focusable="False"
-                                       Height="150" />
+                                       Height="180" />
                 </StackPanel>
             </Border>
 

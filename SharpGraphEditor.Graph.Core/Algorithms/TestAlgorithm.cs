@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using SharpGraphEditor.Graph.Core.Elements;
+
 namespace SharpGraphEditor.Graph.Core.Algorithms
 {
     public class TestAlgorithm : IAlgorithm
@@ -13,7 +15,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
 
         public void Run(IGraph graph, AlgorithmParameter p)
         {
-            graph.AddVertex(200, 200);
+            throw new ArgumentException("Some error!!!");
         }
     }
 }
