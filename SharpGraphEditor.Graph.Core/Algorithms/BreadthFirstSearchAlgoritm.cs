@@ -27,7 +27,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
             };
             bfs.Run(graph.Vertices.First());
 
-            p.Output.WriteLine($"BFS: {String.Join(" -> ", bfsResult.Select(x => "\"" + x.Title.ToString() + "\""))}");
+            p.Output.WriteLine($"BFS queue: {String.Join(", ", bfsResult.Select(x => "\"" + x.Title + "\""))}");
         }
     }
 }
