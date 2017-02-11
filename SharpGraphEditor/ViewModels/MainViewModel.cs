@@ -248,9 +248,10 @@ namespace SharpGraphEditor.ViewModels
                 MinElementX = MinElementX,
                 MinElementY = MinElementY
             };
-            IsUnlock = false;
-            new Helpers.AsyncOperation(() =>
+
+            var a = new Helpers.AsyncOperation(() =>
             {
+                IsUnlock = false;
                 Terminal?.WriteLine($"{algorithm.Name} starting...");
                 algorithm?.Run(Document, param);
             },
@@ -259,12 +260,12 @@ namespace SharpGraphEditor.ViewModels
                 Terminal?.WriteLine("Algorithm finished successfully.\n");
                 IsUnlock = true;
             },
-            (e) => 
+            (e) =>
             {
                 Terminal?.WriteLine("During algorithm working an error occured:");
                 Terminal?.WriteLine($"\t{e.Message}\n");
-            })
-                .Execute(null);
+            });
+            a.ExecuteAsync();
         }
 
         public void ChangeOutputVisibility(bool value)

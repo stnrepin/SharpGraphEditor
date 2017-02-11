@@ -124,7 +124,7 @@
                         VerticalAlignment="Top"
                         Orientation="Horizontal">
                 <Button Content="-" VerticalContentAlignment="Center" Width="20" Margin="5" cal:Message.Attach="ChangeZoomByPercents('-10')" />
-                <TextBlock Text="{Binding CurrentZoomInPercents}" TextAlignment="Center" Width="20" Margin="5"/>
+                <TextBlock Text="{Binding CurrentZoomInPercents}" TextAlignment="Center" VerticalAlignment="Center" Width="20" Margin="5"/>
                 <Button Content="+" VerticalContentAlignment="Center" Width="20" Margin="5" cal:Message.Attach="ChangeZoomByPercents('10')" />
             </StackPanel>
         </Grid>

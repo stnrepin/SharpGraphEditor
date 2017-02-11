@@ -31,7 +31,7 @@ namespace SharpGraphEditor.Models
             get { return _x; }
             set
             {
-                _x = Math.Round(value, 2);
+                _x = Math.Round(value);
                 NotifyOfPropertyChange(() => X);
             }
         }
@@ -40,7 +40,7 @@ namespace SharpGraphEditor.Models
             get { return _y; }
             set
             {
-                _y = Math.Round(value, 2);
+                _y = Math.Round(value);
                 NotifyOfPropertyChange(() => Y);
             }
         }

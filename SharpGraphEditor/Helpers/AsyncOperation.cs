@@ -3,33 +3,31 @@ using System.ComponentModel;
 
 using Caliburn.Micro;
 
-
 // NOT USED!
 
 namespace SharpGraphEditor.Helpers
 {
-    public class AsyncOperation : IResult
+    public class AsyncOperation
     {
+        private BackgroundWorker _worker;
         private readonly System.Action _work;
         private readonly System.Action _onSuccess;
         private readonly Action<Exception> _onFail;
 
-        public event EventHandler<ResultCompletionEventArgs> Completed = delegate { };
-
         public AsyncOperation(System.Action work, System.Action onSuccess, Action<Exception> onFail)
         {
-            //_work = work ?? throw new ArgumentNullException("work action should not be null");
-            _work = work;
+            _worker = new BackgroundWorker();
+
+            _work = work ?? throw new ArgumentNullException("work action should not be null");
             _onSuccess = onSuccess;
             _onFail = onFail;
         }
 
-        public void Execute(CoroutineExecutionContext context)
+        public void ExecuteAsync()
         {
             Exception error = null;
-            var worker = new BackgroundWorker();
 
-            worker.DoWork += (_, __) =>
+            _worker.DoWork += (_, __) =>
             {
                 try
                 {
@@ -41,19 +39,22 @@ namespace SharpGraphEditor.Helpers
                 }
             };
 
-            worker.RunWorkerCompleted += (s, e) =>
+            _worker.RunWorkerCompleted += (s, e) =>
             {
                 if (error == null && _onSuccess != null)
                     _onSuccess?.OnUIThread();
 
                 if (error != null && _onFail != null)
                 {
-                    Caliburn.Micro.Execute.OnUIThread(() => _onFail?.Invoke(error));
+                    Execute.OnUIThread(() => _onFail?.Invoke(error));
                 }
-
-                Completed(this, new ResultCompletionEventArgs { Error = error });
             };
-            worker.RunWorkerAsync();
+            _worker.RunWorkerAsync();
+        }
+
+        public void Cancel()
+        {
+            _worker.CancelAsync();
         }
     }
 }
