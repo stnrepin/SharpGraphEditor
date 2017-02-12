@@ -84,10 +84,7 @@
     <Compile Include="Helpers\AsyncOperation.cs" />
     <Compile Include="Helpers\BindingErrorTraceListener.cs" />
     <Compile Include="Models\Edge.cs" />
-    <Compile Include="Models\Exceptions\GxmlFileFormatException.cs" />
     <Compile Include="Models\GraphDocument.cs" />
-    <Compile Include="Models\GraphReader.cs" />
-    <Compile Include="Models\GraphWriter.cs" />
     <Compile Include="Models\Vertex.cs" />
     <Compile Include="Services\IDialogsPresenter.cs" />
     <Compile Include="Services\WindowsDialogsPresenter.cs" />

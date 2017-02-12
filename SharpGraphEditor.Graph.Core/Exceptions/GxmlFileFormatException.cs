@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SharpGraphEditor.Models.Exceptions
+namespace SharpGraphEditor.Graph.Core.Exceptions
 {
     public class GxmlFileFormatException : Exception
     {

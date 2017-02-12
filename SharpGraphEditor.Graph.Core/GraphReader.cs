@@ -5,20 +5,22 @@ using System.Linq;
 using System.Xml.Linq;
 
 using SharpGraphEditor.Graph.Core.Elements;
-using SharpGraphEditor.Models.Exceptions;
+using SharpGraphEditor.Graph.Core.Exceptions;
 
-namespace SharpGraphEditor.Models
+namespace SharpGraphEditor.Graph.Core
 {
     public static class GraphReader
     {
         // Rewrite for format https://ru.wikipedia.org/wiki/GraphML
         // Serialization
-        public static List<IGraphElement> FromGxml(string path)
+        public static void FromGxml(string path, IGraph graph)
         {
             if (!File.Exists(path)) throw new FileNotFoundException("GXML file not found");
 
-            var vertices = new List<Vertex>();
-            var edges = new List<Edge>();
+            if (graph.Vertices.Count() > 0)
+            {
+                graph.Clear();
+            }
 
             XDocument doc;
             try
@@ -48,7 +50,7 @@ namespace SharpGraphEditor.Models
                         throw new GxmlFileFormatException("one or more vertices in GXML file is damaged");
                     }
 
-                    vertices.Add(new Vertex(x, y, index));
+                    graph.AddVertex(x, y, index);
                 }
                 else if (el.Name == "edge" || el.Name == "Edge")
                 {
@@ -60,42 +62,36 @@ namespace SharpGraphEditor.Models
             {
                 var sourceIndexAttr = ed.Attribute(XName.Get("source")) ?? ed.Attribute(XName.Get("Source"));
                 var targetIndexAttr = ed.Attribute(XName.Get("target")) ?? ed.Attribute(XName.Get("Target"));
+                var isDirectedAttr = ed.Attribute(XName.Get("isDirected")) ?? ed.Attribute(XName.Get("IsDirected"));
 
+                var isSuccessForIsDirected = Boolean.TryParse(isDirectedAttr?.Value, out bool isDirected);
                 var isSuccessForSourceIndex = Int32.TryParse(sourceIndexAttr?.Value, out int sourceIndex);
                 var isSuccessForTargetIndex = Int32.TryParse(targetIndexAttr?.Value, out int targetIndex);
 
-                if (!isSuccessForSourceIndex || !isSuccessForTargetIndex)
+                if (isDirectedAttr == null)
+                {
+                    isDirected = false;
+                    isSuccessForIsDirected = true;
+                }
+
+                if (!isSuccessForSourceIndex || !isSuccessForTargetIndex || !isSuccessForIsDirected)
                 {
                     throw new GxmlFileFormatException("one or more edges in GXML file is damaged");
                 }
 
                 if (sourceIndex != targetIndex)
                 {
-                    var sourceVertex = FindVertexByIndex(vertices, sourceIndex);
-                    var targetVertex = FindVertexByIndex(vertices, targetIndex);
+                    var sourceVertex = graph.FindVertexByIndex(sourceIndex);
+                    var targetVertex = graph.FindVertexByIndex(targetIndex);
 
                     if (sourceVertex == null || targetVertex == null)
                     {
                         throw new GxmlFileFormatException("one or more edges in GXML file is damaged");
                     }
 
-                    edges.Add(new Edge(sourceVertex, targetVertex, false)); // TODO: direction
+                    graph.AddEdge(sourceVertex, targetVertex, isDirected);
                 }
             }
-
-            var res = new List<IGraphElement>();
-            res.AddRange(vertices.OrderBy(x => x.Index));
-            res.AddRange(edges);
-            return res;
-        }
-
-        private static Vertex FindVertexByIndex(List<Vertex> vertices, int index)
-        {
-            foreach (var v in vertices)
-            {
-                if (v.Index == index) return v;
-            }
-            return null;
         }
     }
 }

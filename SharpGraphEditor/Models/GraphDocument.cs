@@ -155,40 +155,16 @@ namespace SharpGraphEditor.Models
 
         public void LoadFrom(string path, GraphSourceFileType fileType)
         {
-            List<IGraphElement> graph = null;
             switch (fileType)
             {
                 case GraphSourceFileType.None:
                     throw new ArgumentException("Type of source file can't be none");
                 case GraphSourceFileType.Gxml:
-                    graph = GraphReader.FromGxml(path);
+                    GraphReader.FromGxml(path, this);
                     break;
                 default:
                     throw new NotSupportedException($"{fileType.ToString()} not support");
             }
-
-            var vertices = new ObservableCollection<IVertex>();
-            var edges = new ObservableCollection<IEdge>();
-            foreach (var el in graph)
-            {
-                if (el is IVertex)
-                {
-                    vertices.Add(el as IVertex);
-                }
-                else if (el is IEdge)
-                {
-                    edges.Add(el as IEdge);
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("Try add to graph invalid element");
-                }
-            }
-
-            ObservableVertices = vertices;
-            ObservableEdges = edges;
-            NotifyOfPropertyChange(() => ObservableVertices);
-            NotifyOfPropertyChange(() => ObservableEdges);
 
             SourceFile = path;
             SourceFileType = fileType;
@@ -208,8 +184,8 @@ namespace SharpGraphEditor.Models
                 default:
                     throw new NotSupportedException($"{fileType.ToString()} not support");
             }
-            if (path != SourceFile) SourceFile = path;
-            if (fileType != SourceFileType) SourceFileType = fileType;
+            SourceFile = path;
+            SourceFileType = fileType;
 
             IsModified = false;
         }

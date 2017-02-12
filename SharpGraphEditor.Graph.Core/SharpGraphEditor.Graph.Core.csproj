@@ -51,6 +51,9 @@
     <Compile Include="Algorithms\TestAlgorithm.cs" />
     <Compile Include="Elements\IEdge.cs" />
     <Compile Include="Elements\IGraphElement.cs" />
+    <Compile Include="Exceptions\GxmlFileFormatException.cs" />
+    <Compile Include="GraphReader.cs" />
+    <Compile Include="GraphWriter.cs" />
     <Compile Include="IAlgorithmOutput.cs" />
     <Compile Include="IGraph.cs" />
     <Compile Include="Elements\IVertex.cs" />

@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 using SharpGraphEditor.Graph.Core;
 
-namespace SharpGraphEditor.Models
+namespace SharpGraphEditor.Graph.Core
 {
     public static class GraphWriter
     {
