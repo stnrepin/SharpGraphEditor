@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SharpGraphEditor.Extentions
+namespace SharpGraphEditor.Graph.Core.Extentions
 {
-    public static class EnumerableExtentions
+    public static class IEnumerableExtentions
     {
-        public static string ToString<T>(this IEnumerable<T> enumerable)
+        public static string ToReadableString<T>(this IEnumerable<T> enumerable)
         {
             var sb = new StringBuilder("[ ");
             sb.Append(String.Join(", ", enumerable));

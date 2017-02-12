@@ -7,8 +7,7 @@ using Caliburn.Micro;
 
 using SharpGraphEditor.Graph.Core;
 using SharpGraphEditor.Graph.Core.Elements;
-
-using SharpGraphEditor.Extentions;
+using SharpGraphEditor.Graph.Core.Extentions;
 
 namespace SharpGraphEditor.Models
 {

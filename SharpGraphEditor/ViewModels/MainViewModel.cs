@@ -5,7 +5,6 @@ using System.Linq;
 using Caliburn.Micro;
 
 using SharpGraphEditor.Models;
-
 using SharpGraphEditor.Services;
 using SharpGraphEditor.Controls;
 
@@ -103,6 +102,19 @@ namespace SharpGraphEditor.ViewModels
                 {
                     Document.LoadFrom(fileName, GraphSourceFileType.Gxml);
                     Title = ProjectName + $" - {fileName}";
+
+                    // When loaded vertices have not got defined position, must use Ellipse layouter
+                    //
+                    // I will think how make it more beautiful...
+                    if (Document.Vertices.All(x => x.X == 0 && x.Y == 0))
+                    {
+                        var alg = AlgorithmManager.Instance.FindAlgorithmByName("Ellipse layouter");
+                        if (alg == null)
+                        {
+                            throw new ArgumentNullException("Cant find Ellipse layouter algorithm");
+                        }
+                        RunAlgorithm(alg);
+                    }
                 }
                 catch (Exception e)
                 {

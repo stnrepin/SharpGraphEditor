@@ -80,7 +80,6 @@
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\CompositeCollectionConverter.cs" />
     <Compile Include="Converters\IsEquals.cs" />
-    <Compile Include="Extentions\EnumerableExtentions.cs" />
     <Compile Include="Helpers\AsyncOperation.cs" />
     <Compile Include="Helpers\BindingErrorTraceListener.cs" />
     <Compile Include="Models\Edge.cs" />
