@@ -33,13 +33,14 @@ namespace SharpGraphEditor.Services
                 System.Windows.MessageBoxResult.OK);
         }
 
-        public void ShowError(string message, string caption, Exception ex)
+        public void ShowError(string message, string caption, Type exType)
         {
             var sb = new StringBuilder();
             sb.AppendLine("Sorry, but an error occured :(");
             sb.AppendLine();
-            sb.AppendLine($"Error type: \"{ex.GetType().Name}\".");
+            sb.AppendLine($"Error type: \"{exType.Name}\".");
             sb.AppendLine($"Error message: \"{message}\".");
+            sb.AppendLine($"Look more in output.");
             MessageBox.Show(sb.ToString(), caption, MessageBoxButton.OK, MessageBoxImage.Error, 
                 System.Windows.MessageBoxResult.OK);
         }

@@ -445,7 +445,19 @@ namespace SharpGraphEditor.ViewModels
 
         private void ShowError(Exception ex)
         {
-            DialogPresenter.ShowError(ex.Message, ProjectName, ex);
+            if (Terminal != null)
+            {
+                var exCopy = ex;
+                Terminal.WriteLine("An error occured:");
+                do
+                {
+                    Terminal.WriteLine($"{exCopy.GetType().Name}: \"{exCopy.Message}\"");
+                    exCopy = exCopy.InnerException;
+                }
+                while (exCopy != null);
+            }
+
+            DialogPresenter.ShowError(ex.Message, ProjectName, ex.GetType());
         }
     }
 }

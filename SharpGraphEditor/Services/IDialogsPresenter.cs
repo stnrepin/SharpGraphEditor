@@ -13,7 +13,7 @@ namespace SharpGraphEditor.Services
     {
         MessageBoxResult ShowMessaeBoxYesNoCancel(string message, string caption);
 
-        void ShowError(string message, string caption,  Exception ex);
+        void ShowError(string message, string caption,  Type exType);
 
         void ShowError(string message, string caption);
 
