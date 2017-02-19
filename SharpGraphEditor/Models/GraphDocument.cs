@@ -14,7 +14,11 @@ namespace SharpGraphEditor.Models
     public enum GraphSourceFileType
     {
         None,
-        Gxml
+        Gxml,
+        AdjList,
+        AdjMatrix,
+        EdgesList,
+        IncidenceMatrix
     }
 
     public class GraphDocument : PropertyChangedBase, IGraph, ICloneable
@@ -73,6 +77,14 @@ namespace SharpGraphEditor.Models
 
         // Public methods
         //
+
+        public IVertex AddVertex(int index)
+        {
+            var v = AddVertex(0, 0, index);
+            v.HasPosition = false;
+            return v;
+        }
+
         public IVertex AddVertex(double x, double y)
         {
             return AddVertex(x, y, GetNewVertexIndex());
@@ -80,9 +92,10 @@ namespace SharpGraphEditor.Models
 
         public IVertex AddVertex(double x, double y, int index)
         {
-            if (FindVertexByIndex(index) != null)
+            var existingVertex = FindVertexByIndex(index);
+            if (existingVertex != null)
             {
-                throw new ArgumentException($"Vertex with index \"{index}\" is alredy existing");
+                return existingVertex;
             }
             var newVertex = new Vertex(x, y, index);
             Execute.OnUIThread(() => ObservableVertices.Add(newVertex));
@@ -95,19 +108,31 @@ namespace SharpGraphEditor.Models
             return AddEdge(source, target, IsDirected);
         }
 
-        public IEdge AddEdge(IVertex source, IVertex target, bool isDirected)
+        public IEdge AddEdge(IVertex source, IVertex target, bool isDirected, bool directedIfReversedExisting = false)
         {
             if (source == target) return null;
 
-            var isEdgeExist = ObservableEdges.Any(x => (x.Source == source && x.Target == target) ||
-                                             (x.Source == target && x.Target == source));
+            var isEdgeExist = ObservableEdges.Any(x => x.Source == source && x.Target == target);
 
             if (!isEdgeExist)
             {
-                var newEdge = new Edge(source, target, isDirected);
-                Execute.OnUIThread(() => ObservableEdges.Add(newEdge));
-                IsModified = true;
-                return newEdge;
+                var reversedEdge = ObservableEdges.FirstOrDefault(x => x.Source == target && x.Target == source);
+                if (reversedEdge != null)
+                {
+                    if (directedIfReversedExisting)
+                    {
+                        reversedEdge.IsDirected = true;
+                        IsModified = true;
+                        return reversedEdge;
+                    }
+                }
+                else
+                {
+                    var newEdge = new Edge(source, target, isDirected);
+                    Execute.OnUIThread(() => ObservableEdges.Add(newEdge));
+                    IsModified = true;
+                    return newEdge;
+                }
             }
             return null;
         }

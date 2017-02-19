@@ -14,6 +14,7 @@ namespace SharpGraphEditor.Models
         private string _title;
 
         public bool IsAdding { get; set; }
+        public bool HasPosition { get; set; }
 
         public Vertex(double x, double y, int index)
         {
@@ -24,6 +25,7 @@ namespace SharpGraphEditor.Models
             Title = index.ToString();
 
             IsAdding = false;
+            HasPosition = true;
         }
 
         public double X

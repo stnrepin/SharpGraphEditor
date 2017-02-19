@@ -12,11 +12,13 @@ namespace SharpGraphEditor.Graph.Core
 
         bool IsDirected { get; set; }
 
+        IVertex AddVertex(int index);
+
         IVertex AddVertex(double x, double y);
 
         IVertex AddVertex(double x, double y, int index);
 
-        IEdge AddEdge(IVertex source, IVertex target, bool isDirected = false);
+        IEdge AddEdge(IVertex source, IVertex target, bool isDirected = false, bool directedIfReversedExisting = false);
 
         void Remove(IGraphElement element);
 

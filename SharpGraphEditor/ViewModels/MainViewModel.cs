@@ -103,10 +103,7 @@ namespace SharpGraphEditor.ViewModels
                     Document.LoadFrom(fileName, GraphSourceFileType.Gxml);
                     Title = ProjectName + $" - {fileName}";
 
-                    // When loaded vertices have not got defined position, must use Ellipse layouter
-                    //
-                    // I will think how make it more beautiful...
-                    if (Document.Vertices.All(x => x.X == 0 && x.Y == 0))
+                    if (Document.Vertices.All(x => !x.HasPosition))
                     {
                         var alg = AlgorithmManager.Instance.FindAlgorithmByName("Ellipse layouter");
                         if (alg == null)

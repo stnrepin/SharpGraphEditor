@@ -5,5 +5,7 @@
         int Index { get; }
 
         string Title { get; set; }
+
+        bool HasPosition { get; set; }
     }
 }
