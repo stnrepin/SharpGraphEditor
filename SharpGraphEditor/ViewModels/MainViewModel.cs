@@ -38,7 +38,8 @@ namespace SharpGraphEditor.ViewModels
         public double MaxElementX { get; set; }
         public double MaxElementY { get; set; }
 
-        public IDialogsPresenter DialogPresenter { get; set; }
+        public IWindowManager WindowManager { get; }
+        public IDialogsPresenter DialogPresenter { get; }
 
         public ITerminal Terminal { get; set; }
 
@@ -47,10 +48,13 @@ namespace SharpGraphEditor.ViewModels
 
         // Constructors
         //
-        public MainViewModel()
+        public MainViewModel(IWindowManager windowManager, IDialogsPresenter dialogsPresenter)
         {
             Document = new GraphDocument();
             Algorithms = AlgorithmManager.Instance.Algorithms;
+
+            WindowManager = windowManager;
+            DialogPresenter = dialogsPresenter;
 
             CurrentZoom = 1;
             MinElementX = 30;
@@ -72,8 +76,7 @@ namespace SharpGraphEditor.ViewModels
         //
         public void ShowAbout()
         {
-            var wm = new WindowManager();
-            wm.ShowDialog(new AboutViewModel());
+            WindowManager?.ShowDialog(new AboutViewModel());
         }
 
         public void Exit()

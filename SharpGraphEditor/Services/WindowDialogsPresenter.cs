@@ -5,7 +5,7 @@ using Microsoft.Win32;
 
 namespace SharpGraphEditor.Services
 {
-    public class WindowsDialogsPresenter : IDialogsPresenter
+    public class WindowDialogsPresenter : IDialogsPresenter
     {
         public MessageBoxResult ShowMessaeBoxYesNoCancel(string message, string caption)
         {

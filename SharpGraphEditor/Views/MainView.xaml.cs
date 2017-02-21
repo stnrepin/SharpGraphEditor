@@ -23,7 +23,6 @@ namespace SharpGraphEditor.Views
 
             Loaded += (sender, e) =>
             {
-                Vm.DialogPresenter = new Services.WindowsDialogsPresenter();
                 Vm.Terminal = OutputTerminal;
                 Vm.ViewLoaded();
             };

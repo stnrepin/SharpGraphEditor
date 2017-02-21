@@ -86,7 +86,7 @@
     <Compile Include="Models\GraphDocument.cs" />
     <Compile Include="Models\Vertex.cs" />
     <Compile Include="Services\IDialogsPresenter.cs" />
-    <Compile Include="Services\WindowsDialogsPresenter.cs" />
+    <Compile Include="Services\WindowDialogsPresenter.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
