@@ -83,11 +83,15 @@
     <Compile Include="Helpers\AsyncOperation.cs" />
     <Compile Include="Helpers\BindingErrorTraceListener.cs" />
     <Compile Include="Models\Edge.cs" />
+    <Compile Include="Models\FileDialog\BaseDialogType.cs" />
+    <Compile Include="Models\FileDialog\IDialogType.cs" />
+    <Compile Include="Models\FileDialog\OpenDialogType.cs" />
     <Compile Include="Models\GraphDocument.cs" />
     <Compile Include="Models\Vertex.cs" />
     <Compile Include="Services\IDialogsPresenter.cs" />
     <Compile Include="Services\WindowDialogsPresenter.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
+    <Compile Include="ViewModels\FileDialogViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
@@ -97,6 +101,9 @@
     </Compile>
     <Compile Include="Controls\GraphElements\VertexControl.xaml.cs">
       <DependentUpon>VertexControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FileDialogView.xaml.cs">
+      <DependentUpon>FileDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
@@ -141,6 +148,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\GraphElements\VertexControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FileDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

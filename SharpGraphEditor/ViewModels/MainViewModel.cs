@@ -98,12 +98,14 @@ namespace SharpGraphEditor.ViewModels
         {
             if (CheckGraphForClearing())
             {
-                var fileName = DialogPresenter.ShowFileOpenDialog("GXML files (*.gxml)|*.gxml");
+                var dialog = new FileDialogViewModel(DialogPresenter, new Models.FileDialog.OpenDialogType());
+                WindowManager.ShowDialog(dialog);
+                var fileName = dialog.FilePath;
                 if (String.IsNullOrEmpty(fileName)) return;
 
                 try
                 {
-                    Document.LoadFrom(fileName, GraphSourceFileType.Gxml);
+                    Document.LoadFrom(fileName, dialog.FileType);
                     Title = ProjectName + $" - {fileName}";
 
                     if (Document.Vertices.All(x => !x.HasPosition))
