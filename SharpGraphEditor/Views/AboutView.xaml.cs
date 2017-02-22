@@ -1,26 +1,24 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
+
+using Caliburn.Micro;
 
 namespace SharpGraphEditor.Views
 {
     /// <summary>
     /// Логика взаимодействия для AboutView.xaml
     /// </summary>
-    public partial class AboutView : Window
+    public partial class AboutView : Window, IClose
     {
         public AboutView()
         {
             InitializeComponent();
         }
 
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        public void TryClose(bool? dialogResult = default(bool?))
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = true;
-        }
-
-        private void OkBt_Click(object sender, RoutedEventArgs e)
-        {
+            DialogResult = dialogResult;
             Close();
         }
     }

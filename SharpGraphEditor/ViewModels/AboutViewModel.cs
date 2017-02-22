@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 
 using Caliburn.Micro;
@@ -83,6 +84,16 @@ namespace SharpGraphEditor.ViewModels
                 _projectSite = value;
                 NotifyOfPropertyChange(() => ProjectSite);
             }
+        }
+
+        public void OpenProjectSite()
+        {
+            Process.Start(new ProcessStartInfo(ProjectSite));
+        }
+
+        public void Close(IClose closableWindow)
+        {
+            closableWindow?.TryClose();
         }
 
         private DateTime GetPackageBuildingDate()

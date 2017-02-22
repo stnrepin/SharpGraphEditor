@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpGraphEditor.Views"
+        xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
         Title="{Binding Title}" 
         Height="230" 
@@ -13,40 +14,62 @@
         WindowStyle="None"
         WindowStartupLocation="CenterOwner" 
         ResizeMode="NoResize">
-    <Grid Margin="10, 0">
-        <TextBlock Text="{Binding ProjectName}" Margin="0" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Grid Margin="0, 35, 0, 40">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+    <Border BorderBrush="Black" BorderThickness="1">
+        <Grid Margin="10, 0">
+            <Grid.Resources>
+                <ContextMenu x:Key="ReadOnlyTextBoxContextMenu">
+                    <MenuItem Header="Copy" Command="Copy" />
+                </ContextMenu>
+                
+                <Style x:Key="HyperlinkButton" TargetType="Button">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Grid.Resources>
 
-            <TextBlock Text="Author: " Margin="20, 0, 0, 5" Grid.Row="0" Grid.Column="0" />
-            <TextBlock Text="Email: " Margin="20, 0 ,0, 5" Grid.Row="1" Grid.Column="0"/>
-            <TextBlock Text="Creation date: " Margin="20, 0, 0 ,5" Grid.Row="2" Grid.Column="0"/>
-            <TextBlock Grid.Row="3" Grid.Column="0" />
-            <TextBlock Text="Project site: " Margin="20, 0, 0, 5" Grid.Row="4" Grid.Column="0"/>
+            <TextBlock Text="{Binding ProjectName}" Margin="0" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Grid Margin="0, 35, 0, 40">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <!-- Трюк для того, чтобы можно было выделять в TextBlock ;) -->
-            <TextBox Text="{Binding Author}" BorderThickness="0" Background="Transparent" IsReadOnly="True" Grid.Row="0" Grid.Column="1" />
-            <TextBox Text="{Binding Email}" BorderThickness="0" Background="Transparent" IsReadOnly="True" Grid.Row="1" Grid.Column="1" />
-            <TextBox Text="{Binding CreationDate}" BorderThickness="0" Background="Transparent" IsReadOnly="True" Grid.Row="2" Grid.Column="1" />
-            <TextBlock Grid.Row="4" Grid.Column="1">
-                <Hyperlink  NavigateUri="{Binding ProjectSite}" RequestNavigate="Hyperlink_RequestNavigate">
-                    <Hyperlink.Inlines>
-                        <Run Text="{Binding ProjectSite}" />
-                    </Hyperlink.Inlines>
-                </Hyperlink>
-            </TextBlock>
+                <TextBlock Text="Author: " Margin="20, 0, 0, 5" Grid.Row="0" Grid.Column="0" />
+                <TextBlock Text="Email: " Margin="20, 0 ,0, 5" Grid.Row="1" Grid.Column="0"/>
+                <TextBlock Text="Creation date: " Margin="20, 0, 0 ,5" Grid.Row="2" Grid.Column="0"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" />
+                <TextBlock Text="Project site: " Margin="20, 0, 0, 5" Grid.Row="4" Grid.Column="0"/>
+
+                <!-- It lets to select in TextBlock, but it is being used as TextBlock ;) -->
+                <TextBox Text="{Binding Author}" BorderThickness="0" Background="Transparent" IsReadOnly="True" ContextMenu="{StaticResource ReadOnlyTextBoxContextMenu}" 
+                         Grid.Row="0" Grid.Column="1" />
+                <TextBox Text="{Binding Email}" BorderThickness="0" Background="Transparent" IsReadOnly="True"  ContextMenu="{StaticResource ReadOnlyTextBoxContextMenu}"
+                         Grid.Row="1" Grid.Column="1" />
+                <TextBox Text="{Binding CreationDate}" BorderThickness="0" Background="Transparent" IsReadOnly="True" ContextMenu="{StaticResource ReadOnlyTextBoxContextMenu}"
+                         Grid.Row="2" Grid.Column="1" />
+
+                <Button Style="{StaticResource HyperlinkButton}" Focusable="False" Grid.Row="4" Grid.Column="1" cal:Message.Attach="OpenProjectSite">
+                    <TextBlock>
+                        <Hyperlink NavigateUri="{Binding ProjectSite}">
+                            <Run Text="{Binding ProjectSite}" />
+                        </Hyperlink>
+                    </TextBlock>
+                </Button>
+            </Grid>
+
+            <Button x:Name="OkBt" Content="OK" Margin="0, 10, 10, 10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" cal:Message.Attach="Close($view)"/>
         </Grid>
-
-        <Button x:Name="OkBt" Content="OK" Click="OkBt_Click" Margin="0,10,10,10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75"/>
-    </Grid>
+    </Border>
 </Window>
