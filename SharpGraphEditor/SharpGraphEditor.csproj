@@ -86,6 +86,7 @@
     <Compile Include="Models\FileDialog\BaseDialogType.cs" />
     <Compile Include="Models\FileDialog\IDialogType.cs" />
     <Compile Include="Models\FileDialog\OpenDialogType.cs" />
+    <Compile Include="Models\FileDialog\SaveDialogType.cs" />
     <Compile Include="Models\GraphDocument.cs" />
     <Compile Include="Models\Vertex.cs" />
     <Compile Include="Services\IDialogsPresenter.cs" />

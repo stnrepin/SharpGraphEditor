@@ -217,6 +217,18 @@ namespace SharpGraphEditor.Models
                 case GraphSourceFileType.Gxml:
                     GraphWriter.ToGxml(path, this);
                     break;
+                case GraphSourceFileType.AdjList:
+                    GraphWriter.ToAdjList(path, this);
+                    break;
+                case GraphSourceFileType.AdjMatrix:
+                    GraphWriter.ToAdjMatrix(path, this);
+                    break;
+                case GraphSourceFileType.EdgesList:
+                    GraphWriter.ToEdgesList(path, this);
+                    break;
+                case GraphSourceFileType.IncidenceMatrix:
+                    GraphWriter.ToIncidenceMatrix(path, this);
+                    break;
                 default:
                     throw new NotSupportedException($"{fileType.ToString()} not support");
             }

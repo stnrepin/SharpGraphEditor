@@ -98,13 +98,14 @@ namespace SharpGraphEditor.ViewModels
         {
             if (CheckGraphForClearing())
             {
-                var dialog = new FileDialogViewModel(DialogPresenter, new Models.FileDialog.OpenDialogType());
-                WindowManager.ShowDialog(dialog);
-                var fileName = dialog.FilePath;
-                if (String.IsNullOrEmpty(fileName)) return;
-
                 try
                 {
+                    var dialog = new FileDialogViewModel(DialogPresenter, new Models.FileDialog.OpenDialogType());
+                    WindowManager.ShowDialog(dialog);
+                    var fileName = dialog.FilePath;
+
+                    if (String.IsNullOrEmpty(fileName)) return;
+
                     Document.LoadFrom(fileName, dialog.FileType);
                     Title = ProjectName + $" - {fileName}";
 
@@ -157,12 +158,14 @@ namespace SharpGraphEditor.ViewModels
 
         public void SaveAs()
         {
-            var fileName = DialogPresenter.ShowFileSaveDialog("GXML files (*.gxml)|*.gxml");
-            if (String.IsNullOrEmpty(fileName)) return;
-
             try
             {
-                Document.SaveTo(fileName, GraphSourceFileType.Gxml);
+                var dialog = new FileDialogViewModel(DialogPresenter, new Models.FileDialog.SaveDialogType());
+                WindowManager.ShowDialog(dialog);
+                var fileName = dialog.FilePath;
+
+                if (String.IsNullOrEmpty(fileName)) return;
+                Document.SaveTo(fileName, dialog.FileType);
                 Title = ProjectName + $" - {fileName}";
             }
             catch (Exception e)
