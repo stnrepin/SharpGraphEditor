@@ -17,6 +17,8 @@ namespace SharpGraphEditor.Graph.Core
         {
             using (var fileStream = File.OpenWrite(path))
             {
+                fileStream.SetLength(0);
+                fileStream.Flush();
                 using (var stream = new StreamWriter(fileStream))
                 {
                     ToIncidenceMatrix(stream, graph);
@@ -33,7 +35,7 @@ namespace SharpGraphEditor.Graph.Core
             foreach (var edge in graph.Edges)
             {
                 matrix[edge.Source.Index - 1, edgeNumber] = 1;
-                matrix[edge.Target.Index - 1, edgeNumber] = -1;
+                matrix[edge.Target.Index - 1, edgeNumber] = edge.IsDirected ? -1 : 1;
                 edgeNumber++;
             }
             PrintMatrix(stream, matrix, verticesCount, edgesCount);
@@ -43,6 +45,8 @@ namespace SharpGraphEditor.Graph.Core
         {
             using (var fileStream = File.OpenWrite(path))
             {
+                fileStream.SetLength(0);
+                fileStream.Flush();
                 using (var stream = new StreamWriter(fileStream))
                 {
                     ToEdgesList(stream, graph);
@@ -62,6 +66,8 @@ namespace SharpGraphEditor.Graph.Core
         {
             using (var fileStream = File.OpenWrite(path))
             {
+                fileStream.SetLength(0);
+                fileStream.Flush();
                 using (var stream = new StreamWriter(fileStream))
                 {
                     ToAdjMatrix(stream, graph);
@@ -90,6 +96,8 @@ namespace SharpGraphEditor.Graph.Core
         {
             using (var fileStream = File.OpenWrite(path))
             {
+                fileStream.SetLength(0);
+                fileStream.Flush();
                 using (var stream = new StreamWriter(fileStream))
                 {
                     ToAdjList(stream, graph);
@@ -108,6 +116,8 @@ namespace SharpGraphEditor.Graph.Core
         {
             using (var fileStream = File.OpenWrite(path))
             {
+                fileStream.SetLength(0);
+                fileStream.Flush();
                 using (var stream = new StreamWriter(fileStream))
                 {
                     ToGxml(stream, graph);
@@ -132,7 +142,8 @@ namespace SharpGraphEditor.Graph.Core
             {
                 var sourceIndexAttr = new XAttribute(XName.Get("source"), x.Source.Index);
                 var targetIndexAttr = new XAttribute(XName.Get("target"), x.Target.Index);
-                edgesXmlElements.Add(new XElement(XName.Get("edge"), sourceIndexAttr, targetIndexAttr));
+                var IsDirectedAttr = new XAttribute(XName.Get("directed"), x.IsDirected);
+                edgesXmlElements.Add(new XElement(XName.Get("edge"), sourceIndexAttr, targetIndexAttr, IsDirectedAttr));
             });
 
             var rootElement = new XElement(XName.Get("graph"));

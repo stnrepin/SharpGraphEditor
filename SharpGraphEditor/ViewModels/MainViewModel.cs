@@ -280,7 +280,8 @@ namespace SharpGraphEditor.ViewModels
             (e) =>
             {
                 Terminal?.WriteLine("During algorithm working an error occured:");
-                Terminal?.WriteLine($"\t{e.Message}\n");
+                Terminal?.WriteLine($"  {e.Message}\n");
+                IsUnlock = true;
             });
             a.ExecuteAsync();
         }
@@ -459,7 +460,7 @@ namespace SharpGraphEditor.ViewModels
                 Terminal.WriteLine("An error occured:");
                 do
                 {
-                    Terminal.WriteLine($"{exCopy.GetType().Name}: \"{exCopy.Message}\"");
+                    Terminal.WriteLine($"  {exCopy.GetType().Name}: \"{exCopy.Message}\"");
                     exCopy = exCopy.InnerException;
                 }
                 while (exCopy != null);

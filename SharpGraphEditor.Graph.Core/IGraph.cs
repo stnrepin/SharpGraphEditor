@@ -18,7 +18,7 @@ namespace SharpGraphEditor.Graph.Core
 
         IVertex AddVertex(double x, double y, int index);
 
-        IEdge AddEdge(IVertex source, IVertex target, bool isDirected = false, bool directedIfReversedExisting = false);
+        IEdge AddEdge(IVertex source, IVertex target, bool isDirected = false, bool makeNotDirectedIfreversedExisted = true);
 
         void Remove(IGraphElement element);
 

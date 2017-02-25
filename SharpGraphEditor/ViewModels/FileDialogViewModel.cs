@@ -25,6 +25,8 @@ namespace SharpGraphEditor.ViewModels
         {
             _dialogsPresenter = dialogPresenter;
             DialogType = type;
+
+            FileType = GraphSourceFileType.Gxml;
         }
 
         public void Summarize(IClose closeableWindow)

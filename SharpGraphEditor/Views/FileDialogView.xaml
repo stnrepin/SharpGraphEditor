@@ -14,7 +14,7 @@
         <StackPanel>
             <GroupBox Header="Format" Margin="5, 5, 5 ,0" VerticalAlignment="Top">
                 <StackPanel>
-                    <RadioButton Content="Gxml" Margin="10, 10, 10, 0" Tag="Gxml" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" />
+                    <RadioButton Content="Gxml" Margin="10, 10, 10, 0" Tag="Gxml" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" IsChecked="True"/>
                     <RadioButton Content="Adjacency list" Margin="10, 10, 10, 0" Tag="AdjList" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" />
                     <RadioButton Content="Adjacency matrix" Margin="10, 10, 10, 0" Tag="AdjMatrix" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" />
                     <RadioButton Content="Edges list" Margin="10, 10, 10, 0" Tag="EdgesList" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" />

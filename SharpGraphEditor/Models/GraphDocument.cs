@@ -103,36 +103,35 @@ namespace SharpGraphEditor.Models
             return newVertex;
         }
 
-        public IEdge AddEdge(IVertex source, IVertex target)
+        public IEdge AddEdge(IVertex source, IVertex target, bool makeNotDirectedIfreversedExisted = false)
         {
-            return AddEdge(source, target, IsDirected);
+            return AddEdge(source, target, IsDirected, makeNotDirectedIfreversedExisted);
         }
 
-        public IEdge AddEdge(IVertex source, IVertex target, bool isDirected, bool directedIfReversedExisting = false)
+        public IEdge AddEdge(IVertex source, IVertex target, bool isDirected, bool makeNotDirectedIfreversedExisted = false)
         {
             if (source == target) return null;
 
-            var isEdgeExist = ObservableEdges.Any(x => x.Source == source && x.Target == target);
+            var existingEdge = ObservableEdges.FirstOrDefault(x => x.Source == source && x.Target == target);
 
-            if (!isEdgeExist)
+            if (existingEdge == null)
             {
                 var reversedEdge = ObservableEdges.FirstOrDefault(x => x.Source == target && x.Target == source);
                 if (reversedEdge != null)
                 {
-                    if (directedIfReversedExisting)
+                    if (makeNotDirectedIfreversedExisted && reversedEdge.IsDirected)
                     {
-                        reversedEdge.IsDirected = true;
+                        reversedEdge.IsDirected = false;
                         IsModified = true;
                         return reversedEdge;
                     }
+                    return reversedEdge;
                 }
-                else
-                {
-                    var newEdge = new Edge(source, target, isDirected);
-                    Execute.OnUIThread(() => ObservableEdges.Add(newEdge));
-                    IsModified = true;
-                    return newEdge;
-                }
+
+                var newEdge = new Edge(source, target, isDirected);
+                Execute.OnUIThread(() => ObservableEdges.Add(newEdge));
+                IsModified = true;
+                return newEdge;
             }
             return null;
         }

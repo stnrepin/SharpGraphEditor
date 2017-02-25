@@ -50,13 +50,16 @@ namespace SharpGraphEditor.Graph.Core
             {
                 IVertex source = null;
                 IVertex target = null;
+                bool directed = true;
                 for (int vertexIndex = 0; vertexIndex < verticesCount; vertexIndex++)
                 {
+
                     if (incMatrix[vertexIndex][edgeIndex] == "1")
                     {
                         if (target != null)
                         {
                             source = graph.AddVertex(vertexIndex + 1);
+                            directed = false;
                         }
                         else
                         {
@@ -68,8 +71,7 @@ namespace SharpGraphEditor.Graph.Core
                         source = graph.AddVertex(vertexIndex + 1);
                     }
                 }
-                System.Diagnostics.Debug.WriteLine($"{source} -> {target}");
-                graph.AddEdge(source, target, directedIfReversedExisting: true);
+                graph.AddEdge(source, target, directed);
             }
 
         }
@@ -116,7 +118,7 @@ namespace SharpGraphEditor.Graph.Core
 
                 var v1 = graph.AddVertex(edges[0]);
                 var v2 = graph.AddVertex(edges[1]);
-                graph.AddEdge(v1, v2, directedIfReversedExisting: true);
+                graph.AddEdge(v1, v2, true);
             }
         }
 
@@ -162,7 +164,7 @@ namespace SharpGraphEditor.Graph.Core
                     if (lines[i][j] != "0")
                     {
                         var v2 = graph.AddVertex(j + 1);
-                        graph.AddEdge(v1, v2, directedIfReversedExisting: true);
+                        graph.AddEdge(v1, v2, true);
                     }
                 }
             }
@@ -217,7 +219,7 @@ namespace SharpGraphEditor.Graph.Core
                 foreach (var vertex in vertices)
                 {
                     var targetVertex = graph.AddVertex(vertex);
-                    graph.AddEdge(parentVertex, targetVertex, directedIfReversedExisting: true);
+                    graph.AddEdge(parentVertex, targetVertex, true);
                 }
             }
         }
@@ -290,7 +292,7 @@ namespace SharpGraphEditor.Graph.Core
             {
                 var sourceIndexAttr = ed.Attribute(XName.Get("source")) ?? ed.Attribute(XName.Get("Source"));
                 var targetIndexAttr = ed.Attribute(XName.Get("target")) ?? ed.Attribute(XName.Get("Target"));
-                var isDirectedAttr = ed.Attribute(XName.Get("isDirected")) ?? ed.Attribute(XName.Get("IsDirected"));
+                var isDirectedAttr = ed.Attribute(XName.Get("directed")) ?? ed.Attribute(XName.Get("IsDirected"));
 
                 var isSuccessForIsDirected = Boolean.TryParse(isDirectedAttr?.Value, out bool isDirected);
                 var isSuccessForSourceIndex = Int32.TryParse(sourceIndexAttr?.Value, out int sourceIndex);
