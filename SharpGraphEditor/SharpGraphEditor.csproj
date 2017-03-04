@@ -83,17 +83,15 @@
     <Compile Include="Helpers\AsyncOperation.cs" />
     <Compile Include="Helpers\BindingErrorTraceListener.cs" />
     <Compile Include="Models\Edge.cs" />
-    <Compile Include="Models\FileDialog\BaseDialogType.cs" />
-    <Compile Include="Models\FileDialog\IDialogType.cs" />
-    <Compile Include="Models\FileDialog\OpenDialogType.cs" />
-    <Compile Include="Models\FileDialog\SaveDialogType.cs" />
     <Compile Include="Models\GraphDocument.cs" />
+    <Compile Include="Models\GraphRepository.cs" />
     <Compile Include="Models\Vertex.cs" />
     <Compile Include="Services\IDialogsPresenter.cs" />
     <Compile Include="Services\WindowDialogsPresenter.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\FileDialogViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\TextViewerViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
@@ -108,6 +106,9 @@
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TextViewerView.xaml.cs">
+      <DependentUpon>TextViewerView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +158,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TextViewerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

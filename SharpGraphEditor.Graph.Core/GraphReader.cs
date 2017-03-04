@@ -36,7 +36,7 @@ namespace SharpGraphEditor.Graph.Core
             }
         }
 
-        public static void FromIncidenceMatrix(StreamReader stream, IGraph graph)
+        public static void FromIncidenceMatrix(TextReader stream, IGraph graph)
         {
             var incMatrix = ReadAllLines(stream).Select(x => x.Split(' ')
                                                               .ToList())
@@ -100,7 +100,7 @@ namespace SharpGraphEditor.Graph.Core
             }
         }
 
-        public static void FromEdgesList(StreamReader stream, IGraph graph)
+        public static void FromEdgesList(TextReader stream, IGraph graph)
         {
             if (graph.Vertices.Count() > 0)
             {
@@ -146,7 +146,7 @@ namespace SharpGraphEditor.Graph.Core
             }
         }
 
-        public static void FromAdjMatrix(StreamReader stream, IGraph graph)
+        public static void FromAdjMatrix(TextReader stream, IGraph graph)
         {
             if (graph.Vertices.Count() > 0)
             {
@@ -194,7 +194,7 @@ namespace SharpGraphEditor.Graph.Core
             }
         }
 
-        public static void FromAdjList(StreamReader stream, IGraph graph)
+        public static void FromAdjList(TextReader stream, IGraph graph)
         {
             if (graph.Vertices.Count() > 0)
             {
@@ -245,7 +245,7 @@ namespace SharpGraphEditor.Graph.Core
 
         // Rewrite for format https://ru.wikipedia.org/wiki/GraphML
         // Serialization
-        public static void FromGxml(StreamReader stream, IGraph graph)
+        public static void FromGxml(TextReader stream, IGraph graph)
         {
             if (graph.Vertices.Count() > 0)
             {
@@ -333,11 +333,12 @@ namespace SharpGraphEditor.Graph.Core
             return i;
         }
 
-        private static IEnumerable<string> ReadAllLines(StreamReader stream)
+        private static IEnumerable<string> ReadAllLines(TextReader stream)
         {
-            while (!stream.EndOfStream)
+            var line = "";
+            while ((line = stream.ReadLine()) != null)
             {
-                yield return stream.ReadLine();
+                yield return line;
             }
         }
     }

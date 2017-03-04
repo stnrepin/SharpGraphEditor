@@ -22,6 +22,7 @@ namespace SharpGraphEditor.ViewModels
         // Fields
         //
         private GraphDocument _document;
+        private GraphRepository _repository;
         private IGraphElement _selectedElement;
         private IEdge _newEdge;
 
@@ -32,6 +33,8 @@ namespace SharpGraphEditor.ViewModels
         private double _currentZoom;
         private bool _isCanvasUnlock;
         private bool _isOutputHide;
+
+        public bool IsModified { get; private set; }
 
         public double MinElementX { get; set; }
         public double MinElementY { get; set; }
@@ -51,6 +54,7 @@ namespace SharpGraphEditor.ViewModels
         public MainViewModel(IWindowManager windowManager, IDialogsPresenter dialogsPresenter)
         {
             Document = new GraphDocument();
+            _repository = new GraphRepository();
             Algorithms = AlgorithmManager.Instance.Algorithms;
 
             WindowManager = windowManager;
@@ -60,6 +64,7 @@ namespace SharpGraphEditor.ViewModels
             MinElementX = 30;
             MinElementY = 30;
 
+            Document.GraphDocumentChanged += (_, __) => { IsModified = true; };
             Init();
         }
 
@@ -70,6 +75,7 @@ namespace SharpGraphEditor.ViewModels
             IsCursorModeOn = true;
             SelectedElement = null;
             NewEdge = null;
+            IsModified = false;
         }
 
         // Actions
@@ -100,23 +106,48 @@ namespace SharpGraphEditor.ViewModels
             {
                 try
                 {
-                    var dialog = new FileDialogViewModel(DialogPresenter, new Models.FileDialog.OpenDialogType());
-                    WindowManager.ShowDialog(dialog);
-                    var fileName = dialog.FilePath;
-
-                    if (String.IsNullOrEmpty(fileName)) return;
-
-                    Document.LoadFrom(fileName, dialog.FileType);
-                    Title = ProjectName + $" - {fileName}";
-
-                    if (Document.Vertices.All(x => !x.HasPosition))
+                    var dialog = new FileDialogViewModel();
+                    var res = WindowManager.ShowDialog(dialog);
+                    if (res.HasValue && res.Value)
                     {
-                        var alg = AlgorithmManager.Instance.FindAlgorithmByName("Ellipse layouter");
-                        if (alg == null)
+                        var filter = GetFilterForSourceFileType(dialog.SourceType);
+                        var fileName = DialogPresenter.ShowFileOpenDialog(filter);
+
+                        if (String.IsNullOrEmpty(fileName)) return;
+
+                        _repository.LoadFromFile(Document, fileName, dialog.SourceType);
+                        Title = ProjectName + $" - {fileName}";
+
+                        EllipseVerticesPosition();
+                        IsModified = false;
+                    }
+                }
+                catch (Exception e)
+                {
+                    ShowError(e);
+                }
+            }
+        }
+
+        public void LoadGraphFromText()
+        {
+            if (CheckGraphForClearing())
+            {
+                try
+                {
+                    var dialog = new FileDialogViewModel();
+                    var res = WindowManager.ShowDialog(dialog);
+                    if (res.HasValue && res.Value)
+                    {
+                        var textViewer = new TextViewerViewModel(String.Empty, false, true, false);
+                        var textViewerResult = WindowManager.ShowDialog(textViewer);
+                        if (textViewerResult.HasValue && textViewerResult.Value)
                         {
-                            throw new ArgumentNullException("Cant find Ellipse layouter algorithm");
+                            _repository.LoadFromText(Document, textViewer.Text, dialog.SourceType);
+                            EllipseVerticesPosition();
+                            IsModified = true;
+                            Title = ProjectName;
                         }
-                        RunAlgorithm(alg);
                     }
                 }
                 catch (Exception e)
@@ -139,7 +170,7 @@ namespace SharpGraphEditor.ViewModels
 
         public void Save()
         {
-            if (String.IsNullOrEmpty(Document.SourceFile))
+            if (String.IsNullOrEmpty(_repository.SourceFile))
             {
                 SaveAs();
                 return;
@@ -147,8 +178,9 @@ namespace SharpGraphEditor.ViewModels
 
             try
             {
-                Document.SaveTo(Document.SourceFile, Document.SourceFileType);
-                Title = ProjectName + $" - {Document.SourceFile}";
+                _repository.SaveToFile(Document, _repository.SourceFile, _repository.SourceType);
+                Title = ProjectName + $" - {_repository.SourceFile}";
+                IsModified = false;
             }
             catch (Exception e)
             {
@@ -160,13 +192,38 @@ namespace SharpGraphEditor.ViewModels
         {
             try
             {
-                var dialog = new FileDialogViewModel(DialogPresenter, new Models.FileDialog.SaveDialogType());
-                WindowManager.ShowDialog(dialog);
-                var fileName = dialog.FilePath;
+                var dialog = new FileDialogViewModel();
+                var res = WindowManager.ShowDialog(dialog);
+                if (res.HasValue && res.Value)
+                {
+                    var filter = GetFilterForSourceFileType(dialog.SourceType);
+                    var fileName = DialogPresenter.ShowFileSaveDialog(filter);
 
-                if (String.IsNullOrEmpty(fileName)) return;
-                Document.SaveTo(fileName, dialog.FileType);
-                Title = ProjectName + $" - {fileName}";
+                    if (String.IsNullOrEmpty(fileName)) return;
+
+                    _repository.SaveToFile(Document, fileName, dialog.SourceType);
+                    Title = ProjectName + $" - {fileName}";
+                    IsModified = false;
+                }
+            }
+            catch (Exception e)
+            {
+                ShowError(e);
+            }
+        }
+
+        public void SaveAsText()
+        {
+            try
+            {
+                var dialog = new FileDialogViewModel();
+                var res = WindowManager.ShowDialog(dialog);
+                if (res.HasValue && res.Value)
+                {
+                    var text = _repository.PresentAsText(Document, dialog.SourceType);
+                    var textViewer = new TextViewerViewModel(text, true, false, true);
+                    WindowManager.ShowDialog(textViewer);
+                }
             }
             catch (Exception e)
             {
@@ -218,6 +275,7 @@ namespace SharpGraphEditor.ViewModels
             else if (IsRemoveElementModeOn)
             {
                 RemoveElement(element);
+                IsModified = true;
             }
             SelectedElement = null;
         }
@@ -428,14 +486,14 @@ namespace SharpGraphEditor.ViewModels
         //
         private bool CheckGraphForClearing()
         {
-            if (Document.IsModified)
+            if (IsModified)
             {
                 var res = DialogPresenter.ShowMessaeBoxYesNoCancel("Graph has been modified. Save changes?", ProjectName);
                 switch (res)
                 {
                     case MessageBoxResult.Yes:
                         Save();
-                        if (Document.IsModified)
+                        if (IsModified)
                             return false;
                         return true;
                     case MessageBoxResult.No:
@@ -445,6 +503,19 @@ namespace SharpGraphEditor.ViewModels
                 }
             }
             return true;
+        }
+
+        private void EllipseVerticesPosition()
+        {
+            if (Document.Vertices.All(x => !x.HasPosition))
+            {
+                var alg = AlgorithmManager.Instance.FindAlgorithmByName("Ellipse layouter");
+                if (alg == null)
+                {
+                    throw new ArgumentNullException("Cant find Ellipse layouter algorithm");
+                }
+                RunAlgorithm(alg);
+            }
         }
 
         private void OnModeChanged()
@@ -467,6 +538,26 @@ namespace SharpGraphEditor.ViewModels
             }
 
             DialogPresenter.ShowError(ex.Message, ProjectName, ex.GetType());
+        }
+
+        private string GetFilterForSourceFileType(GraphSourceType fileType)
+        {
+            var filter = String.Empty;
+            switch (fileType)
+            {
+                case GraphSourceType.Gxml:
+                    filter = "GXML files (*.gxml) | *.gxml";
+                    break;
+                case GraphSourceType.AdjList:
+                case GraphSourceType.AdjMatrix:
+                case GraphSourceType.EdgesList:
+                case GraphSourceType.IncidenceMatrix:
+                    filter = "TXT files (*.txt) | *.txt";
+                    break;
+                default:
+                    throw new ArgumentException("bad file type");
+            }
+            return filter;
         }
     }
 }

@@ -59,9 +59,15 @@
         <Menu Grid.Row="0" Background="White" IsEnabled="{Binding IsUnlock}">
             <MenuItem Header="File">
                 <MenuItem Header="New" cal:Message.Attach="ClearGraph" />
-                <MenuItem Header="Open" cal:Message.Attach="LoadGraphFromFile "/>
+                <MenuItem Header="Open">
+                    <MenuItem Header="From File..." cal:Message.Attach="LoadGraphFromFile" />
+                    <MenuItem Header="From Text..." cal:Message.Attach="LoadGraphFromText"/>
+                </MenuItem>
                 <MenuItem Header="Save" cal:Message.Attach="Save" />
-                <MenuItem Header="Save as..." cal:Message.Attach="SaveAs" />
+                <MenuItem Header="Save as">
+                    <MenuItem Header="To File..." cal:Message.Attach="SaveAs" />
+                    <MenuItem Header="To Text..." cal:Message.Attach="SaveAsText" />
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="Exit" cal:Message.Attach="Exit" />
             </MenuItem>

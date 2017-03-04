@@ -5,11 +5,11 @@ using Caliburn.Micro;
 namespace SharpGraphEditor.Views
 {
     /// <summary>
-    /// Interaction logic for FileDialogView.xaml
+    /// Interaction logic for TextViewerView.xaml
     /// </summary>
-    public partial class FileDialogView : Window, IClose
+    public partial class TextViewerView : Window, IClose
     {
-        public FileDialogView()
+        public TextViewerView()
         {
             InitializeComponent();
         }

@@ -5,46 +5,34 @@ using System.Text;
 
 using Caliburn.Micro;
 using SharpGraphEditor.Models;
-using SharpGraphEditor.Models.FileDialog;
 using SharpGraphEditor.Services;
 
 namespace SharpGraphEditor.ViewModels
 {
     public class FileDialogViewModel : PropertyChangedBase
     {
-        private IDialogsPresenter _dialogsPresenter;
+        public GraphSourceType SourceType { get; private set; }
 
-        public IDialogType DialogType { get; }
-
-        public GraphSourceFileType FileType { get; private set; }
-        public string FilePath { get; private set; }
-
-        public string SummarizeButtonText => DialogType.TypeName;
-
-        public FileDialogViewModel(IDialogsPresenter dialogPresenter, IDialogType type)
+        public FileDialogViewModel()
         {
-            _dialogsPresenter = dialogPresenter;
-            DialogType = type;
-
-            FileType = GraphSourceFileType.Gxml;
+            SourceType = GraphSourceType.Gxml;
         }
 
-        public void Summarize(IClose closeableWindow)
+        public void Ok(IClose closeableWindow)
         {
-            FilePath = DialogType.Summarize(_dialogsPresenter, FileType);
-            closeableWindow?.TryClose();
+            closeableWindow?.TryClose(true);
         }
         
         public void Cancel(IClose closableWindow)
         {
-            closableWindow?.TryClose();
+            closableWindow?.TryClose(false);
         }
 
         public void ChangeFormat(string name)
         {
-            if (Enum.TryParse(name, out GraphSourceFileType res))
+            if (Enum.TryParse(name, out GraphSourceType res))
             {
-                FileType = res;
+                SourceType = res;
                 return;
             }
             throw new ArgumentException("Invalid source file type");

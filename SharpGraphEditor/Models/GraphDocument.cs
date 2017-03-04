@@ -11,7 +11,7 @@ using SharpGraphEditor.Graph.Core.Extentions;
 
 namespace SharpGraphEditor.Models
 {
-    public enum GraphSourceFileType
+    public enum GraphSourceType
     {
         None,
         Gxml,
@@ -21,20 +21,22 @@ namespace SharpGraphEditor.Models
         IncidenceMatrix
     }
 
+    public class GraphDocumentChangedEventArgs : EventArgs
+    {
+
+    }
+
     public class GraphDocument : PropertyChangedBase, IGraph, ICloneable
     {
         // Fields
         //
-        private bool _isModified;
-
-        public string SourceFile { get; private set; }
-        public GraphSourceFileType SourceFileType { get; private set; }
-
         public ObservableCollection<IVertex> ObservableVertices { get; private set; }
         public ObservableCollection<IEdge> ObservableEdges { get; private set; }
 
         public IEnumerable<IVertex> Vertices => (ObservableVertices);
         public IEnumerable<IEdge> Edges => (ObservableEdges);
+
+        public event EventHandler<GraphDocumentChangedEventArgs> GraphDocumentChanged;
 
         // Constructor
         //
@@ -42,10 +44,6 @@ namespace SharpGraphEditor.Models
         {
             ObservableVertices = new ObservableCollection<IVertex>();
             ObservableEdges = new ObservableCollection<IEdge>();
-
-            IsModified = false;
-            SourceFile = "";
-            SourceFileType = GraphSourceFileType.None;
         }
 
 
@@ -54,30 +52,22 @@ namespace SharpGraphEditor.Models
         public bool IsDirected
         {
             get
-            {
+            { 
                 if (ObservableEdges.Count == 0)
                 {
                     return false;
                 }
                 return ObservableEdges.All(x => x.IsDirected);
             }
-            set { ObservableEdges.ForEach(x => x.IsDirected = value); }
-        }
-
-        public bool IsModified
-        {
-            get { return _isModified; }
             set
             {
-                if (_isModified == value) return;
-                _isModified = value;
-                NotifyOfPropertyChange(() => IsModified);
+                ObservableEdges.ForEach(x => x.IsDirected = value);
+                OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             }
         }
 
         // Public methods
         //
-
         public IVertex AddVertex(int index)
         {
             var v = AddVertex(0, 0, index);
@@ -99,7 +89,7 @@ namespace SharpGraphEditor.Models
             }
             var newVertex = new Vertex(x, y, index);
             Execute.OnUIThread(() => ObservableVertices.Add(newVertex));
-            IsModified = true;
+            OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             return newVertex;
         }
 
@@ -122,7 +112,6 @@ namespace SharpGraphEditor.Models
                     if (makeNotDirectedIfreversedExisted && reversedEdge.IsDirected)
                     {
                         reversedEdge.IsDirected = false;
-                        IsModified = true;
                         return reversedEdge;
                     }
                     return reversedEdge;
@@ -130,7 +119,7 @@ namespace SharpGraphEditor.Models
 
                 var newEdge = new Edge(source, target, isDirected);
                 Execute.OnUIThread(() => ObservableEdges.Add(newEdge));
-                IsModified = true;
+                OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
                 return newEdge;
             }
             return null;
@@ -144,12 +133,12 @@ namespace SharpGraphEditor.Models
                 Execute.OnUIThread(() => ObservableVertices.Remove(vertex));
                 ObservableEdges.Where(x => x.Source == vertex || x.Target == vertex).ToList()
                     .ForEach(x => ObservableEdges.Remove(x));
-                IsModified = true;
+                OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             }
             else if (element is IEdge)
             {
                 Execute.OnUIThread(() => ObservableEdges.Remove(element as IEdge));
-                IsModified = true;
+                OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             }
         }
 
@@ -157,9 +146,6 @@ namespace SharpGraphEditor.Models
         {
             Execute.OnUIThread(() => ObservableEdges.Clear());
             Execute.OnUIThread(() => ObservableVertices.Clear());
-            _isModified = false;
-            SourceFile = String.Empty;
-            SourceFileType = GraphSourceFileType.None;
         }
 
         public Object Clone()
@@ -169,72 +155,8 @@ namespace SharpGraphEditor.Models
                 ObservableVertices = new ObservableCollection<IVertex>(Vertices),
                 ObservableEdges = new ObservableCollection<IEdge>(Edges),
                 IsDirected = IsDirected,
-                IsModified = IsModified,
                 IsNotifying = IsNotifying,
-                SourceFile = SourceFile,
-                SourceFileType = SourceFileType
             };
-        }
-
-        public void LoadFrom(string path, GraphSourceFileType fileType)
-        {
-            switch (fileType)
-            {
-                case GraphSourceFileType.None:
-                    throw new ArgumentException("Type of source file can't be none");
-                case GraphSourceFileType.Gxml:
-                    GraphReader.FromGxml(path, this);
-                    break;
-                case GraphSourceFileType.AdjList:
-                    GraphReader.FromAdjList(path, this);
-                    break;
-                case GraphSourceFileType.AdjMatrix:
-                    GraphReader.FromAdjMatrix(path, this);
-                    break;
-                case GraphSourceFileType.EdgesList:
-                    GraphReader.FromEdgesList(path, this);
-                    break;
-                case GraphSourceFileType.IncidenceMatrix:
-                    GraphReader.FromIncidenceMatrix(path, this);
-                    break;
-                default:
-                    throw new NotSupportedException($"{fileType.ToString()} not support");
-            }
-
-            SourceFile = path;
-            SourceFileType = fileType;
-
-            IsModified = false;
-        }
-
-        public void SaveTo(string path, GraphSourceFileType fileType)
-        {
-            switch (fileType)
-            {
-                case GraphSourceFileType.None:
-                    throw new ArgumentException("Type of source file can't be none");
-                case GraphSourceFileType.Gxml:
-                    GraphWriter.ToGxml(path, this);
-                    break;
-                case GraphSourceFileType.AdjList:
-                    GraphWriter.ToAdjList(path, this);
-                    break;
-                case GraphSourceFileType.AdjMatrix:
-                    GraphWriter.ToAdjMatrix(path, this);
-                    break;
-                case GraphSourceFileType.EdgesList:
-                    GraphWriter.ToEdgesList(path, this);
-                    break;
-                case GraphSourceFileType.IncidenceMatrix:
-                    GraphWriter.ToIncidenceMatrix(path, this);
-                    break;
-                default:
-                    throw new NotSupportedException($"{fileType.ToString()} not support");
-            }
-            SourceFile = path;
-            SourceFileType = fileType;
-
-            IsModified = false;
         }
 
         public Dictionary<IVertex, IEnumerable<IVertex>> ToAdjList()
@@ -281,6 +203,11 @@ namespace SharpGraphEditor.Models
                 newIndex++;
             }
             return newIndex;
+        }
+
+        private void OnGraphDocumentChanged(GraphDocumentChangedEventArgs e)
+        {
+            GraphDocumentChanged?.Invoke(this, e);
         }
     }
 }

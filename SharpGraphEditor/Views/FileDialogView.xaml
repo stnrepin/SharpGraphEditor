@@ -23,17 +23,8 @@
             </GroupBox>
 
             <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Right">
-                <Button cal:Message.Attach="Summarize($view)" VerticalAlignment="Top" HorizontalAlignment="Right">
-                    <Button.Content>
-                        <TextBlock Text="{Binding DialogType.TypeName}" Margin="2" />
-                    </Button.Content>
-                </Button>
-
-                <Button cal:Message.Attach="Cancel($view)" Margin="5, 0, 0, 0">
-                    <Button.Content>
-                        <TextBlock Text="Cancel" Margin="2" />
-                    </Button.Content>
-                </Button>
+                <Button Content="OK" Width="75" cal:Message.Attach="Ok($view)" VerticalAlignment="Top" HorizontalAlignment="Right" />
+                <Button Content="Cancel" Width="75" cal:Message.Attach="Cancel($view)" Margin="5, 0, 0, 0" />
             </StackPanel>
         </StackPanel>
     </Border>

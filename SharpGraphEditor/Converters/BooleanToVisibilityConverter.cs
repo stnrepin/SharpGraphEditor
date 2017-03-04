@@ -9,7 +9,15 @@ namespace SharpGraphEditor.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((bool)value) ? Visibility.Collapsed : Visibility.Visible; 
+            if (parameter == null || parameter.ToString() == "0")
+            {
+                return ((bool)value) ? Visibility.Collapsed : Visibility.Visible;
+            }
+            else if (parameter.ToString() == "1")
+            {
+                return ((bool)value) ? Visibility.Visible : Visibility.Collapsed;
+            }
+            throw new ArgumentException("invalid parameter of BooleanToVisibilityConverter");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
