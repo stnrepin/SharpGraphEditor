@@ -3,9 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26014.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGraphEditor", "SharpGraphEditor\SharpGraphEditor.csproj", "{008B49DD-97B1-40BD-8BFF-F6AC2C71003C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGraphEditor", "src\SharpGraphEditor\SharpGraphEditor.csproj", "{008B49DD-97B1-40BD-8BFF-F6AC2C71003C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGraphEditor.Graph.Core", "SharpGraphEditor.Graph.Core\SharpGraphEditor.Graph.Core.csproj", "{047F5AB2-2F0F-45C5-B5B7-DE08ACD7DA0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGraphEditor.Graph.Core", "src\SharpGraphEditor.Graph.Core\SharpGraphEditor.Graph.Core.csproj", "{047F5AB2-2F0F-45C5-B5B7-DE08ACD7DA0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{055112F0-58E0-4C91-925C-D1815CAB8EAD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{452068EB-97CA-4738-BEC8-8DE0906BB764}"
+	ProjectSection(SolutionItems) = preProject
+		samples\adj_list.txt = samples\adj_list.txt
+		samples\adj_matrix.txt = samples\adj_matrix.txt
+		samples\edges_list.txt = samples\edges_list.txt
+		samples\gxml.gxml = samples\gxml.gxml
+		samples\inc_matrix.txt = samples\inc_matrix.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +35,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{008B49DD-97B1-40BD-8BFF-F6AC2C71003C} = {055112F0-58E0-4C91-925C-D1815CAB8EAD}
+		{047F5AB2-2F0F-45C5-B5B7-DE08ACD7DA0A} = {055112F0-58E0-4C91-925C-D1815CAB8EAD}
 	EndGlobalSection
 EndGlobal
