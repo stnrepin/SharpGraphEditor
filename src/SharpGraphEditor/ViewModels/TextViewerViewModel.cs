@@ -17,7 +17,7 @@ namespace SharpGraphEditor.ViewModels
         public TextViewerViewModel(string text, bool canCopy, bool canCancel, bool isReadOnly)
         { 
             Text = text;
-            CanCopy = CanCopy;
+            CanCopy = canCopy;
             CanCancel = canCancel;
             IsReadOnly = isReadOnly;
         }
