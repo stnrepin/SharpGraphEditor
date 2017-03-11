@@ -305,34 +305,37 @@ namespace SharpGraphEditor.ViewModels
 
         public void RunAlgorithm(IAlgorithm algorithm)
         {
-            var param = new AlgorithmParameter()
+            if (CheckGraphForClearing())
             {
-                Output = Terminal,
-                MaxElementX = MaxElementX,
-                MaxElementY = MaxElementY,
-                MinElementX = MinElementX,
-                MinElementY = MinElementY
-            };
+                var param = new AlgorithmParameter()
+                {
+                    Output = Terminal,
+                    MaxElementX = MaxElementX,
+                    MaxElementY = MaxElementY,
+                    MinElementX = MinElementX,
+                    MinElementY = MinElementY
+                };
 
-            var a = new Helpers.AsyncOperation(() =>
-            {
-                IsUnlock = false;
-                Terminal?.WriteLine($"{algorithm.Name} starting...");
-                algorithm?.Run(Document, param);
-            },
-            () =>
-            {
-                Terminal?.WriteLine("Algorithm finished successfully.\n");
-                IsUnlock = true;
-                EllipseVerticesPositionIfNeed();
-            },
-            (e) =>
-            {
-                Terminal?.WriteLine("During algorithm working an error occured:");
-                Terminal?.WriteLine($"  {e.Message}\n");
-                IsUnlock = true;
-            });
-            a.ExecuteAsync();
+                var a = new Helpers.AsyncOperation(() =>
+                {
+                    IsUnlock = false;
+                    Terminal?.WriteLine($"{algorithm.Name} starting...");
+                    algorithm?.Run(Document, param);
+                },
+                () =>
+                {
+                    Terminal?.WriteLine("Algorithm finished successfully.\n");
+                    IsUnlock = true;
+                    EllipseVerticesPositionIfNeed();
+                },
+                (e) =>
+                {
+                    Terminal?.WriteLine("During algorithm working an error occured:");
+                    Terminal?.WriteLine($"  {e.Message}\n");
+                    IsUnlock = true;
+                });
+                a.ExecuteAsync();
+            }
         }
 
         public void ChangeOutputVisibility(bool value)
