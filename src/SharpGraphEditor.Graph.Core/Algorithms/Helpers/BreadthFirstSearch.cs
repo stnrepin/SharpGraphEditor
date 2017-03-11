@@ -19,6 +19,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms.Helpers
         public Action<IVertex> ProcessVertexEarly { get; set; }
         public Action<IVertex, IVertex> ProcessEdge { get; set; }
         public Action<IVertex> ProcessVertexLate { get; set; }
+        public Action<IVertex, IVertex> ProcessChild { get; set; }
 
         public BreadthFirstSearch(IGraph graph)
         {
@@ -59,6 +60,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms.Helpers
                     }
                     if (!_discovered[y.Index - 1])
                     {
+                        ProcessChild?.Invoke(v, y);
                         queue.Enqueue(y);
                         _discovered[y.Index - 1] = true;
                         _parent[y.Index - 1] = v;

@@ -118,7 +118,7 @@ namespace SharpGraphEditor.ViewModels
                         _repository.LoadFromFile(Document, fileName, dialog.SourceType);
                         Title = ProjectName + $" - {fileName}";
 
-                        EllipseVerticesPosition();
+                        EllipseVerticesPositionIfNeed();
                         IsModified = false;
                     }
                 }
@@ -144,7 +144,7 @@ namespace SharpGraphEditor.ViewModels
                         if (textViewerResult.HasValue && textViewerResult.Value)
                         {
                             _repository.LoadFromText(Document, textViewer.Text, dialog.SourceType);
-                            EllipseVerticesPosition();
+                            EllipseVerticesPositionIfNeed();
                             IsModified = true;
                             Title = ProjectName;
                         }
@@ -324,6 +324,7 @@ namespace SharpGraphEditor.ViewModels
             {
                 Terminal?.WriteLine("Algorithm finished successfully.\n");
                 IsUnlock = true;
+                EllipseVerticesPositionIfNeed();
             },
             (e) =>
             {
@@ -495,7 +496,7 @@ namespace SharpGraphEditor.ViewModels
             return true;
         }
 
-        private void EllipseVerticesPosition()
+        private void EllipseVerticesPositionIfNeed()
         {
             if (Document.Vertices.All(x => !x.HasPosition))
             {
