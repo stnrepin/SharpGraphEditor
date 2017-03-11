@@ -28,6 +28,11 @@
                 <MenuItem Header="Remove" cal:Message.Attach="RemoveElement($dataContext)" />
             </ContextMenu>
 
+            <Style x:Key="OutputHeaderButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="White" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+            
             <ContextMenu x:Key="EdgeContextMenu"
                          cal:Action.TargetWithoutContext="{Binding Path=PlacementTarget.Tag,
                               RelativeSource={RelativeSource Self}}">
@@ -142,7 +147,7 @@
                     BorderBrush="Black"
                     BorderThickness="1">
                 <ListBox x:Name="ListBox"
-                         MinWidth="200" 
+                         MinWidth="150" 
                          ItemsSource="{Binding Document.ObservableVertices}"
                          SelectionMode="Single"
                          IsEnabled="{Binding IsUnlock}"
@@ -187,25 +192,31 @@
             <Border BorderBrush="Black"
                     BorderThickness="1"
                     Margin="5"
-                    Visibility="{Binding IsOutputHide, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Visibility="{Binding Visibility, ElementName=OutputTerminal}"
                     DockPanel.Dock="Bottom">
                 <StackPanel>
                     <StackPanel IsEnabled="{Binding IsUnlock}" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Margin="5" Height="Auto" Width="22" cal:Message.Attach="[Event Click] = [Action ClearTerminalText]" >
+                        <Button Margin="5" Height="18" Width="18" Style="{StaticResource OutputHeaderButtonStyle}" 
+                                cal:Message.Attach="[Event Click] = [Action ClearTerminalText]">
                             <Button.Content>
-                                <Path Fill="Black" Stretch="Fill" Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                                <Path Fill="Black" Stretch="Uniform"
+                                      Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                             </Button.Content>
                         </Button>
-                        <Button Margin="0, 5" Height="Auto" Width="22" cal:Message.Attach="[Event Click] = [Action ChangeOutputVisibility('true')]">
+                        <Button Margin="0, 5, 5, 5" Height="18" Width="18" Style="{StaticResource OutputHeaderButtonStyle}" 
+                                cal:Message.Attach="[Event Click] = [Action ChangeOutputVisibility('true')]">
                             <Button.Content>
-                                <Path Fill="Black" Stretch="Fill" Data="M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M19,19H5V5H19V19M17,8.4L13.4,12L17,15.6L15.6,17L12,13.4L8.4,17L7,15.6L10.6,12L7,8.4L8.4,7L12,10.6L15.6,7L17,8.4Z" />
+                                <Path Fill="Black" Stretch="Uniform" Height="15"
+                                      Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z " />
                             </Button.Content>
                         </Button>
                     </StackPanel>
                     
                     <controls:Terminal x:Name="OutputTerminal" 
                                        Focusable="False"
-                                       Height="180" />
+                                       ShowOnWrite="True"
+                                       Height="100"
+                                       Visibility="{Binding IsOutputHide, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}"/>
                 </StackPanel>
             </Border>
 

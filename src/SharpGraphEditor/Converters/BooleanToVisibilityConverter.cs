@@ -22,7 +22,15 @@ namespace SharpGraphEditor.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException();
+            if (parameter == null || parameter.ToString() == "0")
+            {
+                return ((Visibility)value == Visibility.Collapsed) ? true : false;
+            }
+            else if (parameter.ToString() == "1")
+            {
+                return ((Visibility)value) == Visibility.Visible ? true : false;
+            }
+            throw new ArgumentException("invalid parameter of BooleanToVisibilityConverter");
         }
     }
 }
