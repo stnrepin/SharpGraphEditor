@@ -130,9 +130,11 @@ namespace SharpGraphEditor.Models
             if (element is IVertex)
             {
                 var vertex = element as IVertex;
+
                 Execute.OnUIThread(() => ObservableVertices.Remove(vertex));
-                ObservableEdges.Where(x => x.Source == vertex || x.Target == vertex).ToList()
-                    .ForEach(x => ObservableEdges.Remove(x));
+                ObservableEdges.Where(x => x.Source == vertex || x.Target == vertex)
+                               .ToList()
+                               .ForEach(x => ObservableEdges.Remove(x));
                 OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             }
             else if (element is IEdge)

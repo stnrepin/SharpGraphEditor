@@ -275,7 +275,6 @@ namespace SharpGraphEditor.ViewModels
             else if (IsRemoveElementModeOn)
             {
                 RemoveElement(element);
-                IsModified = true;
             }
             SelectedElement = null;
         }
@@ -287,20 +286,11 @@ namespace SharpGraphEditor.ViewModels
                 return;
             }
 
-            if (element == NewEdge)
-            {
-                Document.Remove(NewEdge?.Target);
-                Document.Remove(NewEdge);
-                NewEdge = null;
-            }
-            else
-            {
-                Document.Remove(element);
-            }
+            Document.Remove(NewEdge?.Target);
+            Document.Remove(NewEdge);
+            NewEdge = null;
 
-            if (NewEdge != null)
-                RemoveElement(NewEdge);
-
+            Document.Remove(element);
         }
 
         public void ChangeEdgeDirection(Edge edge)
@@ -476,7 +466,7 @@ namespace SharpGraphEditor.ViewModels
             set
             {
                 _isRemoveElementModeOn = value;
-                Document.Remove(SelectedElement);
+                RemoveElement(SelectedElement);
                 OnModeChanged();
                 NotifyOfPropertyChange(() => IsRemoveElementModeOn);
             }
