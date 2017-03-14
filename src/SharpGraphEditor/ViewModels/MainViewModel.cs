@@ -303,9 +303,14 @@ namespace SharpGraphEditor.ViewModels
             Document.IsDirected = isDirected;
         }
 
-        public void RunAlgorithm(IAlgorithm algorithm)
+        public void RunAlgorithm(IAlgorithm algolithm)
         {
-            if (CheckGraphForClearing())
+            RunAlgorithm(algolithm, true);
+        }
+
+        public void RunAlgorithm(IAlgorithm algorithm, bool checkGraphForClearing)
+        {
+            if (!checkGraphForClearing || CheckGraphForClearing())
             {
                 var param = new AlgorithmParameter()
                 {
@@ -508,7 +513,7 @@ namespace SharpGraphEditor.ViewModels
                 {
                     throw new ArgumentNullException("Cant find Ellipse layouter algorithm");
                 }
-                RunAlgorithm(alg);
+                RunAlgorithm(alg, false);
             }
         }
 
