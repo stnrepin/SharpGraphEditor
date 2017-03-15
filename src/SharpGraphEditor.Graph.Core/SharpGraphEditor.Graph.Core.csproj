@@ -44,8 +44,10 @@
     <Compile Include="Algorithms\AlgorithmParameter.cs" />
     <Compile Include="Algorithms\AlgorithmsManager.cs" />
     <Compile Include="Algorithms\BreadthFirstSearchAlgoritm.cs" />
+    <Compile Include="Algorithms\DepthFirstSearchAlgorithm.cs" />
     <Compile Include="Algorithms\EllipseLayouterAlgorithm.cs" />
     <Compile Include="Algorithms\Helpers\BreadthFirstSearch.cs" />
+    <Compile Include="Algorithms\Helpers\DepthFirstSearch.cs" />
     <Compile Include="Algorithms\IAlgorithm.cs" />
     <Compile Include="Algorithms\RandomLayouterAlgorithm.cs" />
     <Compile Include="Algorithms\TestAlgorithm.cs" />
