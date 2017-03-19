@@ -27,5 +27,15 @@ namespace SharpGraphEditor.Graph.Core.Extentions
                 action(el);
             }
         }
+
+        public static void For<T>(this IEnumerable<T> enumerable, Action<T, int> action)
+        {
+            int i = 0;
+            foreach(var e in enumerable)
+            {
+                action(e, i);
+                i++;
+            }
+        }
     }
 }

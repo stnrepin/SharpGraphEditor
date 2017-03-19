@@ -30,6 +30,8 @@ namespace SharpGraphEditor.Models
     {
         // Fields
         //
+        private UndoRedoManager _undoRedoManager;
+
         public ObservableCollection<IVertex> ObservableVertices { get; private set; }
         public ObservableCollection<IEdge> ObservableEdges { get; private set; }
 
@@ -42,17 +44,18 @@ namespace SharpGraphEditor.Models
         //
         public GraphDocument()
         {
+            _undoRedoManager = new UndoRedoManager();
+
             ObservableVertices = new ObservableCollection<IVertex>();
             ObservableEdges = new ObservableCollection<IEdge>();
         }
-
 
         // Public properties 
         //
         public bool IsDirected
         {
             get
-            { 
+            {
                 if (ObservableEdges.Count == 0)
                 {
                     return false;
@@ -61,13 +64,28 @@ namespace SharpGraphEditor.Models
             }
             set
             {
-                ObservableEdges.ForEach(x => x.IsDirected = value);
+                var edgesDirectionsStates = ObservableEdges.Select(x => x.IsDirected).ToArray();
+                System.Action undo = () =>
+                {
+                    ObservableEdges.For((x, i) => x.IsDirected = edgesDirectionsStates[i]);
+                };
+                System.Action redo = () =>
+                {
+                    ObservableEdges.ForEach(x => x.IsDirected = value);
+                };
+                _undoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
                 OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             }
         }
 
         // Public methods
         //
+        public IVertex AddVertex(IVertex v)
+        {
+            Execute.OnUIThread(() => ObservableVertices.Add(v));
+            return v;
+        }
+
         public IVertex AddVertex(int index)
         {
             var v = AddVertex(0, 0, index);
@@ -87,10 +105,27 @@ namespace SharpGraphEditor.Models
             {
                 return existingVertex;
             }
+
             var newVertex = new Vertex(x, y, index);
-            Execute.OnUIThread(() => ObservableVertices.Add(newVertex));
+
+            System.Action redo = () =>
+            {
+                Execute.OnUIThread(() => ObservableVertices.Add(newVertex));
+            };
+            System.Action undo = () =>
+            {
+                Remove(newVertex, false);
+            };
+
+            _undoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
             OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             return newVertex;
+        }
+
+        public IEdge AddEdge(IEdge e)
+        {
+            Execute.OnUIThread(() => ObservableEdges.Add(e));
+            return e;
         }
 
         public IEdge AddEdge(IVertex source, IVertex target, bool makeNotDirectedIfreversedExisted = false)
@@ -118,7 +153,15 @@ namespace SharpGraphEditor.Models
                 }
 
                 var newEdge = new Edge(source, target, isDirected);
-                Execute.OnUIThread(() => ObservableEdges.Add(newEdge));
+                System.Action redo = () =>
+                {
+                    Execute.OnUIThread(() => ObservableEdges.Add(newEdge));
+                };
+                System.Action undo = () =>
+                {
+                    Remove(newEdge, false);
+                };
+                _undoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
                 OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
                 return newEdge;
             }
@@ -127,19 +170,61 @@ namespace SharpGraphEditor.Models
 
         public void Remove(IGraphElement element)
         {
+            Remove(element, true);
+        }
+
+        public void Remove(IGraphElement element, bool useUndoRedo = true)
+        {
             if (element is IVertex)
             {
                 var vertex = element as IVertex;
+                List<IEdge> edges = null;
 
-                Execute.OnUIThread(() => ObservableVertices.Remove(vertex));
-                ObservableEdges.Where(x => x.Source == vertex || x.Target == vertex)
-                               .ToList()
-                               .ForEach(x => ObservableEdges.Remove(x));
+                System.Action redo = () =>
+                {
+                    Execute.OnUIThread(() => ObservableVertices.Remove(vertex));
+                    edges = ObservableEdges.Where(x => x.Source == vertex || x.Target == vertex)
+                                   .ToList();
+                    edges.ForEach(x => ObservableEdges.Remove(x));
+                };
+                System.Action undo = () =>
+                {
+                    AddVertex(vertex);
+                    edges.ForEach(x => AddEdge(x));
+                };
+
+                if (useUndoRedo)
+                {
+                    _undoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+                }
+                else
+                {
+                    redo();
+                }
+
                 OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             }
             else if (element is IEdge)
             {
-                Execute.OnUIThread(() => ObservableEdges.Remove(element as IEdge));
+                var edge = element as IEdge;
+                System.Action redo = () =>
+                {
+                    Execute.OnUIThread(() => ObservableEdges.Remove(edge));
+                };
+                System.Action undo = () =>
+                {
+                    AddEdge(edge);
+                };
+
+                if (useUndoRedo)
+                {
+                    _undoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+                }
+                else
+                {
+                    redo();
+                }
+
                 OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             }
         }
@@ -159,6 +244,26 @@ namespace SharpGraphEditor.Models
                 IsDirected = IsDirected,
                 IsNotifying = IsNotifying,
             };
+        }
+
+        public void Redo()
+        {
+            _undoRedoManager.Redo();
+        }
+
+        public void Undo()
+        {
+            _undoRedoManager.Undo();
+        }
+
+        public void RemoveLastUndoRedoOperation()
+        {
+            _undoRedoManager.RemoveLast();
+        }
+
+        public void ClearUndoRedoCache()
+        {
+            _undoRedoManager.Clear();
         }
 
         public Dictionary<IVertex, IEnumerable<IVertex>> ToAdjList()

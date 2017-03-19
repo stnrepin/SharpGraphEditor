@@ -85,6 +85,9 @@
     <Compile Include="Models\Edge.cs" />
     <Compile Include="Models\GraphDocument.cs" />
     <Compile Include="Models\GraphRepository.cs" />
+    <Compile Include="Models\IOperation.cs" />
+    <Compile Include="Models\SimpleOperation.cs" />
+    <Compile Include="Models\UndoRedoManager.cs" />
     <Compile Include="Models\Vertex.cs" />
     <Compile Include="Services\IDialogsPresenter.cs" />
     <Compile Include="Services\WindowDialogsPresenter.cs" />

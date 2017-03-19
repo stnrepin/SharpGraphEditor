@@ -77,6 +77,11 @@
                 <MenuItem Header="Exit" cal:Message.Attach="Exit" />
             </MenuItem>
 
+            <MenuItem Header="Edit">
+                <MenuItem Header="Undo" cal:Message.Attach="Undo" />
+                <MenuItem Header="Redo" cal:Message.Attach="Redo" />
+            </MenuItem>
+            
             <MenuItem Header="View">
                 <MenuItem Header="Output" cal:Message.Attach="[Event Click] = [Action ChangeOutputVisibility('false')]" />
             </MenuItem>

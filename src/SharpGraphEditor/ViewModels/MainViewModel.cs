@@ -74,7 +74,7 @@ namespace SharpGraphEditor.ViewModels
             IsUnlock = true;
             IsCursorModeOn = true;
             SelectedElement = null;
-            NewEdge = null;
+            RemoveElement(NewEdge);
             IsModified = false;
         }
 
@@ -229,6 +229,16 @@ namespace SharpGraphEditor.ViewModels
             {
                 ShowError(e);
             }
+        }
+
+        public void Redo()
+        {
+            Document.Redo();
+        }
+
+        public void Undo()
+        {
+            Document.Undo();
         }
 
         public void CanvasClick(double mousePositionX, double mousePositionY, IGraphElement element)
