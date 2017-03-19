@@ -16,6 +16,11 @@ namespace SharpGraphEditor.Models
         public bool IsAdding { get; set; }
         public bool HasPosition { get; set; }
 
+        public Vertex (double x, double y) : this(x, y, -1)
+        {
+            Title = "";
+        }
+
         public Vertex(double x, double y, int index)
         {
             X = x;
@@ -37,6 +42,7 @@ namespace SharpGraphEditor.Models
                 NotifyOfPropertyChange(() => X);
             }
         }
+
         public double Y
         {
             get { return _y; }

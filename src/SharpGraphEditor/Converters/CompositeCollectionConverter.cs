@@ -19,7 +19,10 @@ namespace SharpGraphEditor.Converters
                 }
                 else
                 {
-                    compositeCollection.Add(value);
+                    if (value != null)
+                    {
+                        compositeCollection.Add(value);
+                    }
                 }
             }
 

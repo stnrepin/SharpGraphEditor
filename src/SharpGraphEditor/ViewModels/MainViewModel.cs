@@ -74,7 +74,7 @@ namespace SharpGraphEditor.ViewModels
             IsUnlock = true;
             IsCursorModeOn = true;
             SelectedElement = null;
-            RemoveElement(NewEdge);
+            NewEdge = null;
             IsModified = false;
         }
 
@@ -255,10 +255,8 @@ namespace SharpGraphEditor.ViewModels
                     if (element is Vertex)
                     {
                         var sourceVertex = element as IVertex;
-                        var newVertex = Document.AddVertex(0, 0);
-                        newVertex.IsAdding = true;
                         SelectedElement = sourceVertex;
-                        NewEdge = Document.AddEdge(sourceVertex, newVertex);
+                        NewEdge = new Edge(sourceVertex, new Vertex(mousePositionX, mousePositionY) { IsAdding = true }, false) { IsAdding = true };
                         return;
                     }
                     else
@@ -275,11 +273,11 @@ namespace SharpGraphEditor.ViewModels
                     else
                     {
                         var sourceVertex = NewEdge.Source;
-                        RemoveElement(NewEdge);
+                        NewEdge = null;
                         var targetVertex = Document.AddVertex(mousePositionX, mousePositionY);
                         Document.AddEdge(sourceVertex, targetVertex);
                     }
-                    RemoveElement(NewEdge);
+                    NewEdge = null;
                 }
             }
             else if (IsRemoveElementModeOn)
@@ -296,10 +294,7 @@ namespace SharpGraphEditor.ViewModels
                 return;
             }
 
-            Document.Remove(NewEdge?.Target);
-            Document.Remove(NewEdge);
             NewEdge = null;
-
             Document.Remove(element);
         }
 
@@ -402,8 +397,6 @@ namespace SharpGraphEditor.ViewModels
             set
             {
                 _newEdge = value;
-                if (_newEdge != null)
-                    _newEdge.IsAdding = true;
                 NotifyOfPropertyChange(() => NewEdge);
             }
         }

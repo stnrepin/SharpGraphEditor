@@ -101,7 +101,6 @@ namespace SharpGraphEditor.Controls
             set { base.SetValue(EndPositionOffsetProperty, value); }
         }
 
-        [TypeConverter(typeof(LengthConverter))]
         public bool IsDirected
         {
             get { return (bool)base.GetValue(IsDirectedProperty); }

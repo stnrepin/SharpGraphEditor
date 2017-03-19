@@ -259,6 +259,8 @@
                         <ItemsControl.ItemsSource>
                             <MultiBinding Converter="{StaticResource CompositeCollectionConverter}">
                                 <Binding Path="Document.ObservableEdges" />
+                                <Binding Path="NewEdge" />
+                                <Binding Path="NewEdge.Target" FallbackValue="{x:Null}" />
                                 <Binding Path="Document.ObservableVertices" />
                             </MultiBinding>
                         </ItemsControl.ItemsSource>

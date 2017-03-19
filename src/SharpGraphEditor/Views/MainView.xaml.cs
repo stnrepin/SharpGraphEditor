@@ -46,10 +46,7 @@ namespace SharpGraphEditor.Views
 
         private void GraphControl_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (Vm.NewEdge != null)
-            {
-                Vm.RemoveElement(Vm.NewEdge);
-            }
+            Vm.NewEdge = null;
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
