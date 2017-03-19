@@ -120,6 +120,7 @@ namespace SharpGraphEditor.ViewModels
 
                         EllipseVerticesPositionIfNeed();
                         IsModified = false;
+                        Document.ClearUndoRedoCache();
                     }
                 }
                 catch (Exception e)
@@ -148,6 +149,7 @@ namespace SharpGraphEditor.ViewModels
                             IsModified = true;
                             Title = ProjectName;
                         }
+                        Document.ClearUndoRedoCache();
                     }
                 }
                 catch (Exception e)

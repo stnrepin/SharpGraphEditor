@@ -233,6 +233,7 @@ namespace SharpGraphEditor.Models
         {
             Execute.OnUIThread(() => ObservableEdges.Clear());
             Execute.OnUIThread(() => ObservableVertices.Clear());
+            ClearUndoRedoCache();
         }
 
         public Object Clone()
