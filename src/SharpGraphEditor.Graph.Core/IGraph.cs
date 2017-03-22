@@ -22,6 +22,8 @@ namespace SharpGraphEditor.Graph.Core
 
         void Remove(IGraphElement element);
 
+        void ChangeColor(IVertex vertex, VertexColor newColor);
+
         void Clear();
 
         Dictionary<IVertex, IEnumerable<IVertex>> ToAdjList();

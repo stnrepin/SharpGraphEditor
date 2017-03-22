@@ -15,7 +15,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
 
         public void Run(IGraph graph, AlgorithmParameter p)
         {
-            throw new ArgumentException("Some error!!!");
+            graph.ChangeColor(graph.Vertices.ElementAt(1), VertexColor.Gray);
         }
     }
 }

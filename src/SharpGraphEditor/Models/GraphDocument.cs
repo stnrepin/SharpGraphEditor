@@ -229,6 +229,21 @@ namespace SharpGraphEditor.Models
             }
         }
 
+        public void ChangeColor(IVertex vertex, VertexColor newColor)
+        {
+            var oldColor = vertex.Color;
+            System.Action redo = () =>
+            {
+                vertex.Color = newColor;
+            };
+            System.Action undo = () =>
+            {
+                vertex.Color = oldColor;
+            };
+
+            _undoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+        }
+
         public void Clear()
         {
             Execute.OnUIThread(() => ObservableEdges.Clear());

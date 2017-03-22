@@ -12,6 +12,7 @@ namespace SharpGraphEditor.Models
         private double _y;
         private int _index;
         private string _title;
+        private VertexColor _color;
 
         public bool IsAdding { get; set; }
         public bool HasPosition { get; set; }
@@ -31,6 +32,7 @@ namespace SharpGraphEditor.Models
 
             IsAdding = false;
             HasPosition = true;
+            Color = VertexColor.White;
         }
 
         public double X
@@ -70,6 +72,16 @@ namespace SharpGraphEditor.Models
             {
                 _title = value;
                 NotifyOfPropertyChange(() => Title);
+            }
+        }
+
+        public VertexColor Color
+        {
+            get { return _color; }
+            set
+            {
+                _color = value;
+                NotifyOfPropertyChange(() => Color);
             }
         }
 

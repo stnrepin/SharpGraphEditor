@@ -81,6 +81,7 @@
     <Compile Include="Converters\CompositeCollectionConverter.cs" />
     <Compile Include="Converters\CursorModeEnumToBooleanConverter.cs" />
     <Compile Include="Converters\IsEquals.cs" />
+    <Compile Include="Converters\VertexColorToColorConverter.cs" />
     <Compile Include="Helpers\AsyncOperation.cs" />
     <Compile Include="Helpers\BindingErrorTraceListener.cs" />
     <Compile Include="Models\CursorModeManager.cs" />
