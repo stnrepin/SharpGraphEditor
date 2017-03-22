@@ -57,7 +57,10 @@ namespace SharpGraphEditor.Views
 
         private void GraphElement_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            if (!Vm.IsCursorModeOn) return;
+            if (Vm.CurrentCursorMode != Models.CursorMode.Default)
+            {
+                return;
+            }
 
             var thumb = sender as Thumb;
             if (thumb == null)
@@ -103,8 +106,8 @@ namespace SharpGraphEditor.Views
         private void GraphControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             var size = VisualTreeHelper.GetDescendantBounds(GraphControl);
-            Vm.MaxElementX = size.Width;
-            Vm.MaxElementY = size.Height;
+            Vm.AlgorithmParameter.MaxElementX = size.Width;
+            Vm.AlgorithmParameter.MaxElementY = size.Height;
         }
 
         private IGraphElement GetGraphElementUnderMouse()

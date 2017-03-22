@@ -43,7 +43,7 @@
                 </MenuItem>
                 <MenuItem Header="Remove" cal:Message.Attach="RemoveElement($dataContext)" />
             </ContextMenu>
-
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/MainViewStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -111,28 +111,31 @@
               IsEnabled="{Binding IsUnlock}">
             <StackPanel Orientation="Horizontal">
                 <RadioButton GroupName="Modes"
-                         ToolTip="Cursor"
-                         HorizontalAlignment="Left"
-                         IsChecked="{Binding IsCursorModeOn, Mode=TwoWay}"
-                         Style="{StaticResource ModeCheckBoxStyle}"
-                         Tag="F1 M 29,18L 52.25,41.1667L 43.0865,42.6585L 50.817,56.6949L 43.827,60.4115L 36,46.25L 29,53.25L 29,18 Z "
-                         ToolTipService.ToolTip="Cursor mode" />
+                             ToolTip="Default"
+                             HorizontalAlignment="Left"
+                             IsChecked="{Binding CurrentCursorMode, Mode=TwoWay, Converter={StaticResource CursorModeEnumToBooleanConverter}, ConverterParameter='Default'}"
+                             Style="{StaticResource ModeCheckBoxStyle}"
+                             Tag="F1 M 29,18L 52.25,41.1667L 43.0865,42.6585L 50.817,56.6949L 43.827,60.4115L 36,46.25L 29,53.25L 29,18 Z "
+                             ToolTipService.ToolTip="Cursor mode" 
+                              />
 
                 <RadioButton GroupName="Modes"
-                         ToolTip="Add element"
-                         HorizontalAlignment="Left" 
-                         IsChecked="{Binding IsAddElementModeOn, Mode=TwoWay}"
-                         Style="{StaticResource ModeCheckBoxStyle}"
-                         Tag="F1 M 35,19L 41,19L 41,35L 57,35L 57,41L 41,41L 41,57L 35,57L 35,41L 19,41L 19,35L 35,35L 35,19 Z "
-                         ToolTipService.ToolTip="Add vertex/edge mode" />
+                             ToolTip="Add"
+                             HorizontalAlignment="Left" 
+                             IsChecked="{Binding CurrentCursorMode, Mode=TwoWay, Converter={StaticResource CursorModeEnumToBooleanConverter}, ConverterParameter='Add'}"
+                             Style="{StaticResource ModeCheckBoxStyle}"
+                             Tag="F1 M 35,19L 41,19L 41,35L 57,35L 57,41L 41,41L 41,57L 35,57L 35,41L 19,41L 19,35L 35,35L 35,19 Z "
+                             ToolTipService.ToolTip="Add vertex/edge mode" 
+                              />
 
                 <RadioButton GroupName="Modes"
-                         ToolTip="Remove element"
-                         HorizontalAlignment="Left"
-                         IsChecked="{Binding IsRemoveElementModeOn, Mode=TwoWay}"
-                         Style="{StaticResource ModeCheckBoxStyle}"
-                         Tag="F1 M 19,38L 57,38L 57,44L 19,44L 19,38 Z "
-                         ToolTipService.ToolTip="Remove vertex/edge mode" />
+                             ToolTip="Remove"
+                             HorizontalAlignment="Left"
+                             IsChecked="{Binding CurrentCursorMode, Mode=TwoWay, Converter={StaticResource CursorModeEnumToBooleanConverter}, ConverterParameter='Remove'}"
+                             Style="{StaticResource ModeCheckBoxStyle}"
+                             Tag="F1 M 19,38L 57,38L 57,44L 19,44L 19,38 Z "
+                             ToolTipService.ToolTip="Remove vertex/edge mode"
+                              />
             </StackPanel>
 
 

@@ -79,9 +79,11 @@
     <Compile Include="Controls\Terminal.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\CompositeCollectionConverter.cs" />
+    <Compile Include="Converters\CursorModeEnumToBooleanConverter.cs" />
     <Compile Include="Converters\IsEquals.cs" />
     <Compile Include="Helpers\AsyncOperation.cs" />
     <Compile Include="Helpers\BindingErrorTraceListener.cs" />
+    <Compile Include="Models\CursorModeManager.cs" />
     <Compile Include="Models\Edge.cs" />
     <Compile Include="Models\GraphDocument.cs" />
     <Compile Include="Models\GraphRepository.cs" />
@@ -89,6 +91,7 @@
     <Compile Include="Models\SimpleOperation.cs" />
     <Compile Include="Models\UndoRedoManager.cs" />
     <Compile Include="Models\Vertex.cs" />
+    <Compile Include="Models\ZoomManager.cs" />
     <Compile Include="Services\IDialogsPresenter.cs" />
     <Compile Include="Services\WindowDialogsPresenter.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />

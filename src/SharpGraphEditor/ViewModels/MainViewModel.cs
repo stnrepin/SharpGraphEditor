@@ -24,29 +24,23 @@ namespace SharpGraphEditor.ViewModels
         private GraphDocument _document;
         private GraphRepository _repository;
         private IGraphElement _selectedElement;
+        private CursorModeManager _cursorModeManager;
+        private ZoomManager _zoomManager;
         private IEdge _newEdge;
 
         private string _title;
-        private bool _isAddVertexModeOn;
-        private bool _isRemoveElementModeOn;
-        private bool _isCursorModeOn;
-        private double _currentZoom;
         private bool _isCanvasUnlock;
         private bool _isOutputHide;
 
         public bool IsModified { get; private set; }
 
-        public double MinElementX { get; set; }
-        public double MinElementY { get; set; }
-        public double MaxElementX { get; set; }
-        public double MaxElementY { get; set; }
+        public AlgorithmParameter AlgorithmParameter { get; set; }
 
         public IWindowManager WindowManager { get; }
         public IDialogsPresenter DialogPresenter { get; }
 
         public ITerminal Terminal { get; set; }
 
-        public double MaxZoom { get; set; } = 2; // Zoom of GraphControl will be 0 if this initializing will be in constructor.
         public List<IAlgorithm> Algorithms { get; set; }
 
         // Constructors
@@ -54,15 +48,18 @@ namespace SharpGraphEditor.ViewModels
         public MainViewModel(IWindowManager windowManager, IDialogsPresenter dialogsPresenter)
         {
             Document = new GraphDocument();
-            _repository = new GraphRepository();
+            AlgorithmParameter = new AlgorithmParameter();
             Algorithms = AlgorithmManager.Instance.Algorithms;
+
+            _repository = new GraphRepository();
+            _cursorModeManager = new CursorModeManager();
+            _zoomManager = new ZoomManager();
 
             WindowManager = windowManager;
             DialogPresenter = dialogsPresenter;
 
-            CurrentZoom = 1;
-            MinElementX = 30;
-            MinElementY = 30;
+            AlgorithmParameter.MinElementX = 30;
+            AlgorithmParameter.MinElementY = 30;
 
             Document.GraphDocumentChanged += (_, __) => { IsModified = true; };
             Init();
@@ -72,7 +69,7 @@ namespace SharpGraphEditor.ViewModels
         {
             Title = ProjectName;
             IsUnlock = true;
-            IsCursorModeOn = true;
+            CurrentCursorMode = CursorMode.Default;
             SelectedElement = null;
             NewEdge = null;
             IsModified = false;
@@ -98,6 +95,36 @@ namespace SharpGraphEditor.ViewModels
             Terminal?.WriteLine(ProjectName);
             Terminal?.WriteLine("(c) Stepan Repin, 2017");
             Terminal?.WriteLine();
+
+            AlgorithmParameter.Output = Terminal;
+        }
+
+        public void ClearGraph()
+        {
+            if (CheckGraphForClearing())
+            {
+                Document.Clear();
+                Terminal?.Clear();
+                ViewLoaded();
+                Init();
+            }
+        }
+
+        public void Redo()
+        {
+            Document.Redo();
+        }
+
+        public void Undo()
+        {
+            Document.Undo();
+        }
+
+        public void ChangeZoomByPercents(double percents)
+        {
+            _zoomManager.ChangeZoomByPercents(percents);
+            NotifyOfPropertyChange(() => CurrentZoom);
+            NotifyOfPropertyChange(() => CurrentZoomInPercents);
         }
 
         public void LoadGraphFromFile()
@@ -113,7 +140,8 @@ namespace SharpGraphEditor.ViewModels
                         var filter = GetFilterForSourceFileType(dialog.SourceType);
                         var fileName = DialogPresenter.ShowFileOpenDialog(filter);
 
-                        if (String.IsNullOrEmpty(fileName)) return;
+                        if (String.IsNullOrEmpty(fileName))
+                            return;
 
                         _repository.LoadFromFile(Document, fileName, dialog.SourceType);
                         Title = ProjectName + $" - {fileName}";
@@ -159,17 +187,6 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
-        public void ClearGraph()
-        {
-            if (CheckGraphForClearing())
-            {
-                Document.Clear();
-                Terminal?.Clear();
-                ViewLoaded();
-                Init();
-            }
-        }
-
         public void Save()
         {
             if (String.IsNullOrEmpty(_repository.SourceFile))
@@ -201,7 +218,8 @@ namespace SharpGraphEditor.ViewModels
                     var filter = GetFilterForSourceFileType(dialog.SourceType);
                     var fileName = DialogPresenter.ShowFileSaveDialog(filter);
 
-                    if (String.IsNullOrEmpty(fileName)) return;
+                    if (String.IsNullOrEmpty(fileName))
+                        return;
 
                     _repository.SaveToFile(Document, fileName, dialog.SourceType);
                     Title = ProjectName + $" - {fileName}";
@@ -233,24 +251,16 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
-        public void Redo()
-        {
-            Document.Redo();
-        }
-
-        public void Undo()
-        {
-            Document.Undo();
-        }
-
         public void CanvasClick(double mousePositionX, double mousePositionY, IGraphElement element)
         {
-            if (IsCursorModeOn)
+            var mode =_cursorModeManager.Current;
+
+            if (mode == CursorMode.Default)
             {
                 SelectedElement = (element != SelectedElement ? element : null);
                 return;
             }
-            else if (IsAddElementModeOn)
+            else if (mode == CursorMode.Add)
             {
                 if (NewEdge == null)
                 {
@@ -258,7 +268,8 @@ namespace SharpGraphEditor.ViewModels
                     {
                         var sourceVertex = element as IVertex;
                         SelectedElement = sourceVertex;
-                        NewEdge = new Edge(sourceVertex, new Vertex(mousePositionX, mousePositionY) { IsAdding = true }, false) { IsAdding = true };
+                        var targetVertex = new Vertex(mousePositionX, mousePositionY) { IsAdding = true };
+                        NewEdge = new Edge(sourceVertex, targetVertex, false) { IsAdding = true };
                         return;
                     }
                     else
@@ -282,7 +293,7 @@ namespace SharpGraphEditor.ViewModels
                     NewEdge = null;
                 }
             }
-            else if (IsRemoveElementModeOn)
+            else if (mode == CursorMode.Remove)
             {
                 RemoveElement(element);
             }
@@ -319,20 +330,11 @@ namespace SharpGraphEditor.ViewModels
         {
             if (!checkGraphForClearing || CheckGraphForClearing())
             {
-                var param = new AlgorithmParameter()
-                {
-                    Output = Terminal,
-                    MaxElementX = MaxElementX,
-                    MaxElementY = MaxElementY,
-                    MinElementX = MinElementX,
-                    MinElementY = MinElementY
-                };
-
                 var a = new Helpers.AsyncOperation(() =>
                 {
                     IsUnlock = false;
                     Terminal?.WriteLine($"{algorithm.Name} starting...");
-                    algorithm?.Run(Document, param);
+                    algorithm?.Run(Document, AlgorithmParameter);
                 },
                 () =>
                 {
@@ -358,11 +360,6 @@ namespace SharpGraphEditor.ViewModels
         public void ClearTerminalText()
         {
             Terminal?.Clear();
-        }
-
-        public void ChangeZoomByPercents(double percents)
-        {
-            CurrentZoom += percents / 100;
         }
 
         // Properties
@@ -433,57 +430,25 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
-        public double CurrentZoom
+        public CursorMode CurrentCursorMode
         {
-            get { return _currentZoom; }
+            get { return _cursorModeManager.Current; }
             set
             {
-                if (value >= (1 / MaxZoom) && value <= MaxZoom)
-                {
-                    _currentZoom = Math.Round(value, 2);
-                    NotifyOfPropertyChange(() => CurrentZoom);
-                    NotifyOfPropertyChange(() => CurrentZoomInPercents);
-                }
+                _cursorModeManager.Change(value);
+                OnCursorModeChanged();
+                NotifyOfPropertyChange(() => CurrentCursorMode);
             }
         }
 
         public int CurrentZoomInPercents
         {
-            get { return (int)(_currentZoom * 100); }
+            get { return _zoomManager.CurrentZoomInPercents; }
         }
 
-        public bool IsCursorModeOn
+        public double CurrentZoom
         {
-            get { return _isCursorModeOn; }
-            set
-            {
-                _isCursorModeOn = value;
-                OnModeChanged();
-                NotifyOfPropertyChange(() => IsCursorModeOn);
-            }
-        }
-
-        public bool IsAddElementModeOn
-        {
-            get { return _isAddVertexModeOn; }
-            set
-            {
-                _isAddVertexModeOn = value;
-                OnModeChanged();
-                NotifyOfPropertyChange(() => IsAddElementModeOn);
-            }
-        }
-
-        public bool IsRemoveElementModeOn
-        {
-            get { return _isRemoveElementModeOn; }
-            set
-            {
-                _isRemoveElementModeOn = value;
-                RemoveElement(SelectedElement);
-                OnModeChanged();
-                NotifyOfPropertyChange(() => IsRemoveElementModeOn);
-            }
+            get { return _zoomManager.CurrentZoom; }
         }
 
         // Methods
@@ -522,7 +487,7 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
-        private void OnModeChanged()
+        private void OnCursorModeChanged()
         {
             SelectedElement = null;
         }

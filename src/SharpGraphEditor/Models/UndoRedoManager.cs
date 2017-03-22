@@ -27,7 +27,6 @@ namespace SharpGraphEditor.Models
             }
 
             _operations.ElementAtOrDefault(++_index)?.Redo();
-            System.Diagnostics.Debug.WriteLine("REDO: " + _index.ToString() + " " + _operations.Count);
         }
 
         public void Undo()
@@ -39,7 +38,6 @@ namespace SharpGraphEditor.Models
 
             _operations.ElementAtOrDefault(_index).Undo();
             _index--;
-            System.Diagnostics.Debug.WriteLine("UNDO: " + _index.ToString() + " " + _operations.Count);
 
         }
 
@@ -54,14 +52,12 @@ namespace SharpGraphEditor.Models
             Add(operation);
             operation.Redo();
             _index++;
-            System.Diagnostics.Debug.WriteLine("ADDOPERATION: " + _index.ToString() + " " + _operations.Count);
         }
 
         public void RemoveLast()
         {
             _operations.RemoveAt(_operations.Count - 1);
             _index--;
-            System.Diagnostics.Debug.WriteLine("REMOVE: " + _index.ToString() + " " + _operations.Count);
         }
 
         public void Clear()
