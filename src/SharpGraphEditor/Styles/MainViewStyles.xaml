@@ -6,6 +6,7 @@
     <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <conv:CursorModeEnumToBooleanConverter x:Key="CursorModeEnumToBooleanConverter" />
     <conv:VertexColorToColorConverter x:Key="VertexColorToColorConverter" />
+    <conv:ContrastColorConverter x:Key="ContrastColorConverter" />
 
     <SolidColorBrush x:Key="SelectionColor" Color="#FF076FCB" />
     <SolidColorBrush x:Key="PanelsBackgroundColor" Color="#FFF5F0F0" />

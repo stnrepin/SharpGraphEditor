@@ -79,6 +79,7 @@
     <Compile Include="Controls\Terminal.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\CompositeCollectionConverter.cs" />
+    <Compile Include="Converters\ContrastColorConverter.cs" />
     <Compile Include="Converters\CursorModeEnumToBooleanConverter.cs" />
     <Compile Include="Converters\IsEquals.cs" />
     <Compile Include="Converters\VertexColorToColorConverter.cs" />

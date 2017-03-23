@@ -22,6 +22,7 @@
             <Grid>
                 <Ellipse x:Name="Ellipse" Stroke="Black" StrokeThickness="2" Fill="{Binding Color, Converter={StaticResource VertexColorToColorConverter}}" Height="30" Width="30" />
                 <TextBlock x:Name="IndexTb" Text="{Binding Index, Mode=OneTime}" IsHitTestVisible="False" 
+                           Foreground="{Binding Fill, ElementName=Ellipse, Converter={StaticResource ContrastColorConverter}}"
                            VerticalAlignment="Center" HorizontalAlignment="Center" />
                 <Ellipse x:Name="BackEllipse" Stroke="Black" StrokeThickness="2" Fill="Transparent" Height="32" Width="32" Opacity="0" />
 
