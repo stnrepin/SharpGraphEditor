@@ -40,6 +40,8 @@ namespace SharpGraphEditor.Models
 
         public event EventHandler<GraphDocumentChangedEventArgs> GraphDocumentChanged;
 
+        public UndoRedoManager UndoRedoManager => _undoRedoManager;
+
         // Constructor
         //
         public GraphDocument()
@@ -248,7 +250,7 @@ namespace SharpGraphEditor.Models
         {
             Execute.OnUIThread(() => ObservableEdges.Clear());
             Execute.OnUIThread(() => ObservableVertices.Clear());
-            ClearUndoRedoCache();
+            _undoRedoManager.Clear();
         }
 
         public Object Clone()
@@ -260,26 +262,6 @@ namespace SharpGraphEditor.Models
                 IsDirected = IsDirected,
                 IsNotifying = IsNotifying,
             };
-        }
-
-        public void Redo()
-        {
-            _undoRedoManager.Redo();
-        }
-
-        public void Undo()
-        {
-            _undoRedoManager.Undo();
-        }
-
-        public void RemoveLastUndoRedoOperation()
-        {
-            _undoRedoManager.RemoveLast();
-        }
-
-        public void ClearUndoRedoCache()
-        {
-            _undoRedoManager.Clear();
         }
 
         public Dictionary<IVertex, IEnumerable<IVertex>> ToAdjList()

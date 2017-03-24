@@ -5,15 +5,15 @@ using System.Text;
 
 namespace SharpGraphEditor.Graph.Core.Algorithms
 {
-    public class AlgorithmManager
+    public class AlgorithmProvider
     {
-        private static readonly AlgorithmManager _instance = new AlgorithmManager();
+        private static readonly AlgorithmProvider _instance = new AlgorithmProvider();
 
         private List<IAlgorithm> _algorithms = new List<IAlgorithm>();
 
         public List<IAlgorithm> Algorithms => (_algorithms);
 
-        public AlgorithmManager()
+        public AlgorithmProvider()
         {
             _algorithms = new List<IAlgorithm>()
             {
@@ -26,7 +26,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
             };
         }
 
-        public static AlgorithmManager Instance
+        public static AlgorithmProvider Instance
         {
             get
             {

@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="Algorithms\AestheticLayouterAlgorithm.cs" />
     <Compile Include="Algorithms\AlgorithmParameter.cs" />
-    <Compile Include="Algorithms\AlgorithmsManager.cs" />
+    <Compile Include="Algorithms\AlgorithmProvider.cs" />
     <Compile Include="Algorithms\BreadthFirstSearchAlgoritm.cs" />
     <Compile Include="Algorithms\DepthFirstSearchAlgorithm.cs" />
     <Compile Include="Algorithms\EllipseLayouterAlgorithm.cs" />

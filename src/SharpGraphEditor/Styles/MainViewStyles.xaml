@@ -7,6 +7,7 @@
     <conv:CursorModeEnumToBooleanConverter x:Key="CursorModeEnumToBooleanConverter" />
     <conv:VertexColorToColorConverter x:Key="VertexColorToColorConverter" />
     <conv:ContrastColorConverter x:Key="ContrastColorConverter" />
+    <conv:InverseConverter x:Key="InverseConverter" />
 
     <SolidColorBrush x:Key="SelectionColor" Color="#FF076FCB" />
     <SolidColorBrush x:Key="PanelsBackgroundColor" Color="#FFF5F0F0" />
@@ -40,9 +41,5 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-
-    <Style x:Key="Vertex">
-        
     </Style>
 </ResourceDictionary>

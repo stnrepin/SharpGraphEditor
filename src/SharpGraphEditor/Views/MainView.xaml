@@ -32,7 +32,29 @@
                 <Setter Property="Background" Value="White" />
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
-            
+
+            <Style x:Key="StylelessButton" TargetType="{x:Type Button}">
+                <Setter Property="Padding" Value="1"/>
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Name="border" BorderBrush="Black" BorderThickness="2" Background="{TemplateBinding Background}">
+                                <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="LightGray" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <ContextMenu x:Key="EdgeContextMenu"
                          cal:Action.TargetWithoutContext="{Binding Path=PlacementTarget.Tag,
                               RelativeSource={RelativeSource Self}}">
@@ -43,7 +65,7 @@
                 </MenuItem>
                 <MenuItem Header="Remove" cal:Message.Attach="RemoveElement($dataContext)" />
             </ContextMenu>
-            
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/MainViewStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -61,7 +83,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Background="White" IsEnabled="{Binding IsUnlock}">
+        <Menu Grid.Row="0" Background="White" IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}">
             <MenuItem Header="File">
                 <MenuItem Header="New" cal:Message.Attach="ClearGraph" />
                 <MenuItem Header="Open">
@@ -81,11 +103,11 @@
                 <MenuItem Header="Undo" cal:Message.Attach="Undo" />
                 <MenuItem Header="Redo" cal:Message.Attach="Redo" />
             </MenuItem>
-            
+
             <MenuItem Header="View">
                 <MenuItem Header="Output" cal:Message.Attach="[Event Click] = [Action ChangeOutputVisibility('false')]" />
             </MenuItem>
-            
+
             <MenuItem Header="Graph">
                 <CheckBox x:Name="IsDirectedChB" 
                           Content="Directed" 
@@ -107,35 +129,110 @@
             </MenuItem>
         </Menu>
 
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0, 5, 5, 0" Grid.Row="1" 
-              IsEnabled="{Binding IsUnlock}">
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0, 5, 5, 0" Grid.Row="1">
             <StackPanel Orientation="Horizontal">
-                <RadioButton GroupName="Modes"
-                             ToolTip="Default"
-                             HorizontalAlignment="Left"
-                             IsChecked="{Binding CurrentCursorMode, Mode=TwoWay, Converter={StaticResource CursorModeEnumToBooleanConverter}, ConverterParameter='Default'}"
-                             Style="{StaticResource ModeCheckBoxStyle}"
-                             Tag="F1 M 29,18L 52.25,41.1667L 43.0865,42.6585L 50.817,56.6949L 43.827,60.4115L 36,46.25L 29,53.25L 29,18 Z "
-                             ToolTipService.ToolTip="Cursor mode" 
-                              />
+                <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}">
+                    <RadioButton GroupName="Modes"
+                                 HorizontalAlignment="Left"
+                                 IsChecked="{Binding CurrentCursorMode, Mode=TwoWay, Converter={StaticResource CursorModeEnumToBooleanConverter}, ConverterParameter='Default'}"
+                                 Style="{StaticResource ModeCheckBoxStyle}"
+                                 Tag="F1 M 29,18L 52.25,41.1667L 43.0865,42.6585L 50.817,56.6949L 43.827,60.4115L 36,46.25L 29,53.25L 29,18 Z "
+                                 ToolTipService.ToolTip="Cursor mode" 
+                                 />
 
-                <RadioButton GroupName="Modes"
-                             ToolTip="Add"
-                             HorizontalAlignment="Left" 
-                             IsChecked="{Binding CurrentCursorMode, Mode=TwoWay, Converter={StaticResource CursorModeEnumToBooleanConverter}, ConverterParameter='Add'}"
-                             Style="{StaticResource ModeCheckBoxStyle}"
-                             Tag="F1 M 35,19L 41,19L 41,35L 57,35L 57,41L 41,41L 41,57L 35,57L 35,41L 19,41L 19,35L 35,35L 35,19 Z "
-                             ToolTipService.ToolTip="Add vertex/edge mode" 
-                              />
+                    <RadioButton GroupName="Modes"
+                                 HorizontalAlignment="Left" 
+                                 IsChecked="{Binding CurrentCursorMode, Mode=TwoWay, Converter={StaticResource CursorModeEnumToBooleanConverter}, ConverterParameter='Add'}"
+                                 Style="{StaticResource ModeCheckBoxStyle}"
+                                 Tag="F1 M 35,19L 41,19L 41,35L 57,35L 57,41L 41,41L 41,57L 35,57L 35,41L 19,41L 19,35L 35,35L 35,19 Z "
+                                 ToolTipService.ToolTip="Add vertex/edge mode" 
+                                 />
 
-                <RadioButton GroupName="Modes"
-                             ToolTip="Remove"
-                             HorizontalAlignment="Left"
-                             IsChecked="{Binding CurrentCursorMode, Mode=TwoWay, Converter={StaticResource CursorModeEnumToBooleanConverter}, ConverterParameter='Remove'}"
-                             Style="{StaticResource ModeCheckBoxStyle}"
-                             Tag="F1 M 19,38L 57,38L 57,44L 19,44L 19,38 Z "
-                             ToolTipService.ToolTip="Remove vertex/edge mode"
-                              />
+                    <RadioButton GroupName="Modes"
+                                 HorizontalAlignment="Left"
+                                 IsChecked="{Binding CurrentCursorMode, Mode=TwoWay, Converter={StaticResource CursorModeEnumToBooleanConverter}, ConverterParameter='Remove'}"
+                                 Style="{StaticResource ModeCheckBoxStyle}"
+                                 Tag="F1 M 19,38L 57,38L 57,44L 19,44L 19,38 Z "
+                                 ToolTipService.ToolTip="Remove vertex/edge mode"/>
+                </StackPanel>
+
+                <StackPanel Margin="50, 0, 0, 0" Orientation="Horizontal" Visibility="{Binding IsAlgorithmRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=1}">
+                    <Button Width="35"
+                            IsEnabled="{Binding IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
+                            HorizontalContentAlignment="Center"
+                            ToolTipService.ToolTip="Back"
+                            Style="{StaticResource StylelessButton}"
+                            cal:Message.Attach="AlgorithmStepBack">
+                        <Path SnapsToDevicePixels="True" Height="18" Width="18" Stretch="Fill" Fill="Black" Data="M19,5V19H16V5M14,5V19L3,12"/>
+                    </Button>
+                    <RadioButton Margin="2, 0, 0, 0"
+                                 IsChecked="{Binding IsAlgorithmExecuting, Mode=OneWay}"
+                                 Width="35"
+                                 VerticalContentAlignment="Center"
+                                 HorizontalContentAlignment="Center"
+                                 ToolTipService.ToolTip="Start"
+                                 cal:Message.Attach="ContinueOrPauseAlgorithm">
+                        
+                        <RadioButton.Style>
+                            <Style TargetType="{x:Type RadioButton}">
+                                <Setter Property="Padding" Value="1"/>
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type RadioButton}">
+                                            <Border Name="border" BorderBrush="Black" BorderThickness="2" Background="{TemplateBinding Background}">
+                                                <Grid Name="content" 
+                                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      Margin="{TemplateBinding Padding}"
+                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                                    <Path x:Name="PauseIcon" Visibility="Hidden" SnapsToDevicePixels="True" Height="18" Width="18" Stretch="Fill" Fill="Black" Data="M14,19H18V5H14M6,19H10V5H6V19Z" />
+                                                    <Path x:Name="PlayIcon" SnapsToDevicePixels="True" Height="18" Width="18" Stretch="Fill" Fill="Black" Data="M8,5.14V19.14L19,12.14L8,5.14Z" />
+                                                </Grid>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="PauseIcon" Property="Visibility" Value="Visible" />
+                                                    <Setter TargetName="PlayIcon" Property="Visibility" Value="Collapsed" />
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="LightGray" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </RadioButton.Style>
+                    </RadioButton>
+                    <Button Margin="2, 0, 0, 0"
+                            Width="35"
+                            IsEnabled="{Binding IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
+                            HorizontalContentAlignment="Center"
+                            ToolTipService.ToolTip="Next"
+                            Style="{StaticResource StylelessButton}"
+                            cal:Message.Attach="AlgorithmStepNext">
+                        <Path SnapsToDevicePixels="True" Height="18" Width="18" Stretch="Fill" Fill="Black" Data="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/>
+                    </Button>
+                    <Button Margin="2, 0, 0, 0"
+                            Width="35"
+                            IsEnabled="{Binding IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
+                            HorizontalContentAlignment="Center"
+                            ToolTipService.ToolTip="Restart"
+                            Style="{StaticResource StylelessButton}"
+                            cal:Message.Attach="RestartAlgorithm">
+                        <Path SnapsToDevicePixels="True" Height="18" Width="18" Stretch="Fill" Fill="Black" Data="M11,4C13.05,4 15.09,4.77 16.65,6.33C19.78,9.46 19.77,14.5 16.64,17.64C14.81,19.5 12.3,20.24 9.91,19.92L10.44,17.96C12.15,18.12 13.93,17.54 15.24,16.23C17.58,13.89 17.58,10.09 15.24,7.75C14.06,6.57 12.53,6 11,6V10.58L6.04,5.63L11,0.68V4M5.34,17.65C2.7,15 2.3,11 4.11,7.94L5.59,9.41C4.5,11.64 4.91,14.39 6.75,16.23C7.27,16.75 7.87,17.16 8.5,17.45L8,19.4C7,19 6.12,18.43 5.34,17.65Z"/>
+                    </Button>
+                    <Button Margin="2, 0, 0, 0"
+                            Width="35"
+                            IsEnabled="{Binding IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
+                            HorizontalContentAlignment="Center"
+                            ToolTipService.ToolTip="Stop"
+                            Style="{StaticResource StylelessButton}"
+                            cal:Message.Attach="StopAlgorithm">
+                        <Path SnapsToDevicePixels="True" Height="18" Width="18" Stretch="Fill" Fill="Black" Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z " />
+                    </Button>
+                </StackPanel>
             </StackPanel>
 
 
@@ -158,7 +255,7 @@
                          MinWidth="150" 
                          ItemsSource="{Binding Document.ObservableVertices}"
                          SelectionMode="Single"
-                         IsEnabled="{Binding IsUnlock}"
+                         IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}"
                          SelectedItem="{Binding SelectedElement}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:Vertex}">
@@ -203,7 +300,7 @@
                     Visibility="{Binding Visibility, ElementName=OutputTerminal}"
                     DockPanel.Dock="Bottom">
                 <StackPanel>
-                    <StackPanel IsEnabled="{Binding IsUnlock}" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <StackPanel IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Margin="5" Height="18" Width="18" Style="{StaticResource OutputHeaderButtonStyle}" 
                                 cal:Message.Attach="[Event Click] = [Action ClearTerminalText]">
                             <Button.Content>
@@ -219,7 +316,7 @@
                             </Button.Content>
                         </Button>
                     </StackPanel>
-                    
+
                     <controls:Terminal x:Name="OutputTerminal" 
                                        Focusable="False"
                                        ShowOnWrite="True"
@@ -232,7 +329,7 @@
                 <ScrollViewer x:Name="GraphScrollViewer" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
                     <ItemsControl x:Name="GraphControl"
                                   ClipToBounds="True"
-                                  IsEnabled="{Binding IsUnlock}"
+                                  IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}"
                                   Background="{StaticResource PanelsBackgroundColor}"
                                   RenderTransformOrigin="0.5 0.5"
                                   SizeChanged="GraphControl_SizeChanged"

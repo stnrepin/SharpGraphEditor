@@ -20,17 +20,16 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
                 return;
             }
 
+            graph.ChangeColor(graph.Vertices.ElementAt(0), VertexColor.Gray);
             var bfs = new Helpers.BreadthFirstSearch(graph)
             {
                 ProcessEdge = (v1, v2) =>
                 {
                     graph.ChangeColor(v2, VertexColor.Gray);
-                    System.Threading.Thread.Sleep(500);
                 },
                 ProcessVertexLate = (v) =>
                 {
                     graph.ChangeColor(v, VertexColor.Black);
-                    System.Threading.Thread.Sleep(500);
                 }
             };
             

@@ -12,6 +12,8 @@ namespace SharpGraphEditor.Models
 
         public bool CanUndo => _index >= 0;
         public bool CanRedo => _operations.Count > 0 && _index < _operations.Count - 1;
+        public int Position => _index;
+        public int OperationsCount => _operations.Count;
 
         public UndoRedoManager()
         {
@@ -66,7 +68,7 @@ namespace SharpGraphEditor.Models
             _index = -1;
         }
 
-        private void CutOff()
+        public void CutOff()
         {
             int index = _index + 1;
             if (index < _operations.Count)
