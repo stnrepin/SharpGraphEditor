@@ -14,6 +14,7 @@ namespace SharpGraphEditor.Models
         private string _title;
         private VertexColor _color;
 
+        public string Name { get; set; }
         public bool IsAdding { get; set; }
         public bool HasPosition { get; set; }
 
@@ -28,7 +29,8 @@ namespace SharpGraphEditor.Models
             Y = y;
 
             Index = index;
-            Title = index.ToString();
+            Name = index.ToString();
+            Title = Name;
 
             IsAdding = false;
             HasPosition = true;

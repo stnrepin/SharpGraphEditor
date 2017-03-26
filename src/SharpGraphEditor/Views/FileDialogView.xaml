@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SharpGraphEditor.Views"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
-        Title="FileDialogView" Height="190" Width="300"
+        Title="FileDialogView" Height="210" Width="300"
         WindowStyle="None"
         WindowStartupLocation="CenterOwner" 
         ResizeMode="NoResize">
@@ -19,6 +19,7 @@
                     <RadioButton Content="Adjacency matrix" Margin="10, 10, 10, 0" Tag="AdjMatrix" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" />
                     <RadioButton Content="Edges list" Margin="10, 10, 10, 0" Tag="EdgesList" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" />
                     <RadioButton Content="Incidence matrix" Margin="10, 10, 10, 0" Tag="IncidenceMatrix" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" />
+                    <RadioButton Content="GraphViz plain text (ext)" Margin="10, 10, 10, 0" Tag="GraphVizPlainTextExt" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)"/>
                 </StackPanel>
             </GroupBox>
 

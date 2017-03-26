@@ -616,6 +616,7 @@ namespace SharpGraphEditor.ViewModels
                 case GraphSourceType.AdjMatrix:
                 case GraphSourceType.EdgesList:
                 case GraphSourceType.IncidenceMatrix:
+                case GraphSourceType.GraphVizPlainTextExt:
                     filter = "TXT files (*.txt) | *.txt";
                     break;
                 default:

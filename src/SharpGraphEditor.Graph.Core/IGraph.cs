@@ -29,5 +29,7 @@ namespace SharpGraphEditor.Graph.Core
         Dictionary<IVertex, IEnumerable<IVertex>> ToAdjList();
 
         IVertex FindVertexByIndex(int index);
+
+        IVertex FindVertexByName(string name);
     }
 }

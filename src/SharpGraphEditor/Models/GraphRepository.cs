@@ -40,6 +40,9 @@ namespace SharpGraphEditor.Models
                 case GraphSourceType.IncidenceMatrix:
                     GraphReader.FromIncidenceMatrix(path, graph);
                     break;
+                case GraphSourceType.GraphVizPlainTextExt:
+                    GraphReader.FromGraphVizPlainTextExt(path, graph);
+                    break;
                 default:
                     throw new NotSupportedException($"{sourceType.ToString()} not support");
             }
@@ -70,6 +73,9 @@ namespace SharpGraphEditor.Models
                         break;
                     case GraphSourceType.IncidenceMatrix:
                         GraphReader.FromIncidenceMatrix(stringReader, graph);
+                        break;
+                    case GraphSourceType.GraphVizPlainTextExt:
+                        GraphReader.FromGraphVizPlainTextExt(stringReader, graph);
                         break;
                     default:
                         throw new NotSupportedException($"{sourceType.ToString()} not support");

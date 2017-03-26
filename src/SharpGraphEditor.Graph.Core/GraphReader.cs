@@ -12,6 +12,89 @@ namespace SharpGraphEditor.Graph.Core
 {
     public static class GraphReader
     {
+        // http://www.graphviz.org/doc/info/output.html#d:plain-ext
+        public static void FromGraphVizPlainTextExt(string path, IGraph graph)
+        {
+            try
+            {
+                using (var fileStream = File.OpenRead(path))
+                {
+                    using (var stream = new StreamReader(fileStream))
+                    {
+                        FromGraphVizPlainTextExt(stream, graph);
+                    }
+                }
+            }
+            catch (InputFileFormatException)
+            {
+                graph.Clear();
+                throw;
+            }
+            catch (Exception ex)
+            {
+                graph.Clear();
+                throw new FileReadingException("During reading of GraphViz plain text file an error occured", ex);
+            }
+        }
+
+        public static void FromGraphVizPlainTextExt(TextReader stream, IGraph graph)
+        {
+            if (graph.Vertices.Count() > 0)
+            {
+                graph.Clear();
+            }
+
+            foreach (var line in ReadAllLines(stream))
+            {
+                var parts = line.Split(' ').ToArray();
+                var statementType = parts[0];
+                parts = parts.Skip(1).ToArray();
+                System.Diagnostics.Debug.WriteLine(parts.Length);
+                if (statementType == "graph")
+                {
+                    if (parts.Length != 3)
+                    {
+                        throw new InputFileFormatException("Properties count of \"graph\" must be 3");
+                    }
+                }
+                else if (statementType == "node")
+                {
+                    if (parts.Length != 10)
+                    {
+                        throw new InputFileFormatException("Properties count of \"node\" must be 10");
+                    }
+
+                    var name = parts[0];
+                    var x = ParseStringTo<double>(parts[1]);
+                    var y = ParseStringTo<double>(parts[2]);
+                    var label = parts[5];
+                    if (label.StartsWith("\"") && label.EndsWith("\""))
+                    {
+                        label = label.Substring(1, label.Length - 2);
+                    }
+
+                    var v = graph.AddVertex(x*96, y*96);
+                    v.Name = name;
+                    v.Title = label;
+                }
+                else if (statementType == "edge")
+                {
+                    if (parts.Length < 7)
+                    {
+                        throw new InputFileFormatException("Properties count of \"node\" must be more then 7");
+                    }
+                    var tailName = parts[0];
+                    var headName = parts[1];
+
+                    var e = graph.AddEdge(graph.FindVertexByName(tailName), graph.FindVertexByName(headName));
+                }
+                else if (statementType == "stop")
+                {
+                    break;
+                }
+            }
+        }
+
         public static void FromIncidenceMatrix(string path, IGraph graph)
         {
             try
@@ -110,7 +193,7 @@ namespace SharpGraphEditor.Graph.Core
             var lines = ReadAllLines(stream).ToArray();
             foreach (var line in lines)
             {
-                var edges = line.Split(' ').Select(x => StringToInt(x)).ToArray();
+                var edges = line.Split(' ').Select(x => ParseStringTo<int>(x)).ToArray();
                 if (edges.Length != 2)
                 {
                     throw new ArgumentOutOfRangeException("Bad format of edges list file");
@@ -206,7 +289,7 @@ namespace SharpGraphEditor.Graph.Core
             var list = new List<IEnumerable<int>>();
             foreach (var line in lines)
             {
-                var verticesIndexes = line.Split(' ').Select(x => StringToInt(x));
+                var verticesIndexes = line.Split(' ').Select(x => ParseStringTo<int>(x));
                 list.Add(verticesIndexes);
             }
 
@@ -324,13 +407,23 @@ namespace SharpGraphEditor.Graph.Core
             }
         }
 
-        private static int StringToInt(string str)
+        static T ParseStringTo<T>(String stringValue)
         {
-            if (!Int32.TryParse(str, out int i))
+
+            Type typeT = typeof(T);
+            try
             {
-                throw new InputFileFormatException("Index of vertex must be integer");
+                if (typeT.IsPrimitive)
+                {
+                    return (T)Convert.ChangeType(stringValue, typeT, System.Globalization.CultureInfo.InvariantCulture);
+                }
+
             }
-            return i;
+            catch
+            {
+
+            }
+            throw new InputFileFormatException($"Can't convert string \"{stringValue}\" to {typeT.Name}");
         }
 
         private static IEnumerable<string> ReadAllLines(TextReader stream)

@@ -18,7 +18,8 @@ namespace SharpGraphEditor.Models
         AdjList,
         AdjMatrix,
         EdgesList,
-        IncidenceMatrix
+        IncidenceMatrix,
+        GraphVizPlainTextExt
     }
 
     public class GraphDocumentChangedEventArgs : EventArgs
@@ -294,6 +295,17 @@ namespace SharpGraphEditor.Models
             foreach (var i in ObservableVertices)
             {
                 if (i.Index == index) return i;
+            }
+            return null;
+        }
+
+
+        public IVertex FindVertexByName(string name)
+        {
+            foreach (var i in ObservableVertices)
+            {
+                if (i.Name == name)
+                    return i;
             }
             return null;
         }

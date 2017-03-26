@@ -9,6 +9,8 @@
 
     public interface IVertex : IGraphElement
     {
+        string Name { get; set; }
+
         int Index { get; }
 
         string Title { get; set; }

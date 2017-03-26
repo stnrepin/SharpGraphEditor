@@ -3,9 +3,10 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-       Margin="-16, -16, 16, 16"
        mc:Ignorable="d"
        x:Name="Thumb" 
+       Margin="-16, -16, 16, 16"
+       SnapsToDevicePixels="True"
        ToolTipService.InitialShowDelay="10"
        ToolTipService.ShowOnDisabled="True"
        ToolTipService.ToolTip="{Binding Title}">
@@ -20,19 +21,19 @@
     <Thumb.Template>
         <ControlTemplate TargetType="Thumb">
             <Grid>
-                <Ellipse x:Name="Ellipse" Stroke="Black" StrokeThickness="2" Fill="{Binding Color, Converter={StaticResource VertexColorToColorConverter}}" Height="30" Width="30" />
-                <TextBlock x:Name="IndexTb" Text="{Binding Index, Mode=OneTime}" IsHitTestVisible="False" 
+                <Ellipse x:Name="Ellipse" Margin="1" Stroke="Black" StrokeThickness="2" Fill="{Binding Color, Converter={StaticResource VertexColorToColorConverter}}" MinHeight="30" MinWidth="30" />
+                <Ellipse x:Name="BackEllipse" Stroke="Black" StrokeThickness="2" Fill="Transparent" Opacity="0" />
+                <TextBlock x:Name="IndexTb" Text="{Binding Title}" IsHitTestVisible="False" FontSize="13" FontWeight="Normal" Margin="5"
                            Foreground="{Binding Fill, ElementName=Ellipse, Converter={StaticResource ContrastColorConverter}}"
-                           VerticalAlignment="Center" HorizontalAlignment="Center" />
-                <Ellipse x:Name="BackEllipse" Stroke="Black" StrokeThickness="2" Fill="Transparent" Height="32" Width="32" Opacity="0" />
-
+                           VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" />
+                
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup x:Name="CommonStates">
                         <VisualState x:Name="Normal" />
                         <VisualState x:Name="MouseOver">
                             <Storyboard>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" 
-                                                               Storyboard.TargetName="BackEllipse">
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="BackEllipse"
+                                                               Storyboard.TargetProperty="Opacity">
                                     <SplineDoubleKeyFrame KeyTime="0" Value="1" />
                                 </DoubleAnimationUsingKeyFrames>
                             </Storyboard>
@@ -40,7 +41,7 @@
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
             </Grid>
-
+            
             <ControlTemplate.Triggers>
                 <DataTrigger Binding="{Binding IsAdding}" Value="True">
                     <Setter TargetName="Ellipse" Property="IsHitTestVisible" Value="False" />
