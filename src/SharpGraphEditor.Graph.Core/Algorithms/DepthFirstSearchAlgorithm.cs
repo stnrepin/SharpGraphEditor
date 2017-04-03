@@ -25,7 +25,10 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
             {
                 ProcessEdge = (v1, v2) =>
                 {
-                    graph.ChangeColor(v2, VertexColor.Gray);
+                    if (v2.Color != VertexColor.Gray)
+                    {
+                        graph.ChangeColor(v2, VertexColor.Gray);
+                    }
                 },
                 ProcessVertexLate = (v) =>
                 {
