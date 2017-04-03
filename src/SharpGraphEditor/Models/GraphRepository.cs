@@ -142,5 +142,26 @@ namespace SharpGraphEditor.Models
             }
             return sb.ToString();
         }
+
+        public string GetFilterForSourceFileType(GraphSourceType fileType)
+        {
+            var filter = String.Empty;
+            switch (fileType)
+            {
+                case GraphSourceType.Gxml:
+                    filter = "GXML files (*.gxml) | *.gxml";
+                    break;
+                case GraphSourceType.AdjList:
+                case GraphSourceType.AdjMatrix:
+                case GraphSourceType.EdgesList:
+                case GraphSourceType.IncidenceMatrix:
+                case GraphSourceType.GraphVizPlainTextExt:
+                    filter = "TXT files (*.txt) | *.txt";
+                    break;
+                default:
+                    throw new ArgumentException("Unknown file type");
+            }
+            return filter;
+        }
     }
 }

@@ -151,7 +151,7 @@ namespace SharpGraphEditor.ViewModels
                     var res = WindowManager.ShowDialog(dialog);
                     if (res.HasValue && res.Value)
                     {
-                        var filter = GetFilterForSourceFileType(dialog.SourceType);
+                        var filter = _repository.GetFilterForSourceFileType(dialog.SourceType);
                         var fileName = DialogPresenter.ShowFileOpenDialog(filter);
 
                         if (String.IsNullOrEmpty(fileName))
@@ -229,7 +229,7 @@ namespace SharpGraphEditor.ViewModels
                 var res = WindowManager.ShowDialog(dialog);
                 if (res.HasValue && res.Value)
                 {
-                    var filter = GetFilterForSourceFileType(dialog.SourceType);
+                    var filter = _repository.GetFilterForSourceFileType(dialog.SourceType);
                     var fileName = DialogPresenter.ShowFileSaveDialog(filter);
 
                     if (String.IsNullOrEmpty(fileName))
@@ -607,27 +607,6 @@ namespace SharpGraphEditor.ViewModels
             }
 
             DialogPresenter.ShowError(ex.Message, ProjectName, ex.GetType());
-        }
-
-        private string GetFilterForSourceFileType(GraphSourceType fileType)
-        {
-            var filter = String.Empty;
-            switch (fileType)
-            {
-                case GraphSourceType.Gxml:
-                    filter = "GXML files (*.gxml) | *.gxml";
-                    break;
-                case GraphSourceType.AdjList:
-                case GraphSourceType.AdjMatrix:
-                case GraphSourceType.EdgesList:
-                case GraphSourceType.IncidenceMatrix:
-                case GraphSourceType.GraphVizPlainTextExt:
-                    filter = "TXT files (*.txt) | *.txt";
-                    break;
-                default:
-                    throw new ArgumentException("bad file type");
-            }
-            return filter;
         }
     }
 }

@@ -6,9 +6,6 @@ using Caliburn.Micro;
 
 namespace SharpGraphEditor.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для AboutView.xaml
-    /// </summary>
     public partial class AboutView : Window, IClose
     {
         public AboutView()

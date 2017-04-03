@@ -4,9 +4,6 @@ using Caliburn.Micro;
 
 namespace SharpGraphEditor.Views
 {
-    /// <summary>
-    /// Interaction logic for FileDialogView.xaml
-    /// </summary>
     public partial class FileDialogView : Window, IClose
     {
         public FileDialogView()
