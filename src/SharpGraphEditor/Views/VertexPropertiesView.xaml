@@ -40,6 +40,17 @@
             </Button>
         </Grid>
 
+        <TextBlock Text="Name: " Margin="0, 0, 10, 0" />
+        <TextBox Margin="0, 0, 10, 5">
+            <TextBox.Text>
+                <Binding Path="TargetVertex.Name" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <val:NotEmptyStringRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
         <TextBlock Text="Title: " Margin="0, 0, 10, 0" />
         <TextBox Text="{Binding TargetVertex.Title, UpdateSourceTrigger=PropertyChanged}" Margin="0, 0, 10, 5" />
 
