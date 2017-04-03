@@ -26,6 +26,7 @@
                          cal:Action.TargetWithoutContext="{Binding Path=PlacementTarget.Tag,
                               RelativeSource={RelativeSource Self}}">
                 <MenuItem Header="Remove" cal:Message.Attach="RemoveElement($dataContext)" />
+                <MenuItem Header="Properties..." cal:Message.Attach="ShowVertexProperties($dataContext)" />
             </ContextMenu>
 
             <Style x:Key="OutputHeaderButtonStyle" TargetType="Button">

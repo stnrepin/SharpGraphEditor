@@ -101,6 +101,7 @@
     <Compile Include="ViewModels\FileDialogViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\TextViewerViewModel.cs" />
+    <Compile Include="ViewModels\VertexPropertiesViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
@@ -118,6 +119,9 @@
     </Compile>
     <Compile Include="Views\TextViewerView.xaml.cs">
       <DependentUpon>TextViewerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VertexPropertiesView.xaml.cs">
+      <DependentUpon>VertexPropertiesView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +175,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TextViewerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VertexPropertiesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

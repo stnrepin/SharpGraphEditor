@@ -4,7 +4,10 @@
     {
         White,
         Gray,
-        Black
+        Black,
+        Green,
+        Red,
+        Blue
     }
 
     public interface IVertex : IGraphElement

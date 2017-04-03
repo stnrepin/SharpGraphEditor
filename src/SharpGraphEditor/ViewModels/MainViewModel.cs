@@ -91,6 +91,11 @@ namespace SharpGraphEditor.ViewModels
             WindowManager?.ShowDialog(new AboutViewModel());
         }
 
+        public void ShowVertexProperties(IVertex vertex)
+        {
+            WindowManager?.ShowDialog(new VertexPropertiesViewModel(vertex));
+        }
+
         public void Exit()
         {
             if (CheckGraphForClearing())
