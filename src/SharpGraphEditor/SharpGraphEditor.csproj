@@ -97,6 +97,7 @@
     <Compile Include="Models\ZoomManager.cs" />
     <Compile Include="Services\IDialogsPresenter.cs" />
     <Compile Include="Services\WindowDialogsPresenter.cs" />
+    <Compile Include="Validators\DoubleConvertationRule.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\FileDialogViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

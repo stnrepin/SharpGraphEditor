@@ -7,14 +7,14 @@
         xmlns:local="clr-namespace:SharpGraphEditor.Views"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:graphElements="clr-namespace:SharpGraphEditor.Graph.Core.Elements;assembly=SharpGraphEditor.Graph.Core"
+        xmlns:val="clr-namespace:SharpGraphEditor.Validators"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
-        MinWidth="200" 
-        Title="VertexPropertiesView" 
-        SizeToContent="WidthAndHeight"
+        Width="200" 
+        Title="VertexPropertiesView"
         WindowStyle="None"
         WindowStartupLocation="CenterOwner" 
-        ResizeMode="NoResize">
+        ResizeMode="NoResize" SizeToContent="Height">
 
     <Window.Resources>
         <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
@@ -44,10 +44,26 @@
         <TextBox Text="{Binding TargetVertex.Title, UpdateSourceTrigger=PropertyChanged}" Margin="0, 0, 10, 5" />
 
         <TextBlock Text="X: " Margin="0, 0, 10, 0" />
-        <TextBox Text="{Binding TargetVertex.X, UpdateSourceTrigger=PropertyChanged}" Margin="0, 0, 10, 5" />
+        <TextBox Margin="0, 0, 10, 5">
+            <TextBox.Text>
+                <Binding Path="TargetVertex.X" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <val:DoubleConvertationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
 
         <TextBlock Text="Y: " Margin="0, 0, 10, 0" />
-        <TextBox Text="{Binding TargetVertex.Y, UpdateSourceTrigger=PropertyChanged}" Margin="0, 0, 10, 5" />
+        <TextBox Margin="0, 0, 10, 5">
+            <TextBox.Text>
+                <Binding Path="TargetVertex.Y" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <val:DoubleConvertationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
 
         <TextBlock Text="Color: " />
         <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
