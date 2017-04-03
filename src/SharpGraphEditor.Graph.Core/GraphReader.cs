@@ -350,20 +350,36 @@ namespace SharpGraphEditor.Graph.Core
             {
                 if (el.Name == "vertex" || el.Name == "Vertex")
                 {
-                    var indexAttr = el.Attribute(XName.Get("id")) ?? el.Attribute(XName.Get("Id"));
-                    var xAttr = el.Attribute(XName.Get("x")) ?? el.Attribute(XName.Get("X"));
-                    var yAttr = el.Attribute(XName.Get("y")) ?? el.Attribute(XName.Get("Y"));
+                    var indexAttr = el.Attribute(XName.Get("id"));
+                    var xAttr = el.Attribute(XName.Get("x"));
+                    var yAttr = el.Attribute(XName.Get("y"));
+                    var nameAttr = el.Attribute(XName.Get("name"));
+                    var titleAttr = el.Attribute(XName.Get("title"));
+                    var colorAttr = el.Attribute(XName.Get("color"));
 
                     var isSuccessForIndex = Int32.TryParse(indexAttr?.Value, out int index);
                     var isSuccessForX = Double.TryParse(xAttr?.Value, out double x);
                     var isSuccessForY = Double.TryParse(yAttr?.Value, out double y);
+                    var isSuccessForColor = Enum.TryParse(colorAttr?.Value, out VertexColor color);
 
-                    if (!isSuccessForIndex || !isSuccessForX || !isSuccessForY)
+                    var name = nameAttr?.Value;
+                    var title = titleAttr?.Value;
+
+                    if (colorAttr == null)
+                    {
+                        color = VertexColor.White;
+                        isSuccessForColor = true;
+                    }
+
+                    if (!isSuccessForIndex || !isSuccessForX || !isSuccessForY || !isSuccessForColor)
                     {
                         throw new InputFileFormatException("one or more vertices in GXML file is damaged");
                     }
 
-                    graph.AddVertex(x, y, index);
+                    var v = graph.AddVertex(x, y, index);
+                    v.Name = String.IsNullOrEmpty(name) ? v.Name : name;
+                    v.Title = titleAttr == null ? v.Title : title;
+                    v.Color = color;
                 }
                 else if (el.Name == "edge" || el.Name == "Edge")
                 {

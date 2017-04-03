@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <graph>
   <vertex id="1" x="92" y="63" />
-  <vertex id="2" x="453" y="67" />
-  <vertex id="3" x="213" y="196" />
-  <vertex id="4" x="601" y="184" />
-  <edge source="1" target="2" directed="false" />
+  <vertex id="2" x="453" y="67" title="AAAAAAAA" name="BBBBBBBBBBBBB"/>
+  <vertex id="3" x="213" y="196" color="Red"/>
+  <vertex id="4" x="601" y="184" color="Green"/>
+  <edge source="1" target="2" />
   <edge source="2" target="3" directed="true" />
   <edge source="3" target="4" directed="false" />
   <edge source="4" target="1" directed="true" />

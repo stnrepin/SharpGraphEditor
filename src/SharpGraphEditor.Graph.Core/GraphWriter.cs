@@ -130,12 +130,16 @@ namespace SharpGraphEditor.Graph.Core
             var verticesXmlElements = new List<XElement>();
             var edgesXmlElements = new List<XElement>();
 
-            graph.Vertices.ForEach(x =>
+            graph.Vertices.ForEach(vertex =>
             {
-                var indexAttr = new XAttribute(XName.Get("id"), x.Index.ToString());
-                var xAttr = new XAttribute(XName.Get("x"), x.X.ToString());
-                var yAttr = new XAttribute(XName.Get("y"), x.Y.ToString());
-                verticesXmlElements.Add(new XElement(XName.Get("vertex"), indexAttr, xAttr, yAttr));
+                var indexAttr = new XAttribute(XName.Get("id"), vertex.Index.ToString());
+                var xAttr = new XAttribute(XName.Get("x"), vertex.X.ToString());
+                var yAttr = new XAttribute(XName.Get("y"), vertex.Y.ToString());
+                var nameAttr = new XAttribute(XName.Get("name"), vertex.Name);
+                var titleAttr = new XAttribute(XName.Get("title"), vertex.Title);
+                var colorAttr = new XAttribute(XName.Get("color"), vertex.Color.ToString());
+
+                verticesXmlElements.Add(new XElement(XName.Get("vertex"), indexAttr, xAttr, yAttr, nameAttr, titleAttr, colorAttr));
             });
 
             graph.Edges.ForEach(x =>
