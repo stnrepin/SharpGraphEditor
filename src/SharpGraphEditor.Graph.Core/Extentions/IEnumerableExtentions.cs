@@ -31,9 +31,22 @@ namespace SharpGraphEditor.Graph.Core.Extentions
         public static void For<T>(this IEnumerable<T> enumerable, Action<T, int> action)
         {
             int i = 0;
-            foreach(var e in enumerable)
+            foreach (var e in enumerable)
             {
                 action(e, i);
+                i++;
+            }
+        }
+
+        public static IEnumerable<int> AllIndexesOf<T>(this IEnumerable<T> enumerable, Func<T, bool> func)
+        {
+            int i = 0;
+            foreach (var e in enumerable)
+            {
+                if (func(e))
+                {
+                    yield return i;
+                }
                 i++;
             }
         }

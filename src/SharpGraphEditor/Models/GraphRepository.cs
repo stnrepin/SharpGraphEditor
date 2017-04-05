@@ -104,6 +104,9 @@ namespace SharpGraphEditor.Models
                 case GraphSourceType.IncidenceMatrix:
                     GraphWriter.ToIncidenceMatrix(path, graph);
                     break;
+                case GraphSourceType.HierarchicalRtf:
+                    GraphWriter.ToHierarchicalRtf(path, graph);
+                    break;
                 default:
                     throw new NotSupportedException($"{sourceType.ToString()} not support");
             }
@@ -136,6 +139,9 @@ namespace SharpGraphEditor.Models
                     case GraphSourceType.IncidenceMatrix:
                         GraphWriter.ToIncidenceMatrix(stringWriter, graph);
                         break;
+                    case GraphSourceType.HierarchicalRtf:
+                        GraphWriter.ToHierarchicalRtf(stringWriter, graph);
+                        break;
                     default:
                         throw new NotSupportedException($"{sourceType.ToString()} not support");
                 }
@@ -157,6 +163,9 @@ namespace SharpGraphEditor.Models
                 case GraphSourceType.IncidenceMatrix:
                 case GraphSourceType.GraphVizPlainTextExt:
                     filter = "TXT files (*.txt) | *.txt";
+                    break;
+                case GraphSourceType.HierarchicalRtf:
+                    filter = "";
                     break;
                 default:
                     throw new ArgumentException("Unknown file type");

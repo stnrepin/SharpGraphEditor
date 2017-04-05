@@ -8,12 +8,14 @@ using System.Xml.Linq;
 using SharpGraphEditor.Graph.Core;
 using SharpGraphEditor.Graph.Core.Extentions;
 using SharpGraphEditor.Graph.Core.Elements;
+using SharpGraphEditor.Graph.Core.Exceptions;
+using SharpGraphEditor.Graph.Core.Utils;
 
 namespace SharpGraphEditor.Graph.Core
 {
     public static class GraphWriter
     {
-        public static void ToIncidenceMatrix(string path, IGraph graph)
+        public static void ToHierarchicalRtf(string path, IGraph graph)
         {
             using (var fileStream = File.OpenWrite(path))
             {
@@ -26,147 +28,204 @@ namespace SharpGraphEditor.Graph.Core
             }
         }
 
-        public static void ToIncidenceMatrix(TextWriter stream, IGraph graph)
+        public static void ToHierarchicalRtf(TextWriter stream, IGraph graph)
         {
-            var verticesCount = graph.Vertices.Count();
-            var edgesCount = graph.Edges.Count();
-            var matrix = new int[verticesCount, edgesCount];
-            var edgeNumber = 0;
+            if (!graph.IsDirected)
+            {
+                throw new InvalidGraphFormatException("graph must be directed");
+            }
+
+            var hasVertexParent = new bool[graph.Vertices.Count()];
             foreach (var edge in graph.Edges)
             {
-                matrix[edge.Source.Index - 1, edgeNumber] = 1;
-                matrix[edge.Target.Index - 1, edgeNumber] = edge.IsDirected ? -1 : 1;
-                edgeNumber++;
+                hasVertexParent[edge.Target.Index - 1] = true;
             }
-            PrintMatrix(stream, matrix, verticesCount, edgesCount);
-        }
 
-        public static void ToEdgesList(string path, IGraph graph)
-        {
-            using (var fileStream = File.OpenWrite(path))
+            var verticesWithoutParent = hasVertexParent.AllIndexesOf(x => !x);
+            if (verticesWithoutParent.Count() == 0)
             {
-                fileStream.SetLength(0);
-                fileStream.Flush();
-                using (var stream = new StreamWriter(fileStream))
+                throw new InvalidGraphFormatException("graph must have some vertices without parent");
+            }
+
+            IVertex mainVertex = graph.Vertices.ElementAt(Array.IndexOf(hasVertexParent, false));
+
+            var tree = new List<TreeNode>();
+            var dfs = new Algorithms.Helpers.DepthFirstSearch(graph)
+            {
+                ProcessEdge = (p, v) =>
                 {
-                    ToEdgesList(stream, graph);
+                    tree.Add(new TreeNode(v.Index, p.Index, v, null));
                 }
+            };
+            dfs.Run(mainVertex);
+            var rootNode = new TreeNode(mainVertex.Index, 0, mainVertex, null);
+            tree.Add(rootNode);
+            tree = tree.OrderBy(x => x.Id).ToList();
+            tree.Add(new TreeNode(-1, -1, null, null));
+
+            var treeHash = tree.ToLookup(cat => cat.ParentId);
+
+            foreach (var node in tree)
+            {
+                node.Children = treeHash[node.Id].ToList();
             }
+            rootNode.PrintTreeAsRtf(stream);
         }
 
-        public static void ToEdgesList(TextWriter stream, IGraph graph)
-        {
-            foreach (var edge in graph.Edges)
+        public static void ToIncidenceMatrix(string path, IGraph graph)
             {
-                stream.WriteLine(edge.Source.Index.ToString() + " " + edge.Target.Index.ToString());
-            }
-        }
-
-        public static void ToAdjMatrix(string path, IGraph graph)
-        {
-            using (var fileStream = File.OpenWrite(path))
-            {
-                fileStream.SetLength(0);
-                fileStream.Flush();
-                using (var stream = new StreamWriter(fileStream))
+                using (var fileStream = File.OpenWrite(path))
                 {
-                    ToAdjMatrix(stream, graph);
-                }
-            }
-        }
-
-        public static void ToAdjMatrix(TextWriter stream, IGraph graph)
-        {
-            var verticesCount = graph.Vertices.Count();
-            var matrix = new int[verticesCount, verticesCount];
-
-            foreach (var pair in graph.ToAdjList())
-            {
-                var index = pair.Key.Index;
-                foreach (var adjVertex in pair.Value)
-                {
-                    matrix[index - 1, adjVertex.Index - 1] = 1;
+                    fileStream.SetLength(0);
+                    fileStream.Flush();
+                    using (var stream = new StreamWriter(fileStream))
+                    {
+                        ToIncidenceMatrix(stream, graph);
+                    }
                 }
             }
 
-            PrintMatrix(stream, matrix, verticesCount, verticesCount);
-        }
-
-        public static void ToAdjList(string path, IGraph graph)
-        {
-            using (var fileStream = File.OpenWrite(path))
+            public static void ToIncidenceMatrix(TextWriter stream, IGraph graph)
             {
-                fileStream.SetLength(0);
-                fileStream.Flush();
-                using (var stream = new StreamWriter(fileStream))
+                var verticesCount = graph.Vertices.Count();
+                var edgesCount = graph.Edges.Count();
+                var matrix = new int[verticesCount, edgesCount];
+                var edgeNumber = 0;
+                foreach (var edge in graph.Edges)
                 {
-                    ToAdjList(stream, graph);
+                    matrix[edge.Source.Index - 1, edgeNumber] = 1;
+                    matrix[edge.Target.Index - 1, edgeNumber] = edge.IsDirected ? -1 : 1;
+                    edgeNumber++;
+                }
+                PrintMatrix(stream, matrix, verticesCount, edgesCount);
+            }
+
+            public static void ToEdgesList(string path, IGraph graph)
+            {
+                using (var fileStream = File.OpenWrite(path))
+                {
+                    fileStream.SetLength(0);
+                    fileStream.Flush();
+                    using (var stream = new StreamWriter(fileStream))
+                    {
+                        ToEdgesList(stream, graph);
+                    }
                 }
             }
-        }
 
-        public static void ToAdjList(TextWriter stream, IGraph graph)
-        {
-            var adjList = graph.ToAdjList();
-            adjList.Select(x =>  x.Key.Title + " " + String.Join(" ", x.Value.Select(y => y.Index.ToString())))
-                   .ForEach(y => stream.WriteLine(y));
-        }
-
-        public static void ToGxml(string path, IGraph graph)
-        {
-            using (var fileStream = File.OpenWrite(path))
+            public static void ToEdgesList(TextWriter stream, IGraph graph)
             {
-                fileStream.SetLength(0);
-                fileStream.Flush();
-                using (var stream = new StreamWriter(fileStream))
+                foreach (var edge in graph.Edges)
                 {
-                    ToGxml(stream, graph);
+                    stream.WriteLine(edge.Source.Index.ToString() + " " + edge.Target.Index.ToString());
                 }
             }
-        }
 
-        public static void ToGxml(TextWriter stream, IGraph graph)
-        {
-            var verticesXmlElements = new List<XElement>();
-            var edgesXmlElements = new List<XElement>();
-
-            graph.Vertices.ForEach(vertex =>
+            public static void ToAdjMatrix(string path, IGraph graph)
             {
-                var indexAttr = new XAttribute(XName.Get("id"), vertex.Index.ToString());
-                var xAttr = new XAttribute(XName.Get("x"), vertex.X.ToString());
-                var yAttr = new XAttribute(XName.Get("y"), vertex.Y.ToString());
-                var nameAttr = new XAttribute(XName.Get("name"), vertex.Name);
-                var titleAttr = new XAttribute(XName.Get("title"), vertex.Title);
-                var colorAttr = new XAttribute(XName.Get("color"), vertex.Color.ToString());
-
-                verticesXmlElements.Add(new XElement(XName.Get("vertex"), indexAttr, xAttr, yAttr, nameAttr, titleAttr, colorAttr));
-            });
-
-            graph.Edges.ForEach(x =>
-            {
-                var sourceIndexAttr = new XAttribute(XName.Get("source"), x.Source.Index);
-                var targetIndexAttr = new XAttribute(XName.Get("target"), x.Target.Index);
-                var IsDirectedAttr = new XAttribute(XName.Get("directed"), x.IsDirected);
-                edgesXmlElements.Add(new XElement(XName.Get("edge"), sourceIndexAttr, targetIndexAttr, IsDirectedAttr));
-            });
-
-            var rootElement = new XElement(XName.Get("graph"));
-            rootElement.Add(verticesXmlElements.ToArray());
-            rootElement.Add(edgesXmlElements.ToArray());
-            rootElement.Save(stream);
-        }
-
-        private static void PrintMatrix(TextWriter stream, int[,] matrix, int rowsCount, int columnsCount)
-        {
-            for (int i = 0; i < rowsCount; i++)
-            {
-                var line = new List<string>();
-                for (int j = 0; j < columnsCount; j++)
+                using (var fileStream = File.OpenWrite(path))
                 {
-                    line.Add(matrix[i, j].ToString());
+                    fileStream.SetLength(0);
+                    fileStream.Flush();
+                    using (var stream = new StreamWriter(fileStream))
+                    {
+                        ToAdjMatrix(stream, graph);
+                    }
                 }
-                stream.WriteLine(String.Join(" ", line));
+            }
+
+            public static void ToAdjMatrix(TextWriter stream, IGraph graph)
+            {
+                var verticesCount = graph.Vertices.Count();
+                var matrix = new int[verticesCount, verticesCount];
+
+                foreach (var pair in graph.ToAdjList())
+                {
+                    var index = pair.Key.Index;
+                    foreach (var adjVertex in pair.Value)
+                    {
+                        matrix[index - 1, adjVertex.Index - 1] = 1;
+                    }
+                }
+
+                PrintMatrix(stream, matrix, verticesCount, verticesCount);
+            }
+
+            public static void ToAdjList(string path, IGraph graph)
+            {
+                using (var fileStream = File.OpenWrite(path))
+                {
+                    fileStream.SetLength(0);
+                    fileStream.Flush();
+                    using (var stream = new StreamWriter(fileStream))
+                    {
+                        ToAdjList(stream, graph);
+                    }
+                }
+            }
+
+            public static void ToAdjList(TextWriter stream, IGraph graph)
+            {
+                var adjList = graph.ToAdjList();
+                adjList.Select(x => x.Key.Title + " " + String.Join(" ", x.Value.Select(y => y.Index.ToString())))
+                       .ForEach(y => stream.WriteLine(y));
+            }
+
+            public static void ToGxml(string path, IGraph graph)
+            {
+                using (var fileStream = File.OpenWrite(path))
+                {
+                    fileStream.SetLength(0);
+                    fileStream.Flush();
+                    using (var stream = new StreamWriter(fileStream))
+                    {
+                        ToGxml(stream, graph);
+                    }
+                }
+            }
+
+            public static void ToGxml(TextWriter stream, IGraph graph)
+            {
+                var verticesXmlElements = new List<XElement>();
+                var edgesXmlElements = new List<XElement>();
+
+                graph.Vertices.ForEach(vertex =>
+                {
+                    var indexAttr = new XAttribute(XName.Get("id"), vertex.Index.ToString());
+                    var xAttr = new XAttribute(XName.Get("x"), vertex.X.ToString());
+                    var yAttr = new XAttribute(XName.Get("y"), vertex.Y.ToString());
+                    var nameAttr = new XAttribute(XName.Get("name"), vertex.Name);
+                    var titleAttr = new XAttribute(XName.Get("title"), vertex.Title);
+                    var colorAttr = new XAttribute(XName.Get("color"), vertex.Color.ToString());
+
+                    verticesXmlElements.Add(new XElement(XName.Get("vertex"), indexAttr, xAttr, yAttr, nameAttr, titleAttr, colorAttr));
+                });
+
+                graph.Edges.ForEach(x =>
+                {
+                    var sourceIndexAttr = new XAttribute(XName.Get("source"), x.Source.Index);
+                    var targetIndexAttr = new XAttribute(XName.Get("target"), x.Target.Index);
+                    var IsDirectedAttr = new XAttribute(XName.Get("directed"), x.IsDirected);
+                    edgesXmlElements.Add(new XElement(XName.Get("edge"), sourceIndexAttr, targetIndexAttr, IsDirectedAttr));
+                });
+
+                var rootElement = new XElement(XName.Get("graph"));
+                rootElement.Add(verticesXmlElements.ToArray());
+                rootElement.Add(edgesXmlElements.ToArray());
+                rootElement.Save(stream);
+            }
+
+            private static void PrintMatrix(TextWriter stream, int[,] matrix, int rowsCount, int columnsCount)
+            {
+                for (int i = 0; i < rowsCount; i++)
+                {
+                    var line = new List<string>();
+                    for (int j = 0; j < columnsCount; j++)
+                    {
+                        line.Add(matrix[i, j].ToString());
+                    }
+                    stream.WriteLine(String.Join(" ", line));
+                }
             }
         }
     }
-}

@@ -19,7 +19,8 @@ namespace SharpGraphEditor.Models
         AdjMatrix,
         EdgesList,
         IncidenceMatrix,
-        GraphVizPlainTextExt
+        GraphVizPlainTextExt,
+        HierarchicalRtf
     }
 
     public class GraphDocumentChangedEventArgs : EventArgs

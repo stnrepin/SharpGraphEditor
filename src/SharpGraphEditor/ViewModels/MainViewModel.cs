@@ -147,7 +147,7 @@ namespace SharpGraphEditor.ViewModels
             {
                 try
                 {
-                    var dialog = new FileDialogViewModel();
+                    var dialog = new FileDialogViewModel(FileDialogMode.Open);
                     var res = WindowManager.ShowDialog(dialog);
                     if (res.HasValue && res.Value)
                     {
@@ -178,7 +178,7 @@ namespace SharpGraphEditor.ViewModels
             {
                 try
                 {
-                    var dialog = new FileDialogViewModel();
+                    var dialog = new FileDialogViewModel(FileDialogMode.Open);
                     var res = WindowManager.ShowDialog(dialog);
                     if (res.HasValue && res.Value)
                     {
@@ -225,7 +225,7 @@ namespace SharpGraphEditor.ViewModels
         {
             try
             {
-                var dialog = new FileDialogViewModel();
+                var dialog = new FileDialogViewModel(FileDialogMode.Save);
                 var res = WindowManager.ShowDialog(dialog);
                 if (res.HasValue && res.Value)
                 {
@@ -248,9 +248,9 @@ namespace SharpGraphEditor.ViewModels
 
         public void SaveAsText()
         {
-            try
-            {
-                var dialog = new FileDialogViewModel();
+            //try
+            //{
+                var dialog = new FileDialogViewModel(FileDialogMode.Save);
                 var res = WindowManager.ShowDialog(dialog);
                 if (res.HasValue && res.Value)
                 {
@@ -258,11 +258,12 @@ namespace SharpGraphEditor.ViewModels
                     var textViewer = new TextViewerViewModel(text, true, false, true);
                     WindowManager.ShowDialog(textViewer);
                 }
-            }
-            catch (Exception e)
-            {
-                ShowError(e);
-            }
+            //}
+            //catch (Exception e)
+            //{
+                //throw;
+                //ShowError(e);
+            //}
         }
 
         public void CanvasClick(double mousePositionX, double mousePositionY, IGraphElement element)

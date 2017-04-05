@@ -4,12 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpGraphEditor.Views"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
-        Title="FileDialogView" Height="210" Width="300"
+        Title="FileDialogView" Width="300"
         WindowStyle="None"
         WindowStartupLocation="CenterOwner" 
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        SizeToContent="Height">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/MainViewStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
     <Border BorderBrush="Black" BorderThickness="1">
         <StackPanel>
             <GroupBox Header="Format" Margin="5, 5, 5 ,0" VerticalAlignment="Top">
@@ -19,7 +30,9 @@
                     <RadioButton Content="Adjacency matrix" Margin="10, 10, 10, 0" Tag="AdjMatrix" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" />
                     <RadioButton Content="Edges list" Margin="10, 10, 10, 0" Tag="EdgesList" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" />
                     <RadioButton Content="Incidence matrix" Margin="10, 10, 10, 0" Tag="IncidenceMatrix" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" />
-                    <RadioButton Content="GraphViz plain text (ext)" Margin="10, 10, 10, 0" Tag="GraphVizPlainTextExt" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)"/>
+                    <RadioButton Content="GraphViz plain text (ext)" Margin="10, 10, 10, 0" Tag="GraphVizPlainTextExt" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" />
+                    <RadioButton Content="Hierarchical rtf" Margin="10, 10, 10, 0" Tag="HierarchicalRtf" GroupName="Formats" cal:Message.Attach="ChangeFormat($this.Tag)" 
+                                 Visibility="{Binding IsOpenMode, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </StackPanel>
             </GroupBox>
 

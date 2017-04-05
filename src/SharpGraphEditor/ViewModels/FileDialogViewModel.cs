@@ -9,13 +9,24 @@ using SharpGraphEditor.Services;
 
 namespace SharpGraphEditor.ViewModels
 {
+    public enum FileDialogMode
+    {
+        Open,
+        Save
+    }
+
     public class FileDialogViewModel : PropertyChangedBase
     {
+        public FileDialogMode Mode { get; private set; }
         public GraphSourceType SourceType { get; private set; }
+        public bool IsOpenMode { get; private set; }
 
-        public FileDialogViewModel()
+        public FileDialogViewModel(FileDialogMode mode)
         {
+            Mode = mode;
             SourceType = GraphSourceType.Gxml;
+
+            IsOpenMode = mode == FileDialogMode.Open;
         }
 
         public void Ok(IClose closeableWindow)
