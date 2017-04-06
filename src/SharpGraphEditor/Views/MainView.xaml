@@ -106,6 +106,7 @@
             </MenuItem>
 
             <MenuItem Header="View">
+                <MenuItem Header="Properties..." cal:Message.Attach="[Event Click] = [Action ShowVertexProperties(null)]" />
                 <MenuItem Header="Output" cal:Message.Attach="[Event Click] = [Action ChangeOutputVisibility('false')]" />
             </MenuItem>
 
