@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 using SharpGraphEditor.Graph.Core.Elements;
@@ -46,7 +47,7 @@ namespace SharpGraphEditor.Graph.Core
 
             foreach (var line in ReadAllLines(stream))
             {
-                var parts = line.Split(' ').ToArray();
+                var parts = SplitByWhitespacesWithQuotes(line);
                 var statementType = parts[0];
                 parts = parts.Skip(1).ToArray();
                 System.Diagnostics.Debug.WriteLine(parts.Length);
@@ -449,6 +450,13 @@ namespace SharpGraphEditor.Graph.Core
             {
                 yield return line;
             }
+        }
+
+        private static string[] SplitByWhitespacesWithQuotes(string input)
+        {
+            return Regex.Matches(input, @"[\""].+?[\""]|[^ ]+")
+                .Cast<Match>()
+                .Select(m => m.Value).ToArray();
         }
     }
 }
