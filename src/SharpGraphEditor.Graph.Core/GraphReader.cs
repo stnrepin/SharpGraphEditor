@@ -50,7 +50,6 @@ namespace SharpGraphEditor.Graph.Core
                 var parts = SplitByWhitespacesWithQuotes(line);
                 var statementType = parts[0];
                 parts = parts.Skip(1).ToArray();
-                System.Diagnostics.Debug.WriteLine(parts.Length);
                 if (statementType == "graph")
                 {
                     if (parts.Length != 3)
