@@ -25,19 +25,26 @@ namespace SharpGraphEditor.Graph.Core.Utils
 
     public static class TreeNodeExtentions
     {
-        private static Dictionary<VertexColor, string> _rtfHighlightForColor = new Dictionary<VertexColor, string>()
+        private static string _colorTable = "{\\colortbl ;" +
+                                            "\\red0\\green0\\blue0;" +
+                                            "\\red0\\green0\\blue255;" +
+                                            "\\red0\\green255\\blue0;" + 
+                                            "\\red255\\green0\\blue0;" +
+                                            "\\red128\\green128\\blue128;}";
+
+        private static Dictionary<VertexColor, string> _rtfColor = new Dictionary<VertexColor, string>()
         {
-            [VertexColor.Black] = "1",
+            [VertexColor.Black] = "0",
+            [VertexColor.White] = "1",
             [VertexColor.Blue] = "2",
-            [VertexColor.Green] = "4",
-            [VertexColor.Red] = "6",
-            [VertexColor.White] = "8",
-            [VertexColor.Gray] = "16"
+            [VertexColor.Green] = "3",
+            [VertexColor.Red] = "4",
+            [VertexColor.Gray] = "15"
         };
 
         public static void PrintTreeAsRtf(this TreeNode root, System.IO.TextWriter textWriter)
         {
-            textWriter.WriteLine("{\\rtf1\n");
+            textWriter.WriteLine("{\\rtf1 " + _colorTable + "\n");
             var firstStack = new List<TreeNode> { root };
 
             var childListStack = new List<List<TreeNode>> { firstStack };
@@ -61,8 +68,8 @@ namespace SharpGraphEditor.Graph.Core.Utils
                         indent += "  ";
                     }
 
-                    var rootStr = root.Value.Color != VertexColor.White ? $"*{root.Value.Name}*" : root.Value.Name;
-                    textWriter.WriteLine("{\\highlight" + _rtfHighlightForColor[root.Value.Color] + " " + indent  + rootStr + "}");
+                    var rootStr = String.Join("", root.Value.Name.Select(x => "\\u" + ((int)x).ToString() + "?"));
+                    textWriter.WriteLine("{\\cf" + _rtfColor[root.Value.Color] + " " + indent  + rootStr + "\\cf0" + "}");
                     textWriter.WriteLine("\\par");
 
                     if (root.Children.Count() > 0)
