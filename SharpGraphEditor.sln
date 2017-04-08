@@ -18,6 +18,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{4520
 		samples\inc_matrix.txt = samples\inc_matrix.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A5BBD540-0134-4934-A702-021EBA86C584}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGraphEditor.Graph.Core.Tests", "test\SharpGraphEditor.Graph.Core.Tests\SharpGraphEditor.Graph.Core.Tests.csproj", "{881BDFB3-F85D-409D-A23A-EA1525D9BD90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,10 @@ Global
 		{047F5AB2-2F0F-45C5-B5B7-DE08ACD7DA0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{047F5AB2-2F0F-45C5-B5B7-DE08ACD7DA0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{047F5AB2-2F0F-45C5-B5B7-DE08ACD7DA0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{881BDFB3-F85D-409D-A23A-EA1525D9BD90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{881BDFB3-F85D-409D-A23A-EA1525D9BD90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{881BDFB3-F85D-409D-A23A-EA1525D9BD90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{881BDFB3-F85D-409D-A23A-EA1525D9BD90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,5 +47,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{008B49DD-97B1-40BD-8BFF-F6AC2C71003C} = {055112F0-58E0-4C91-925C-D1815CAB8EAD}
 		{047F5AB2-2F0F-45C5-B5B7-DE08ACD7DA0A} = {055112F0-58E0-4C91-925C-D1815CAB8EAD}
+		{881BDFB3-F85D-409D-A23A-EA1525D9BD90} = {A5BBD540-0134-4934-A702-021EBA86C584}
 	EndGlobalSection
 EndGlobal

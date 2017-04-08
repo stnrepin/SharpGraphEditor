@@ -376,10 +376,9 @@ namespace SharpGraphEditor.Graph.Core
                         throw new InputFileFormatException("one or more vertices in GXML file is damaged");
                     }
 
-                    var v = graph.AddVertex(x, y, index);
-                    v.Name = String.IsNullOrEmpty(name) ? v.Name : name;
-                    v.Title = titleAttr == null ? v.Title : title;
-                    v.Color = color;
+                    name = String.IsNullOrEmpty(name) ? index.ToString() : name;
+                    title = titleAttr == null ? name : title;
+                    graph.AddVertex(x, y, index, name, title, color);
                 }
                 else if (el.Name == "edge" || el.Name == "Edge")
                 {

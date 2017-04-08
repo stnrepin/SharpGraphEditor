@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using SharpGraphEditor.Graph.Core;
+using SharpGraphEditor.Graph.Core.FormatStorage;
 
 namespace SharpGraphEditor.Models
 {
@@ -41,7 +42,7 @@ namespace SharpGraphEditor.Models
                     GraphReader.FromIncidenceMatrix(path, graph);
                     break;
                 case GraphSourceType.GraphVizPlainTextExt:
-                    GraphReader.FromGraphVizPlainTextExt(path, graph);
+                    (new GraphVizPlainTextExtFormatStorage()).Open(path, graph);
                     break;
                 default:
                     throw new NotSupportedException($"{sourceType.ToString()} not support");
@@ -75,7 +76,7 @@ namespace SharpGraphEditor.Models
                         GraphReader.FromIncidenceMatrix(stringReader, graph);
                         break;
                     case GraphSourceType.GraphVizPlainTextExt:
-                        GraphReader.FromGraphVizPlainTextExt(stringReader, graph);
+                        (new GraphVizPlainTextExtFormatStorage()).Open(stringReader, graph);
                         break;
                     default:
                         throw new NotSupportedException($"{sourceType.ToString()} not support");
@@ -105,7 +106,7 @@ namespace SharpGraphEditor.Models
                     GraphWriter.ToIncidenceMatrix(path, graph);
                     break;
                 case GraphSourceType.HierarchicalRtf:
-                    GraphWriter.ToHierarchicalRtf(path, graph);
+                    (new HierarchicalRtfFormatStorage()).Save(path, graph);
                     break;
                 default:
                     throw new NotSupportedException($"{sourceType.ToString()} not support");
@@ -140,7 +141,7 @@ namespace SharpGraphEditor.Models
                         GraphWriter.ToIncidenceMatrix(stringWriter, graph);
                         break;
                     case GraphSourceType.HierarchicalRtf:
-                        GraphWriter.ToHierarchicalRtf(stringWriter, graph);
+                        (new HierarchicalRtfFormatStorage()).Save(stringWriter, graph);
                         break;
                     default:
                         throw new NotSupportedException($"{sourceType.ToString()} not support");
@@ -165,7 +166,7 @@ namespace SharpGraphEditor.Models
                     filter = "TXT files (*.txt) | *.txt";
                     break;
                 case GraphSourceType.HierarchicalRtf:
-                    filter = "";
+                    filter = "Rtf file (*.rtf) | *.rtf";
                     break;
                 default:
                     throw new ArgumentException("Unknown file type");
