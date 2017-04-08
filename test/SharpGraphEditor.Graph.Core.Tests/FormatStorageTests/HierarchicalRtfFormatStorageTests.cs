@@ -52,11 +52,6 @@ namespace SharpGraphEditor.Graph.Core.Tests.FormatStorageTests
             var v3 = Mock.Of<IVertex>(v => v.Index == 3 && v.Name == "c" && v.Title == "c" && v.X == 250 && v.Y == 125 && v.Color == VertexColor.White);
             var v4 = Mock.Of<IVertex>(v => v.Index == 4 && v.Name == "d" && v.Title == "d" && v.X == 200 && v.Y == 150 && v.Color == VertexColor.Green);
 
-            var e12 = Mock.Of<IEdge>(e => e.Source == v1 && e.Target == v2);
-            var e23 = Mock.Of<IEdge>(e => e.Source == v2 && e.Target == v3);
-            var e24 = Mock.Of<IEdge>(e => e.Source == v2 && e.Target == v4);
-            var e43 = Mock.Of<IEdge>(e => e.Source == v4 && e.Target == v3);
-
             var adjList = new Dictionary<IVertex, IEnumerable<IVertex>>()
             {
                 [v1] = new IVertex[] { v2 },
@@ -78,7 +73,7 @@ namespace SharpGraphEditor.Graph.Core.Tests.FormatStorageTests
                 storage.Save(sw, graph);
             }
 
-            Assert.AreEqual(sb.ToString(), expectedText);
+            Assert.AreEqual(expectedText, sb.ToString());
         }
     }
 }

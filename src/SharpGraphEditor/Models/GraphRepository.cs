@@ -27,7 +27,7 @@ namespace SharpGraphEditor.Models
                 case GraphSourceType.None:
                     throw new ArgumentException("Type of source file can't be None");
                 case GraphSourceType.Gxml:
-                    GraphReader.FromGxml(path, graph);
+                    (new GxmlFormatStorage()).Open(path, graph);
                     break;
                 case GraphSourceType.AdjList:
                     GraphReader.FromAdjList(path, graph);
@@ -61,7 +61,7 @@ namespace SharpGraphEditor.Models
                     case GraphSourceType.None:
                         throw new ArgumentException("Type of source file can't be None");
                     case GraphSourceType.Gxml:
-                        GraphReader.FromGxml(stringReader, graph);
+                        (new GxmlFormatStorage()).Open(stringReader, graph);
                         break;
                     case GraphSourceType.AdjList:
                         GraphReader.FromAdjList(stringReader, graph);
@@ -91,7 +91,7 @@ namespace SharpGraphEditor.Models
                 case GraphSourceType.None:
                     throw new ArgumentException("Type of source file can't be none");
                 case GraphSourceType.Gxml:
-                    GraphWriter.ToGxml(path, graph);
+                    (new GxmlFormatStorage()).Save(path, graph);
                     break;
                 case GraphSourceType.AdjList:
                     GraphWriter.ToAdjList(path, graph);
@@ -126,7 +126,7 @@ namespace SharpGraphEditor.Models
                     case GraphSourceType.None:
                         throw new ArgumentException("Type of source file can't be none");
                     case GraphSourceType.Gxml:
-                        GraphWriter.ToGxml(stringWriter, graph);
+                        (new GxmlFormatStorage()).Save(stringWriter, graph);
                         break;
                     case GraphSourceType.AdjList:
                         GraphWriter.ToAdjList(stringWriter, graph);
