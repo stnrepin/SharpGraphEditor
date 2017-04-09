@@ -57,17 +57,19 @@
     <Compile Include="Exceptions\InputFileFormatException.cs" />
     <Compile Include="Exceptions\InvalidGraphFormatException.cs" />
     <Compile Include="Extentions\IEnumerableExtentions.cs" />
+    <Compile Include="FormatStorage\AdjListFormatStorage.cs" />
+    <Compile Include="FormatStorage\AdjMatrixFormatStorage.cs" />
     <Compile Include="FormatStorage\BaseFormatStorage.cs" />
+    <Compile Include="FormatStorage\EdgesListFormatStorage.cs" />
     <Compile Include="FormatStorage\GraphVizPlainTextExtFormatStorage.cs" />
     <Compile Include="FormatStorage\GxmlFormatStorage.cs" />
     <Compile Include="FormatStorage\HierarchicalRtfFormatStorage.cs" />
-    <Compile Include="GraphReader.cs" />
-    <Compile Include="GraphWriter.cs" />
+    <Compile Include="FormatStorage\IncidenceMatrixFormatStorage.cs" />
     <Compile Include="IAlgorithmOutput.cs" />
     <Compile Include="IGraph.cs" />
     <Compile Include="Elements\IVertex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\TreeNode.cs" />
+    <Compile Include="Utils\FormatStorageUtils.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

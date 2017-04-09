@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 using SharpGraphEditor.Graph.Core.Exceptions;
 
@@ -40,8 +37,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             {
                 try
                 {
-                    fileStream.SetLength(0);
-                    fileStream.Flush();
+                    ClearStream(fileStream);
                     using (var stream = new StreamWriter(fileStream))
                     {
                         Save(stream, graph);
@@ -64,34 +60,5 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             stream.SetLength(0);
             stream.Flush();
         }
-
-        protected T ParseStringTo<T>(String stringValue)
-        {
-
-            Type typeT = typeof(T);
-            try
-            {
-                if (typeT.IsPrimitive)
-                {
-                    return (T)Convert.ChangeType(stringValue, typeT, System.Globalization.CultureInfo.InvariantCulture);
-                }
-
-            }
-            catch
-            {
-
-            }
-            throw new InputFileFormatException($"Can't convert string \"{stringValue}\" to {typeT.Name}");
-        }
-
-        protected static IEnumerable<string> ReadAllLines(TextReader stream)
-        {
-            var line = "";
-            while ((line = stream.ReadLine()) != null)
-            {
-                yield return line;
-            }
-        }
-
     }
 }

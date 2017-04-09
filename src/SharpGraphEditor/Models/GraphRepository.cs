@@ -30,16 +30,16 @@ namespace SharpGraphEditor.Models
                     (new GxmlFormatStorage()).Open(path, graph);
                     break;
                 case GraphSourceType.AdjList:
-                    GraphReader.FromAdjList(path, graph);
+                    (new AdjListFormatStorage()).Open(path, graph);
                     break;
                 case GraphSourceType.AdjMatrix:
-                    GraphReader.FromAdjMatrix(path, graph);
+                    (new AdjMatrixFormatStorage()).Open(path, graph);
                     break;
                 case GraphSourceType.EdgesList:
-                    GraphReader.FromEdgesList(path, graph);
+                    (new EdgesListFormatStorage()).Open(path, graph);
                     break;
                 case GraphSourceType.IncidenceMatrix:
-                    GraphReader.FromIncidenceMatrix(path, graph);
+                    (new IncidenceMatrixFormatStorage()).Open(path, graph);
                     break;
                 case GraphSourceType.GraphVizPlainTextExt:
                     (new GraphVizPlainTextExtFormatStorage()).Open(path, graph);
@@ -64,16 +64,16 @@ namespace SharpGraphEditor.Models
                         (new GxmlFormatStorage()).Open(stringReader, graph);
                         break;
                     case GraphSourceType.AdjList:
-                        GraphReader.FromAdjList(stringReader, graph);
+                        (new AdjListFormatStorage()).Open(stringReader, graph);
                         break;
                     case GraphSourceType.AdjMatrix:
-                        GraphReader.FromAdjMatrix(stringReader, graph);
+                        (new AdjMatrixFormatStorage()).Open(stringReader, graph);
                         break;
                     case GraphSourceType.EdgesList:
-                        GraphReader.FromEdgesList(stringReader, graph);
+                        (new EdgesListFormatStorage()).Open(stringReader, graph);
                         break;
                     case GraphSourceType.IncidenceMatrix:
-                        GraphReader.FromIncidenceMatrix(stringReader, graph);
+                        (new IncidenceMatrixFormatStorage()).Open(stringReader, graph);
                         break;
                     case GraphSourceType.GraphVizPlainTextExt:
                         (new GraphVizPlainTextExtFormatStorage()).Open(stringReader, graph);
@@ -94,16 +94,16 @@ namespace SharpGraphEditor.Models
                     (new GxmlFormatStorage()).Save(path, graph);
                     break;
                 case GraphSourceType.AdjList:
-                    GraphWriter.ToAdjList(path, graph);
+                    (new AdjListFormatStorage()).Save(path, graph);
                     break;
                 case GraphSourceType.AdjMatrix:
-                    GraphWriter.ToAdjMatrix(path, graph);
+                    (new AdjMatrixFormatStorage()).Save(path, graph);
                     break;
                 case GraphSourceType.EdgesList:
-                    GraphWriter.ToEdgesList(path, graph);
+                    (new EdgesListFormatStorage()).Save(path, graph);
                     break;
                 case GraphSourceType.IncidenceMatrix:
-                    GraphWriter.ToIncidenceMatrix(path, graph);
+                    (new IncidenceMatrixFormatStorage()).Save(path, graph);
                     break;
                 case GraphSourceType.HierarchicalRtf:
                     (new HierarchicalRtfFormatStorage()).Save(path, graph);
@@ -111,7 +111,7 @@ namespace SharpGraphEditor.Models
                 default:
                     throw new NotSupportedException($"{sourceType.ToString()} not support");
             }
-            
+
             SourceFile = path;
             SourceType = sourceType;
         }
@@ -129,16 +129,16 @@ namespace SharpGraphEditor.Models
                         (new GxmlFormatStorage()).Save(stringWriter, graph);
                         break;
                     case GraphSourceType.AdjList:
-                        GraphWriter.ToAdjList(stringWriter, graph);
+                        (new AdjListFormatStorage()).Save(stringWriter, graph);
                         break;
                     case GraphSourceType.AdjMatrix:
-                        GraphWriter.ToAdjMatrix(stringWriter, graph);
+                        (new AdjMatrixFormatStorage()).Save(stringWriter, graph);
                         break;
                     case GraphSourceType.EdgesList:
-                        GraphWriter.ToEdgesList(stringWriter, graph);
+                        (new EdgesListFormatStorage()).Save(stringWriter, graph);
                         break;
                     case GraphSourceType.IncidenceMatrix:
-                        GraphWriter.ToIncidenceMatrix(stringWriter, graph);
+                        (new IncidenceMatrixFormatStorage()).Save(stringWriter, graph);
                         break;
                     case GraphSourceType.HierarchicalRtf:
                         (new HierarchicalRtfFormatStorage()).Save(stringWriter, graph);
