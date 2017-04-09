@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithms\AestheticLayouterAlgorithm.cs" />
     <Compile Include="Algorithms\AlgorithmParameter.cs" />
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
     <Compile Include="Algorithms\BreadthFirstSearchAlgoritm.cs" />
