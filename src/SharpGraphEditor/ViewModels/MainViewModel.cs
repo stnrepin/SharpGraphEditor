@@ -435,6 +435,12 @@ namespace SharpGraphEditor.ViewModels
                     IsAlgorithmExecuting = true;
                     Terminal?.WriteLine($"{algorithm.Name} starting...");
                     algorithm?.Run(Document, AlgorithmParameter);
+
+                    if (_undoRedoCachePositionOfAlgorithm == Document.UndoRedoManager.Position)
+                    {
+                        StopAlgorithm();
+                    }
+
                     RestartAlgorithm();
                 },
                 () =>
