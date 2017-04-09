@@ -11,14 +11,11 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
 {
     public class IncidenceMatrixFormatStorage : BaseFormatStorage
     {
-        public override void Open(TextReader stream, IGraph graph)
+        public override void Open(TextReader reader, IGraph graph)
         {
-            if (graph.Vertices.Count() > 0)
-            {
-                graph.Clear();
-            }
+            base.Open(reader, graph);
 
-            var incMatrix = ReadAllLines(stream).Select(x => x.Split(' ').ToArray())
+            var incMatrix = ReadAllLines(reader).Select(x => x.Split(' ').ToArray())
                                                 .ToList();
             var verticesCount = incMatrix.Count;
             if (verticesCount == 0)
@@ -56,7 +53,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             }
         }
 
-        public override void Save(TextWriter stream, IGraph graph)
+        public override void Save(TextWriter writer, IGraph graph)
         {
             var verticesCount = graph.Vertices.Count();
             var edgesCount = graph.Edges.Count();
@@ -68,7 +65,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
                 matrix[edge.Target.Index - 1, edgeNumber] = edge.IsDirected ? -1 : 1;
                 edgeNumber++;
             }
-            PrintMatrix(stream, matrix, verticesCount, edgesCount);
+            PrintMatrix(writer, matrix, verticesCount, edgesCount);
         }
     }
 }

@@ -7,14 +7,11 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
 {
     public class AdjMatrixFormatStorage : BaseFormatStorage
     {
-        public override void Open(TextReader stream, IGraph graph)
+        public override void Open(TextReader reader, IGraph graph)
         {
-            if (graph.Vertices.Count() > 0)
-            {
-                graph.Clear();
-            }
+            base.Open(reader, graph);
 
-            var lines = ReadAllLines(stream).Select(x => x.Split(' ')).ToList();
+            var lines = ReadAllLines(reader).Select(x => x.Split(' ')).ToList();
 
             var count = lines.Count();
             for (var i = 0; i < count; i++)
@@ -31,7 +28,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             }
         }
 
-        public override void Save(TextWriter stream, IGraph graph)
+        public override void Save(TextWriter writer, IGraph graph)
         {
             var verticesCount = graph.Vertices.Count();
             var matrix = new int[verticesCount, verticesCount];
@@ -45,7 +42,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
                 }
             }
 
-            PrintMatrix(stream, matrix, verticesCount, verticesCount);
+            PrintMatrix(writer, matrix, verticesCount, verticesCount);
         }
     }
 }

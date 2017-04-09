@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using System.Linq;
 using SharpGraphEditor.Graph.Core.Exceptions;
 
 namespace SharpGraphEditor.Graph.Core.FormatStorage
@@ -33,32 +33,33 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
 
         public void Save(string path, IGraph graph)
         {
-            using (var fileStream = File.OpenWrite(path))
+
+            using (var stream = new StreamWriter(path, false))
             {
                 try
                 {
-                    ClearStream(fileStream);
-                    using (var stream = new StreamWriter(fileStream))
-                    {
-                        Save(stream, graph);
-                    }
+                    Save(stream, graph);
                 }
                 catch
                 {
-                    ClearStream(fileStream);
+                    stream.BaseStream.SetLength(0);
+                    stream.Flush();
                     throw;
                 }
             }
         }
 
-        public abstract void Open(TextReader stream, IGraph graph);
-
-        public abstract void Save(TextWriter stream, IGraph graph);
-
-        private void ClearStream(Stream stream)
+        public virtual void Open(TextReader reader, IGraph graph)
         {
-            stream.SetLength(0);
-            stream.Flush();
+            if (graph.Vertices.Count() > 0)
+            {
+                graph.Clear();
+            }
+        }
+
+        public virtual void Save(TextWriter writer, IGraph graph)
+        {
+            
         }
     }
 }

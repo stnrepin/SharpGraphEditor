@@ -12,12 +12,12 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
 {
     public class HierarchicalRtfFormatStorage : BaseFormatStorage
     {
-        public override void Open(TextReader stream, IGraph graph)
+        public override void Open(TextReader reader, IGraph graph)
         {
             throw new NotImplementedException("this format supports only saving");
         }
 
-        public override void Save(TextWriter stream, IGraph graph)
+        public override void Save(TextWriter writer, IGraph graph)
         {
             if (!graph.IsDirected)
             {
@@ -58,7 +58,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             {
                 node.Children = treeHash[node.Id].ToList();
             }
-            rootNode.PrintTreeAsRtf(stream);
+            rootNode.PrintTreeAsRtf(writer);
         }
 
         private class TreeNode

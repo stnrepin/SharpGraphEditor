@@ -10,14 +10,11 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
 {
     public class AdjListFormatStorage : BaseFormatStorage
     {
-        public override void Open(TextReader stream, IGraph graph)
+        public override void Open(TextReader reader, IGraph graph)
         {
-            if (graph.Vertices.Count() > 0)
-            {
-                graph.Clear();
-            }
+            base.Open(reader, graph);
 
-            var lines = ReadAllLines(stream);
+            var lines = ReadAllLines(reader);
 
             var list = new List<IEnumerable<int>>();
             foreach (var line in lines)
@@ -40,11 +37,11 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             }
         }
 
-        public override void Save(TextWriter stream, IGraph graph)
+        public override void Save(TextWriter writer, IGraph graph)
         {
             var adjList = graph.ToAdjList();
             adjList.Select(x => x.Key.Index + " " + String.Join(" ", x.Value.Select(y => y.Index.ToString())))
-                   .ForEach(y => stream.WriteLine(y));
+                   .ForEach(y => writer.WriteLine(y));
         }
     }
 }

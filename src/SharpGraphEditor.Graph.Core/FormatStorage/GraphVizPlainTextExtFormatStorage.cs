@@ -14,15 +14,12 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
     {
         public double MonitorDpi { get; set; } = 96;
 
-        public override void Open(TextReader stream, IGraph graph)
+        public override void Open(TextReader reader, IGraph graph)
         {
-            if (graph.Vertices.Count() > 0)
-            {
-                graph.Clear();
-            }
+            base.Open(reader, graph);
 
             int verticesCount = 0;
-            foreach (var line in ReadAllLines(stream))
+            foreach (var line in ReadAllLines(reader))
             {
                 var parts = SplitByWhitespacesWithQuotes(line);
                 var statementType = parts[0];
@@ -70,7 +67,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             }
         }
 
-        public override void Save(TextWriter stream, IGraph graph)
+        public override void Save(TextWriter writer, IGraph graph)
         {
             throw new NotImplementedException("this format supports only opening");
         }

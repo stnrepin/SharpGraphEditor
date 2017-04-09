@@ -8,14 +8,11 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
 {
     public class EdgesListFormatStorage : BaseFormatStorage
     {
-        public override void Open(TextReader stream, IGraph graph)
+        public override void Open(TextReader reader, IGraph graph)
         {
-            if (graph.Vertices.Count() > 0)
-            {
-                graph.Clear();
-            }
+            base.Open(reader, graph);
 
-            var lines = ReadAllLines(stream).ToArray();
+            var lines = ReadAllLines(reader).ToArray();
             foreach (var line in lines)
             {
                 var edges = line.Split(' ').Select(x => ParseStringTo<int>(x)).ToArray();
@@ -30,11 +27,11 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             }
         }
 
-        public override void Save(TextWriter stream, IGraph graph)
+        public override void Save(TextWriter writer, IGraph graph)
         {
             foreach (var edge in graph.Edges)
             {
-                stream.WriteLine(edge.Source.Index.ToString() + " " + edge.Target.Index.ToString());
+                writer.WriteLine(edge.Source.Index.ToString() + " " + edge.Target.Index.ToString());
             }
         }
     }

@@ -13,17 +13,14 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
 {
     public class GxmlFormatStorage : BaseFormatStorage
     {
-        public override void Open(TextReader stream, IGraph graph)
+        public override void Open(TextReader reader, IGraph graph)
         {
-            if (graph.Vertices.Count() > 0)
-            {
-                graph.Clear();
-            }
+            base.Open(reader, graph);
 
             XDocument doc;
             try
             {
-                doc = XDocument.Load(stream);
+                doc = XDocument.Load(reader);
             }
             catch (Exception ex)
             {
@@ -107,7 +104,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             }
         }
 
-        public override void Save(TextWriter stream, IGraph graph)
+        public override void Save(TextWriter writer, IGraph graph)
         {
             var verticesXmlElements = new List<XElement>();
             var edgesXmlElements = new List<XElement>();
@@ -135,7 +132,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             var rootElement = new XElement(XName.Get("graph"));
             rootElement.Add(verticesXmlElements.ToArray());
             rootElement.Add(edgesXmlElements.ToArray());
-            rootElement.Save(stream);
+            rootElement.Save(writer);
         }
     }
 }
