@@ -10,8 +10,7 @@ namespace SharpGraphEditor.Models
     public class ZoomManager : PropertyChangedBase
     {
 
-        public int MaxZoom { get; } = 2;
-
+        public double MaxZoom { get; } = 2;
 
         public double CurrentZoom { get; private set; }
 
@@ -19,20 +18,21 @@ namespace SharpGraphEditor.Models
 
         public ZoomManager()
         {
-            CurrentZoom = 1;
+            CurrentZoom = 1.0;
         }
 
         public void ChangeCurrentZoom(double value)
         {
-            if (value >= (1 / MaxZoom) && value <= MaxZoom)
+            var newZoom = CurrentZoom + value;
+            if (newZoom >= (1.0 / MaxZoom) && newZoom <= MaxZoom)
             {
-                CurrentZoom = Math.Round(value, 2);
+                CurrentZoom = Math.Round(newZoom, 2);
             }
         }
 
         public void ChangeZoomByPercents(double percents)
         {
-            CurrentZoom += percents / 100;
+            ChangeCurrentZoom(percents / 100);
         }
     }
 }
