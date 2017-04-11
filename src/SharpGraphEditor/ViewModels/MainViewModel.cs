@@ -440,8 +440,10 @@ namespace SharpGraphEditor.ViewModels
                     {
                         StopAlgorithm();
                     }
-
-                    RestartAlgorithm();
+                    else
+                    {
+                        RestartAlgorithm();
+                    }
                 },
                 () =>
                 {
