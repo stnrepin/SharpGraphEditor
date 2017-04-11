@@ -76,8 +76,9 @@
             </TextBox.Text>
         </TextBox>
 
-        <TextBlock Text="Color: " />
-        <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+        <TextBlock Text="Color: " Margin="0, 0, 10, 0" />
+        <ComboBox Margin="0, 0, 10, 5"
+                  ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
                   SelectedItem="{Binding TargetVertex.Color}" />
     </StackPanel>
 </Window>
