@@ -24,111 +24,102 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
                 throw new InvalidGraphFormatException("graph must be directed");
             }
 
-            var hasVertexParent = new bool[graph.Vertices.Count()];
-            foreach (var edge in graph.Edges)
+            var rootVertices = graph.Vertices.ToArray();
+
+            foreach (var column in graph.ToAdjList())
             {
-                hasVertexParent[edge.Target.Index - 1] = true;
+                var parent = column.Key;
+                foreach (var child in column.Value)
+                {
+                    rootVertices[child.Index - 1] = null;
+                }
             }
 
-            var verticesWithoutParent = hasVertexParent.AllIndexesOf(x => !x);
-            if (verticesWithoutParent.Count() == 0)
+            rootVertices = rootVertices.Where(x => x != null).ToArray();
+
+            if (rootVertices.Length == 0)
             {
                 throw new InvalidGraphFormatException("graph must have some vertices without parent");
             }
 
-            IVertex mainVertex = graph.Vertices.ElementAt(Array.IndexOf(hasVertexParent, false));
+            var rtfWriter = new RtfWriter(writer);
+            rtfWriter.WriteDocumentStart();
 
-            var tree = new List<TreeNode>();
+            var stack = new Stack<Tuple<IVertex, int>>();
+            int indent = -1;
             var dfs = new Algorithms.Helpers.DepthFirstSearch(graph)
             {
-                ProcessEdge = (p, v) =>
+                ProcessVertexEarly = (_) =>
                 {
-                    tree.Add(new TreeNode(v.Index, p.Index, v, null));
+                    indent++;
+                },
+                ProcessVertexLate = (v) =>
+                {
+                    stack.Push(new Tuple<IVertex, int>(v, indent));
+                    indent--;
                 }
             };
-            dfs.Run(mainVertex);
-            var rootNode = new TreeNode(mainVertex.Index, 0, mainVertex, null);
-            tree.Add(rootNode);
-            tree = tree.OrderBy(x => x.Id).ToList();
-            tree.Add(new TreeNode(-1, -1, null, null));
-
-            var treeHash = tree.ToLookup(cat => cat.ParentId);
-
-            foreach (var node in tree)
+            foreach (var root in rootVertices)
             {
-                node.Children = treeHash[node.Id].ToList();
+                dfs.Run(root);
+                while (stack.Count > 0)
+                {
+                    var col = stack.Pop();
+                    var vertex = col.Item1;
+                    var indentLevel = col.Item2;
+
+                    rtfWriter.WriteLine(vertex.Name, indentLevel, vertex.Color.ToString());
+                }
             }
-            rootNode.PrintTreeAsRtf(writer);
+            rtfWriter.WriteDocumentEnd();
         }
 
-        private class TreeNode
+        private class RtfWriter
         {
-            private const string ColorTable = "{\\colortbl ;" +
-                                            "\\red0\\green0\\blue0;" +
-                                            "\\red0\\green0\\blue255;" +
-                                            "\\red0\\green255\\blue0;" +
-                                            "\\red255\\green0\\blue0;" +
+            private readonly string ColorTable = "{\\colortbl ;" + Environment.NewLine +
+                                            "\\red0\\green0\\blue0;" + Environment.NewLine +
+                                            "\\red0\\green0\\blue255;" + Environment.NewLine +
+                                            "\\red0\\green255\\blue0;" + Environment.NewLine +
+                                            "\\red255\\green0\\blue0;" + Environment.NewLine +
                                             "\\red128\\green128\\blue128;}";
-            private readonly Dictionary<VertexColor, string> ColorPositionInTable = new Dictionary<VertexColor, string>()
+            private readonly Dictionary<string, string> ColorMap = new Dictionary<string, string>()
             {
-                [VertexColor.Black] = "0",
-                [VertexColor.White] = "1",
-                [VertexColor.Blue] = "2",
-                [VertexColor.Green] = "3",
-                [VertexColor.Red] = "4",
-                [VertexColor.Gray] = "5"
+                ["Black"] = "0",
+                ["White"] = "1",
+                ["Blue"] = "2",
+                ["Green"] = "3",
+                ["Red"] = "4",
+                ["Gray"] = "5"
             };
 
-            public int Id { get; private set; }
-            public int ParentId { get; private set; }
-            public IVertex Value { get; private set; }
-            public IEnumerable<TreeNode> Children { get; set; }
+            private TextWriter _textWriter;
 
-            public TreeNode(int id, int parentId, IVertex value, IEnumerable<TreeNode> children)
+            public RtfWriter(TextWriter textWriter)
             {
-                Id = id;
-                ParentId = parentId;
-                Value = value;
-                Children = children;
+                _textWriter = textWriter;
             }
 
-            public void PrintTreeAsRtf(TextWriter textWriter)
+            public void WriteDocumentStart()
             {
-                textWriter.WriteLine("{\\rtf1 " + ColorTable + Environment.NewLine);
-                var firstStack = new List<TreeNode> { this };
+                _textWriter.WriteLine("{\\rtf1 " + Environment.NewLine + ColorTable + Environment.NewLine);
+            }
 
-                var childListStack = new List<List<TreeNode>> { firstStack };
+            public void WriteDocumentEnd()
+            {
+                _textWriter.WriteLine(Environment.NewLine + "}");
+            }
 
-                while (childListStack.Count > 0)
+            public void WriteLine(string text, int indentLevel, string colorName)
+            {
+                var indent = String.Empty;
+                for (int i = 0; i < indentLevel; i++)
                 {
-                    var childStack = childListStack[childListStack.Count - 1];
-
-                    if (childStack.Count == 0)
-                    {
-                        childListStack.RemoveAt(childListStack.Count - 1);
-                    }
-                    else
-                    {
-                        var root = childStack[0];
-                        childStack.RemoveAt(0);
-
-                        var indent = String.Empty;
-                        for (int i = 0; i < childListStack.Count - 1; i++)
-                        {
-                            indent += "  ";
-                        }
-
-                        var rootStr = String.Join("", root.Value.Name.Select(x => "\\u" + ((int)x).ToString() + "?"));
-                        textWriter.WriteLine("{\\cf" + ColorPositionInTable[root.Value.Color] + " " + indent + rootStr + "\\cf0" + "}");
-                        textWriter.WriteLine("\\par");
-
-                        if (root.Children.Count() > 0)
-                        {
-                            childListStack.Add(new List<TreeNode>(root.Children));
-                        }
-                    }
+                    indent += "\\tab";
                 }
-                textWriter.WriteLine("}");
+
+                var rootStr = String.Join("", text.Select(x => "\\u" + ((int)x).ToString() + "?"));
+                _textWriter.Write("\\line " + indent + " \\bullet  ");
+                _textWriter.WriteLine("{\\cf" + ColorMap[colorName] + " " + rootStr + "\\cf0" + "}");
             }
         }
     }

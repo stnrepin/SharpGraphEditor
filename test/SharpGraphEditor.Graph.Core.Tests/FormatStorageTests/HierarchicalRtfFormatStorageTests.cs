@@ -31,18 +31,19 @@ namespace SharpGraphEditor.Graph.Core.Tests.FormatStorageTests
         [TestMethod]
         public void Save_ValidGraph_Text()
         {
-            var expectedText = @"{\rtf1 {\colortbl ;\red0\green0\blue0;\red0\green0\blue255;\red0\green255\blue0;\red255\green0\blue0;\red128\green128\blue128;}
+            var expectedText = @"{\rtf1 
+{\colortbl ;
+\red0\green0\blue0;
+\red0\green0\blue255;
+\red0\green255\blue0;
+\red255\green0\blue0;
+\red128\green128\blue128;}
 
-{\cf1 \u97?\cf0}
-\par
-{\cf2   \u98?\cf0}
-\par
-{\cf1     \u99?\cf0}
-\par
-{\cf3     \u100?\cf0}
-\par
-{\cf1       \u99?\cf0}
-\par
+\line  \bullet  {\cf1 \u97?\cf0}
+\line \tab \bullet  {\cf2 \u98?\cf0}
+\line \tab\tab \bullet  {\cf3 \u100?\cf0}
+\line \tab\tab \bullet  {\cf1 \u99?\cf0}
+
 }
 ";
             var storage = new HierarchicalRtfFormatStorage();
