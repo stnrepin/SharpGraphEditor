@@ -43,7 +43,10 @@ namespace SharpGraphEditor.Views
 
         private void GraphControl_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Vm.NewEdge = null;
+            if (Vm.NewEdge != null)
+            {
+                Vm.NewEdge = null;
+            }
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -93,7 +96,7 @@ namespace SharpGraphEditor.Views
             if (e.Delta > 0)
             {
                 Vm.ChangeZoomByPercents(10);
-            } 
+            }
             else if (e.Delta < 0)
             {
                 Vm.ChangeZoomByPercents(-10);
