@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{4520
 		samples\adj_list.txt = samples\adj_list.txt
 		samples\adj_matrix.txt = samples\adj_matrix.txt
 		samples\edges_list.txt = samples\edges_list.txt
+		samples\graphviz_plaintext.txt = samples\graphviz_plaintext.txt
 		samples\gxml.gxml = samples\gxml.gxml
 		samples\inc_matrix.txt = samples\inc_matrix.txt
 	EndProjectSection
