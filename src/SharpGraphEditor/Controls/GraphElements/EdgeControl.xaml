@@ -9,13 +9,6 @@
        x:Name="Thumb"
        mc:Ignorable="d">
 
-    <Thumb.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Styles/MainViewStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Thumb.Resources>
 
     <Thumb.Template>
         <ControlTemplate TargetType="Thumb">

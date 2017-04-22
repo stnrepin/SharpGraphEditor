@@ -1,10 +1,11 @@
 ﻿using System.Windows;
 
 using Caliburn.Micro;
+using MahApps.Metro.Controls;
 
 namespace SharpGraphEditor.Views
 {
-    public partial class FileDialogView : Window, IClose
+    public partial class FileDialogView : MetroWindow, IClose
     {
         public FileDialogView()
         {

@@ -3,10 +3,11 @@ using System.Diagnostics;
 using System.Windows;
 
 using Caliburn.Micro;
+using MahApps.Metro.Controls;
 
 namespace SharpGraphEditor.Views
 {
-    public partial class AboutView : Window, IClose
+    public partial class AboutView : MetroWindow, IClose
     {
         public AboutView()
         {

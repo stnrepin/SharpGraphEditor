@@ -10,13 +10,6 @@
        ToolTipService.InitialShowDelay="10"
        ToolTipService.ShowOnDisabled="True"
        ToolTipService.ToolTip="{Binding Title}">
-    <Thumb.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Styles/MainViewStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Thumb.Resources>
 
     <Thumb.Template>
         <ControlTemplate TargetType="Thumb">

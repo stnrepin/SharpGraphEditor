@@ -1,35 +1,42 @@
-﻿<Window x:Class="SharpGraphEditor.Views.TextViewerView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SharpGraphEditor.Views"
-        xmlns:cal="http://www.caliburnproject.org"
-        xmlns:conv="clr-namespace:SharpGraphEditor.Converters"
-        mc:Ignorable="d"
-        WindowStartupLocation="CenterOwner"
-        WindowStyle="None"
-        ResizeMode="NoResize"
-        Title="Text Viewer" Height="400" Width="600">
-    <Border BorderThickness="1" BorderBrush="Black">
-        <Border.Resources>
-            <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        </Border.Resources>
-        <Grid>
-            <TextBox TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="10, 10, 10, 35" VerticalAlignment="Stretch" 
-                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
-                     AcceptsReturn="True"
-                     Text="{Binding Text, Mode=TwoWay}"
-                     IsReadOnly="{Binding IsReadOnly}" />
-            <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button Content="Copy" Margin="10" Width="75"
-                        Visibility="{Binding CanCopy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=1}" 
-                        cal:Message.Attach="CopyText" />
-                <Button Content="OK" Margin="0, 10, 10, 10" Width="75" cal:Message.Attach="Ok($view)" />
-                <Button Content="Cancel" Margin="0, 10, 10, 10" Width="75"
-                        Visibility="{Binding CanCancel, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=1}" 
-                        cal:Message.Attach="Cancel($view)" />
-            </StackPanel>
-        </Grid>
-    </Border>
-</Window>
+﻿<metroControls:MetroWindow x:Class="SharpGraphEditor.Views.TextViewerView"
+                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                           xmlns:local="clr-namespace:SharpGraphEditor.Views"
+                           xmlns:cal="http://www.caliburnproject.org"
+                           xmlns:metroControls="http://metro.mahapps.com/winfx/xaml/controls"
+                           mc:Ignorable="d"
+                           WindowStartupLocation="CenterOwner"
+                           WindowStyle="None"
+                           ResizeMode="NoResize"
+                           Title="Text Viewer" 
+                           MinHeight="400" 
+                           MinWidth="600"
+                           ShowTitleBar="False"
+                           ShowCloseButton="False"
+                           ShowInTaskbar="False"
+                           SizeToContent="WidthAndHeight"
+                           BorderBrush="{StaticResource SelectionColor}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBox TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="10, 10, 10, 0" VerticalAlignment="Stretch" 
+                 HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
+                 AcceptsReturn="True"
+                 Text="{Binding Text, Mode=TwoWay}"
+                 IsReadOnly="{Binding IsReadOnly}" 
+                 Grid.Row="0"/>
+        <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="1">
+            <Button Content="Copy" Margin="10" Width="75"
+                    Visibility="{Binding CanCopy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=1}" 
+                    cal:Message.Attach="CopyText" />
+            <Button Content="OK" Margin="0, 10, 10, 10" Width="75" cal:Message.Attach="Ok($view)" />
+            <Button Content="Cancel" Margin="0, 10, 10, 10" Width="75"
+                    Visibility="{Binding CanCancel, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=1}" 
+                    cal:Message.Attach="Cancel($view)" />
+        </StackPanel>
+    </Grid>
+</metroControls:MetroWindow>

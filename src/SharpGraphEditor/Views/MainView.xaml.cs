@@ -5,12 +5,14 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 
+using MahApps.Metro.Controls;
+
 using SharpGraphEditor.ViewModels;
 using SharpGraphEditor.Graph.Core.Elements;
 
 namespace SharpGraphEditor.Views
 {
-    public partial class MainView : Window
+    public partial class MainView : MetroWindow
     {
         public MainViewModel Vm => (DataContext as MainViewModel);
 
