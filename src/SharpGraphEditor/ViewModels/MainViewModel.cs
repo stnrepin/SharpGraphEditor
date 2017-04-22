@@ -107,9 +107,9 @@ namespace SharpGraphEditor.ViewModels
             WindowManager?.ShowDialog(new VertexPropertiesViewModel(vertex));
         }
 
-        public void Exit()
+        public async System.Threading.Tasks.Task ExitAsync()
         {
-            if (CheckGraphForClearing())
+            if (await CheckGraphForClearingAsync())
             {
                 Environment.Exit(0);
             }
@@ -124,9 +124,9 @@ namespace SharpGraphEditor.ViewModels
             AlgorithmParameter.Output = Terminal;
         }
 
-        public void ClearGraph()
+        public async System.Threading.Tasks.Task ClearGraphAsync()
         {
-            if (CheckGraphForClearing())
+            if (await CheckGraphForClearingAsync())
             {
                 Document.Clear();
                 Terminal?.Clear();
@@ -152,9 +152,9 @@ namespace SharpGraphEditor.ViewModels
             NotifyOfPropertyChange(() => CurrentZoomInPercents);
         }
 
-        public void LoadGraphFromFile()
+        public async System.Threading.Tasks.Task LoadGraphFromFileAsync()
         {
-            if (CheckGraphForClearing())
+            if (await CheckGraphForClearingAsync())
             {
                 try
                 {
@@ -171,7 +171,7 @@ namespace SharpGraphEditor.ViewModels
                         _repository.LoadFromFile(Document, fileName, dialog.SourceType);
                         Title = ProjectName + $" - {fileName}";
 
-                        EllipseVerticesPositionIfNeed();
+                        await EllipseVerticesPositionIfNeedAsync();
                         IsModified = false;
                         Document.UndoRedoManager.Clear();
                     }
@@ -183,9 +183,9 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
-        public void LoadGraphFromText()
+        public async System.Threading.Tasks.Task LoadGraphFromTextAsync()
         {
-            if (CheckGraphForClearing())
+            if (await CheckGraphForClearingAsync())
             {
                 try
                 {
@@ -198,7 +198,7 @@ namespace SharpGraphEditor.ViewModels
                         if (textViewerResult.HasValue && textViewerResult.Value)
                         {
                             _repository.LoadFromText(Document, textViewer.Text, dialog.SourceType);
-                            EllipseVerticesPositionIfNeed();
+                            await EllipseVerticesPositionIfNeedAsync();
                             IsModified = true;
                             Title = ProjectName;
                         }
@@ -414,19 +414,20 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
-        public void RunAlgorithm(IAlgorithm algolithm)
+        public async System.Threading.Tasks.Task RunAlgorithmAsync(IAlgorithm algolithm)
         {
-            RunAlgorithm(algolithm, true);
+            await RunAlgorithmAsync(algolithm, true);
         }
 
-        public void RunAlgorithm(IAlgorithm algorithm, bool checkGraphForClearing)
+        public async System.Threading.Tasks.Task RunAlgorithmAsync(IAlgorithm algorithm, bool checkGraphForClearing)
         {
             if (Document.ObservableVertices.Count == 0)
             {
                 return;
             }
 
-            if (!checkGraphForClearing || CheckGraphForClearing())
+            var canClearGraph = await CheckGraphForClearingAsync();
+            if (!checkGraphForClearing || canClearGraph)
             {
                 var a = new Helpers.AsyncOperation(() =>
                 {
@@ -445,11 +446,11 @@ namespace SharpGraphEditor.ViewModels
                         RestartAlgorithm();
                     }
                 },
-                () =>
+                async () =>
                 {
                     Terminal?.WriteLine("Algorithm finished successfully.\n");
                     IsAlgorithmExecuting = false;
-                    EllipseVerticesPositionIfNeed();
+                    await EllipseVerticesPositionIfNeedAsync();
                 },
                 (e) =>
                 {
@@ -572,11 +573,11 @@ namespace SharpGraphEditor.ViewModels
 
         // Methods
         //
-        private bool CheckGraphForClearing()
+        private async System.Threading.Tasks.Task<bool> CheckGraphForClearingAsync()
         {
             if (IsModified)
             {
-                var res = DialogPresenter.ShowMessaeBoxYesNoCancel("Graph has been modified. Save changes?", ProjectName);
+                var res = await DialogPresenter.ShowMessaeBoxYesNoCancelAsync("Graph has been modified. Save changes?", ProjectName);
                 switch (res)
                 {
                     case MessageBoxResult.Yes:
@@ -593,7 +594,7 @@ namespace SharpGraphEditor.ViewModels
             return true;
         }
 
-        private void EllipseVerticesPositionIfNeed()
+        private async System.Threading.Tasks.Task EllipseVerticesPositionIfNeedAsync()
         {
             if (Document.Vertices.All(x => !x.HasPosition))
             {
@@ -602,7 +603,7 @@ namespace SharpGraphEditor.ViewModels
                 {
                     throw new ArgumentNullException("Cant find Ellipse layouter algorithm");
                 }
-                RunAlgorithm(alg, false);
+                await RunAlgorithmAsync(alg, false);
             }
         }
 
@@ -625,7 +626,7 @@ namespace SharpGraphEditor.ViewModels
                 while (exCopy != null);
             }
 
-            DialogPresenter.ShowError(ex.Message, ProjectName, ex.GetType());
+            DialogPresenter.ShowErrorAsync(ex.Message, ProjectName, ex.GetType());
         }
     }
 }

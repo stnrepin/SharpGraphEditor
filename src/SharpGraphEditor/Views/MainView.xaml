@@ -13,7 +13,7 @@
         
                            mc:Ignorable="d"
                            x:Name="MainWindow"
-                           Closing="MainWindow_Closing"
+                           Closing="MainWindow_ClosingAsync"
                            PreviewMouseMove="MainWindow_PreviewMouseMove"
                            MinHeight="640"
                            MinWidth="900"
@@ -87,10 +87,10 @@
 
         <Menu Grid.Row="0" Background="White" IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}">
             <MenuItem Header="File">
-                <MenuItem Header="New" cal:Message.Attach="ClearGraph" />
+                <MenuItem Header="New" cal:Message.Attach="ClearGraphAsync" />
                 <MenuItem Header="Open">
-                    <MenuItem Header="From File..." cal:Message.Attach="LoadGraphFromFile" />
-                    <MenuItem Header="From Text..." cal:Message.Attach="LoadGraphFromText"/>
+                    <MenuItem Header="From File..." cal:Message.Attach="LoadGraphFromFileAsync" />
+                    <MenuItem Header="From Text..." cal:Message.Attach="LoadGraphFromTextAsync"/>
                 </MenuItem>
                 <MenuItem Header="Save" cal:Message.Attach="Save" />
                 <MenuItem Header="Save as">
@@ -98,7 +98,7 @@
                     <MenuItem Header="To Text..." cal:Message.Attach="SaveAsText" />
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Exit" cal:Message.Attach="Exit" />
+                <MenuItem Header="Exit" cal:Message.Attach="ExitAsync" />
             </MenuItem>
 
             <MenuItem Header="Edit">
@@ -119,7 +119,7 @@
 
             <MenuItem Header="Algorithms" 
                       ItemsSource="{Binding Algorithms}" 
-                      cal:Message.Attach="[Event Click] = [Action RunAlgorithm($originalsourcecontext)]">
+                      cal:Message.Attach="[Event Click] = [Action RunAlgorithmAsync($originalsourcecontext)]">
                 <MenuItem.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="TextBlock" Text="{Binding Name}" />

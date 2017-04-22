@@ -51,10 +51,10 @@ namespace SharpGraphEditor.Views
             }
         }
 
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void MainWindow_ClosingAsync(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Vm.Exit();
             e.Cancel = true;
+            await Vm.ExitAsync();
         }
 
         private void GraphElement_DragDelta(object sender, DragDeltaEventArgs e)

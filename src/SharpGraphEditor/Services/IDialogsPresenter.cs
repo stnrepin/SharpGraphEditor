@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace SharpGraphEditor.Services
 {
@@ -11,11 +12,9 @@ namespace SharpGraphEditor.Services
 
     public interface IDialogsPresenter
     {
-        MessageBoxResult ShowMessaeBoxYesNoCancel(string message, string caption);
+        Task<MessageBoxResult> ShowMessaeBoxYesNoCancelAsync(string message, string caption);
 
-        void ShowError(string message, string caption,  Type exType);
-
-        void ShowError(string message, string caption);
+        Task ShowErrorAsync(string message, string caption,  Type exType);
 
         string ShowFileOpenDialog(string filter);
 
