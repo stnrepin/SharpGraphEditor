@@ -10,6 +10,7 @@
                            xmlns:models="clr-namespace:SharpGraphEditor.Models"
                            xmlns:ge="clr-namespace:SharpGraphEditor.Controls.GraphElements"
                            xmlns:controls="clr-namespace:SharpGraphEditor.Controls"
+                           xmlns:helpers="clr-namespace:SharpGraphEditor.Helpers"
         
                            mc:Ignorable="d"
                            x:Name="MainWindow"
@@ -23,7 +24,20 @@
                            Height="640" 
                            Width="1000" 
                            BorderBrush="{StaticResource SelectionColor}"
-                           WindowStartupLocation="CenterScreen">
+                           WindowStartupLocation="CenterScreen"
+                           
+                           cal:Message.Attach="
+                               [Shortcut Control+R] = [Action RemoveElement(MainWindow.DataContext.SelectedElement)];
+                               [Shortcut Control+S] = [Action Save];
+                               [Shortcut Control+Shift+S,T] = [Action SaveAsText];
+                               [Shortcut Control+Shift+S,F] = [Action SaveAs];
+                               [Shortcut Control+O,T] = [Action LoadGraphFromTextAsync];
+                               [Shortcut Control+O,F] = [Action LoadGraphFromFileAsync];
+                               [Shortcut Control+Z] = [Action Undo];
+                               [Shortcut Control+Y] = [Action Redo];
+                               [Shortcut Control+V,P] = [Action ShowVertexProperties(null)];
+                               [Shortcut Control+T] = [Action ChangeOutputVisibility('true')];
+                               [Shortcut Control+N,M] = [Action ClearGraphAsync]">
     <metroControls:MetroWindow.Resources>
         <ResourceDictionary>
             <ContextMenu x:Key="VertexContextMenu"
@@ -87,32 +101,33 @@
 
         <Menu Grid.Row="0" Background="White" IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}">
             <MenuItem Header="File">
-                <MenuItem Header="New" cal:Message.Attach="ClearGraphAsync" />
+                <MenuItem Header="New" cal:Message.Attach="ClearGraphAsync" InputGestureText="Ctrl+N" />
+                <Separator />
                 <MenuItem Header="Open">
-                    <MenuItem Header="From File..." cal:Message.Attach="LoadGraphFromFileAsync" />
-                    <MenuItem Header="From Text..." cal:Message.Attach="LoadGraphFromTextAsync"/>
+                    <MenuItem Header="From File..." cal:Message.Attach="LoadGraphFromFileAsync" InputGestureText="Ctrl+O, F" />
+                    <MenuItem Header="From Text..." cal:Message.Attach="LoadGraphFromTextAsync" InputGestureText="Ctrl+O, T" />
                 </MenuItem>
-                <MenuItem Header="Save" cal:Message.Attach="Save" />
+                <MenuItem Header="Save" cal:Message.Attach="Save" InputGestureText="Ctrl+S" />
                 <MenuItem Header="Save as">
-                    <MenuItem Header="To File..." cal:Message.Attach="SaveAs" />
-                    <MenuItem Header="To Text..." cal:Message.Attach="SaveAsText" />
+                    <MenuItem Header="To File..." cal:Message.Attach="SaveAs" InputGestureText="Ctrl+S, F" />
+                    <MenuItem Header="To Text..." cal:Message.Attach="SaveAsText" InputGestureText="Ctrl+S, T" />
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Exit" cal:Message.Attach="ExitAsync" />
+                <MenuItem Header="Exit" cal:Message.Attach="ExitAsync" InputGestureText="Alt+F4" />
             </MenuItem>
 
             <MenuItem Header="Edit">
-                <MenuItem Header="Undo" cal:Message.Attach="Undo" />
-                <MenuItem Header="Redo" cal:Message.Attach="Redo" />
+                <MenuItem Header="Undo" cal:Message.Attach="Undo" InputGestureText="Ctrl+Z" />
+                <MenuItem Header="Redo" cal:Message.Attach="Redo" InputGestureText="Ctrl+Y" />
             </MenuItem>
 
             <MenuItem Header="View">
-                <MenuItem Header="Properties..." cal:Message.Attach="[Event Click] = [Action ShowVertexProperties(null)]" />
-                <MenuItem Header="Output" cal:Message.Attach="[Event Click] = [Action ChangeOutputVisibility('true')]" />
+                <MenuItem Header="Properties..." cal:Message.Attach="[Event Click] = [Action ShowVertexProperties(null)]" InputGestureText="Ctrl+V, P" />
+                <MenuItem Header="Output" cal:Message.Attach="[Event Click] = [Action ChangeOutputVisibility('true')]" InputGestureText="Ctrl+T" />
             </MenuItem>
 
             <MenuItem Header="Graph">
-                <CheckBox x:Name="IsDirectedChB" 
+                <CheckBox x:Name="IsDirectedChB"
                           Content="Directed" 
                           IsChecked="{Binding Document.IsDirected, Mode=TwoWay}" />
             </MenuItem>
@@ -282,6 +297,7 @@
                                   ClipToBounds="True"
                                   IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}"
                                   Background="{StaticResource PanelsBackgroundColor}"
+                                  IsTabStop="False"
                                   RenderTransformOrigin="0.5 0.5"
                                   SizeChanged="GraphControl_SizeChanged"
                                   MouseWheel="GraphControl_MouseWheel" 

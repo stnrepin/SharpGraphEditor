@@ -5,6 +5,7 @@ using System.Windows.Threading;
 
 using Caliburn.Micro;
 
+using SharpGraphEditor.Helpers;
 using SharpGraphEditor.Services;
 
 namespace SharpGraphEditor
@@ -33,6 +34,15 @@ namespace SharpGraphEditor
             _container.Singleton<IWindowManager, WindowManager>();
 
             _container.PerRequest<ViewModels.MainViewModel>();
+
+            var currentParser = Parser.CreateTrigger;
+
+            //http://www.siimviikman.com/2012/06/28/caliburn-adding-keyboard-shortcuts/
+            //http://kent-boogaart.com/blog/multikeygesture
+            Parser.CreateTrigger = (target, triggerText) => ShortcutParser.CanParse(triggerText)
+                                                                ? ShortcutParser.CreateTrigger(triggerText)
+                                                                : currentParser(target, triggerText);
+
 
             MessageBinder.SpecialValues.Add("$originalsourcecontext", context =>
             {

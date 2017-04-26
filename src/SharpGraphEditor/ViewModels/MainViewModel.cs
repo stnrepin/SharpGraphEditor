@@ -333,6 +333,7 @@ namespace SharpGraphEditor.ViewModels
             }
 
             NewEdge = null;
+            SelectedElement = null;
             Document.Remove(element);
         }
 

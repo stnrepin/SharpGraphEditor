@@ -94,6 +94,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
+    <Compile Include="Behaviors\InputBindingTrigger.cs" />
     <Compile Include="Controls\AutoSizeCanvas.cs" />
     <Compile Include="Controls\ConnectorShape.cs" />
     <Compile Include="Controls\ITerminal.cs" />
@@ -107,6 +108,10 @@
     <Compile Include="Converters\VertexColorToColorConverter.cs" />
     <Compile Include="Helpers\AsyncOperation.cs" />
     <Compile Include="Helpers\BindingErrorTraceListener.cs" />
+    <Compile Include="Helpers\MultiKeyBinding.cs" />
+    <Compile Include="Helpers\MultiKeyGesture.cs" />
+    <Compile Include="Helpers\MultiKeyGestureConverter.cs" />
+    <Compile Include="Helpers\ShortcutParser.cs" />
     <Compile Include="Models\CursorModeManager.cs" />
     <Compile Include="Models\Edge.cs" />
     <Compile Include="Models\GraphDocument.cs" />
