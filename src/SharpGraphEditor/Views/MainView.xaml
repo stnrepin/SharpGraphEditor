@@ -37,7 +37,7 @@
                                [Shortcut Control+Y] = [Action Redo];
                                [Shortcut Control+V,P] = [Action ShowVertexProperties(null)];
                                [Shortcut Control+T] = [Action ChangeOutputVisibility('true')];
-                               [Shortcut Control+N,M] = [Action ClearGraphAsync]">
+                               [Shortcut Control+N] = [Action ClearGraphAsync]">
     <metroControls:MetroWindow.Resources>
         <ResourceDictionary>
             <ContextMenu x:Key="VertexContextMenu"
@@ -99,7 +99,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Background="White" IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}">
+        <Menu Grid.Row="0" Background="White">
             <MenuItem Header="File">
                 <MenuItem Header="New" cal:Message.Attach="ClearGraphAsync" InputGestureText="Ctrl+N" />
                 <Separator />
@@ -126,7 +126,7 @@
                 <MenuItem Header="Output" cal:Message.Attach="[Event Click] = [Action ChangeOutputVisibility('true')]" InputGestureText="Ctrl+T" />
             </MenuItem>
 
-            <MenuItem Header="Graph">
+            <MenuItem Header="Graph" IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}">
                 <CheckBox x:Name="IsDirectedChB"
                           Content="Directed" 
                           IsChecked="{Binding Document.IsDirected, Mode=TwoWay}" />
@@ -273,7 +273,7 @@
                     Visibility="{Binding Visibility, ElementName=OutputTerminal}"
                     DockPanel.Dock="Bottom">
                 <StackPanel>
-                    <StackPanel IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Tag="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
                                 Margin="5" Height="15" Width="15" Style="{StaticResource PathButtonStyle}" 
                                 cal:Message.Attach="ClearTerminalText" />

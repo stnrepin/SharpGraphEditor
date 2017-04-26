@@ -169,11 +169,11 @@ namespace SharpGraphEditor.ViewModels
                             return;
 
                         _repository.LoadFromFile(Document, fileName, dialog.SourceType);
-                        Title = ProjectName + $" - {fileName}";
 
                         await EllipseVerticesPositionIfNeedAsync();
-                        IsModified = false;
                         Document.UndoRedoManager.Clear();
+                        Init();
+                        Title = ProjectName + $" - {fileName}";
                     }
                 }
                 catch (Exception e)
@@ -203,6 +203,7 @@ namespace SharpGraphEditor.ViewModels
                             Title = ProjectName;
                         }
                         Document.UndoRedoManager.Clear();
+                        Init();
                     }
                 }
                 catch (Exception e)
