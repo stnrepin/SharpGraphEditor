@@ -107,6 +107,25 @@ namespace SharpGraphEditor.ViewModels
             WindowManager?.ShowDialog(new VertexPropertiesViewModel(vertex));
         }
 
+        public async System.Threading.Tasks.Task ShowGraphGeneratorAsync()
+        {
+            if (await CheckGraphForClearingAsync())
+            {
+                Init();
+                var generator = new GraphGeneratorViewModel(Document.ObservableVertices.Count);
+                WindowManager.ShowDialog(generator);
+                var edgesList = generator.ResultEdgesList;
+                _repository.LoadFromText(Document, edgesList, GraphSourceType.EdgesList);
+
+                for (int i = 1; i <= generator.VerticesCount; i++)
+                {
+                    Document.AddVertex(i);
+                }
+
+                await EllipseVerticesPositionIfNeedAsync();
+            }
+        }
+
         public async System.Threading.Tasks.Task ExitAsync()
         {
             if (await CheckGraphForClearingAsync())
@@ -128,9 +147,9 @@ namespace SharpGraphEditor.ViewModels
         {
             if (await CheckGraphForClearingAsync())
             {
-                Document.Clear();
                 Terminal?.Clear();
                 ViewLoaded();
+                Document.Clear();
                 Init();
             }
         }
@@ -199,11 +218,9 @@ namespace SharpGraphEditor.ViewModels
                         {
                             _repository.LoadFromText(Document, textViewer.Text, dialog.SourceType);
                             await EllipseVerticesPositionIfNeedAsync();
-                            IsModified = true;
-                            Title = ProjectName;
+                            Document.UndoRedoManager.Clear();
+                            Init();
                         }
-                        Document.UndoRedoManager.Clear();
-                        Init();
                     }
                 }
                 catch (Exception e)
@@ -428,8 +445,7 @@ namespace SharpGraphEditor.ViewModels
                 return;
             }
 
-            var canClearGraph = await CheckGraphForClearingAsync();
-            if (!checkGraphForClearing || canClearGraph)
+            if (!checkGraphForClearing || await CheckGraphForClearingAsync())
             {
                 var a = new Helpers.AsyncOperation(() =>
                 {

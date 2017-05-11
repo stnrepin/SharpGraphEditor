@@ -123,10 +123,13 @@
     <Compile Include="Models\ZoomManager.cs" />
     <Compile Include="Services\IDialogsPresenter.cs" />
     <Compile Include="Services\WindowDialogsPresenter.cs" />
+    <Compile Include="Validators\DoubleBetweenZeroAndOneRule.cs" />
     <Compile Include="Validators\DoubleConvertationRule.cs" />
+    <Compile Include="Validators\NaturalNumberRule.cs" />
     <Compile Include="Validators\NotEmptyStringRule.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\FileDialogViewModel.cs" />
+    <Compile Include="ViewModels\GraphGeneratorViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\TextViewerViewModel.cs" />
     <Compile Include="ViewModels\VertexPropertiesViewModel.cs" />
@@ -141,6 +144,9 @@
     </Compile>
     <Compile Include="Views\FileDialogView.xaml.cs">
       <DependentUpon>FileDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GraphGeneratorView.xaml.cs">
+      <DependentUpon>GraphGeneratorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
@@ -196,6 +202,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FileDialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GraphGeneratorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
