@@ -24,17 +24,15 @@ namespace SharpGraphEditor.ViewModels
         //
         private GraphDocument _document;
         private GraphRepository _repository;
-        private IGraphElement _selectedElement;
-        private CursorModeManager _cursorModeManager;
         private ZoomManager _zoomManager;
+        private CursorModeManager _cursorModeManager;
+        private AlgorithmExecutionManager _algorithmExecutor;
+        private IGraphElement _selectedElement;
         private IEdge _newEdge;
 
         private string _title;
         private bool _isAlgorithmRun;
-        private bool _isAlgorithmExecuting;
         private bool _isOutputHide;
-        private int _undoRedoCachePositionOfAlgorithm;
-        private CancellationTokenSource _algorithmTaskCancellationTokenSource;
 
         public bool IsModified { get; private set; }
 
@@ -59,8 +57,6 @@ namespace SharpGraphEditor.ViewModels
             _cursorModeManager = new CursorModeManager();
             _zoomManager = new ZoomManager();
 
-            _algorithmTaskCancellationTokenSource = new CancellationTokenSource();
-
             WindowManager = windowManager;
             DialogPresenter = dialogsPresenter;
 
@@ -75,13 +71,11 @@ namespace SharpGraphEditor.ViewModels
         {
             Title = ProjectName;
             IsAlgorithmRun = false;
-            IsAlgorithmExecuting = false;
             CurrentCursorMode = CursorMode.Default;
             SelectedElement = null;
             NewEdge = null;
             IsModified = false;
-
-            _undoRedoCachePositionOfAlgorithm = -1;
+            AlgorithmExecutor = null;
         }
 
         // Actions
@@ -156,11 +150,19 @@ namespace SharpGraphEditor.ViewModels
 
         public void Redo()
         {
+            if (IsAlgorithmRun)
+            {
+                return;
+            }
             Document.UndoRedoManager.Redo();
         }
 
         public void Undo()
         {
+            if (IsAlgorithmRun)
+            {
+                return;
+            }
             Document.UndoRedoManager.Undo();
         }
 
@@ -367,70 +369,28 @@ namespace SharpGraphEditor.ViewModels
 
         public void RestartAlgorithm()
         {
-            IsAlgorithmExecuting = true;
-            while (Document.UndoRedoManager.Position != _undoRedoCachePositionOfAlgorithm)
-            {
-                Document.UndoRedoManager.Undo();
-            }
-            IsAlgorithmExecuting = false;
+            AlgorithmExecutor.Restart();
         }
 
         public void AlgorithmStepNext()
         {
-            IsAlgorithmExecuting = true;
-            Document.UndoRedoManager.Redo();
-            IsAlgorithmExecuting = false;
+            AlgorithmExecutor.StepNext();
         }
 
         public void AlgorithmStepBack()
         {
-            if (Document.UndoRedoManager.Position > _undoRedoCachePositionOfAlgorithm)
-            {
-                IsAlgorithmExecuting = true;
-                Document.UndoRedoManager.Undo();
-                IsAlgorithmExecuting = false;
-            }
+            AlgorithmExecutor.StepBack();
         }
 
         public void StopAlgorithm()
         {
-            RestartAlgorithm();
-            Document.UndoRedoManager.CutOff();
-            _undoRedoCachePositionOfAlgorithm = -1;
+            AlgorithmExecutor.Stop();
             IsAlgorithmRun = false;
-            IsAlgorithmExecuting = false;
         }
 
         public void ContinueOrPauseAlgorithm()
         {
-            if (IsAlgorithmExecuting)
-            {
-                _algorithmTaskCancellationTokenSource.Cancel();
-                IsAlgorithmExecuting = false;
-            }
-            else
-            {
-                if (!Document.UndoRedoManager.CanRedo)
-                {
-                    RestartAlgorithm();
-                }
-
-                IsAlgorithmExecuting = true;
-                _algorithmTaskCancellationTokenSource = new CancellationTokenSource();
-                var task = System.Threading.Tasks.Task.Factory.StartNew(() =>
-                {
-                    while (Document.UndoRedoManager.CanRedo)
-                    {
-                        if (_algorithmTaskCancellationTokenSource.IsCancellationRequested)
-                        {
-                            break;
-                        }
-                        Document.UndoRedoManager.Redo();
-                        Thread.Sleep(700);
-                    }
-                    IsAlgorithmExecuting = false;
-                }, _algorithmTaskCancellationTokenSource.Token);
-            }
+            AlgorithmExecutor.ContinueOrPause();
         }
 
         public async System.Threading.Tasks.Task RunAlgorithmAsync(IAlgorithm algolithm)
@@ -445,38 +405,27 @@ namespace SharpGraphEditor.ViewModels
                 return;
             }
 
+            SelectedElement = null;
+            AlgorithmExecutor = new AlgorithmExecutionManager(Document);
+
             if (!checkGraphForClearing || await CheckGraphForClearingAsync())
             {
-                var a = new Helpers.AsyncOperation(() =>
+                try
                 {
-                    _undoRedoCachePositionOfAlgorithm = Document.UndoRedoManager.Position;
                     IsAlgorithmRun = true;
-                    IsAlgorithmExecuting = true;
                     Terminal?.WriteLine($"{algorithm.Name} starting...");
-                    algorithm?.Run(Document, AlgorithmParameter);
-
-                    if (_undoRedoCachePositionOfAlgorithm == Document.UndoRedoManager.Position)
-                    {
-                        StopAlgorithm();
-                    }
-                    else
-                    {
-                        RestartAlgorithm();
-                    }
-                },
-                async () =>
-                {
+                    IsAlgorithmRun = !(await AlgorithmExecutor.Run(algorithm, AlgorithmParameter));
                     Terminal?.WriteLine("Algorithm finished successfully.\n");
-                    IsAlgorithmExecuting = false;
-                    await EllipseVerticesPositionIfNeedAsync();
-                },
-                (e) =>
+                }
+                catch (Exception e)
                 {
                     Terminal?.WriteLine("During algorithm working an error occured:");
                     Terminal?.WriteLine($"  {e.Message}\n");
                     StopAlgorithm();
-                });
-                a.ExecuteAsync();
+                }
+
+                AlgorithmExecutor.IsAlgorithmExecuting = false;
+                await EllipseVerticesPositionIfNeedAsync();
             }
         }
 
@@ -533,18 +482,11 @@ namespace SharpGraphEditor.ViewModels
             get { return _isAlgorithmRun; }
             set
             {
-                _isAlgorithmRun = value;
-                NotifyOfPropertyChange(() => IsAlgorithmRun);
-            }
-        }
-
-        public bool IsAlgorithmExecuting
-        {
-            get { return _isAlgorithmExecuting; }
-            set
-            {
-                _isAlgorithmExecuting = value;
-                NotifyOfPropertyChange(() => IsAlgorithmExecuting);
+                if (_isAlgorithmRun != value)
+                {
+                    _isAlgorithmRun = value;
+                    NotifyOfPropertyChange(() => IsAlgorithmRun);
+                }
             }
         }
 
@@ -587,6 +529,16 @@ namespace SharpGraphEditor.ViewModels
         public double CurrentZoom
         {
             get { return _zoomManager.CurrentZoom; }
+        }
+
+        public AlgorithmExecutionManager AlgorithmExecutor
+        {
+            get { return _algorithmExecutor; }
+            set
+            {
+                _algorithmExecutor = value;
+                NotifyOfPropertyChange(() => AlgorithmExecutor);
+            }
         }
 
         // Methods

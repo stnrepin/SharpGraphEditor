@@ -116,7 +116,7 @@
                 <MenuItem Header="Exit" cal:Message.Attach="ExitAsync" InputGestureText="Alt+F4" />
             </MenuItem>
 
-            <MenuItem Header="Edit">
+            <MenuItem Header="Edit" IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}">
                 <MenuItem Header="Undo" cal:Message.Attach="Undo" InputGestureText="Ctrl+Z" />
                 <MenuItem Header="Redo" cal:Message.Attach="Redo" InputGestureText="Ctrl+Y" />
             </MenuItem>
@@ -136,6 +136,7 @@
 
             <MenuItem Header="Algorithms" 
                       ItemsSource="{Binding Algorithms}" 
+                      IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}"
                       cal:Message.Attach="[Event Click] = [Action RunAlgorithmAsync($originalsourcecontext)]">
                 <MenuItem.ItemTemplate>
                     <DataTemplate>
@@ -178,7 +179,7 @@
 
                 <StackPanel Margin="50, 0, 0, 0" Orientation="Horizontal" Visibility="{Binding IsAlgorithmRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=1}">
                     <Button Width="35"
-                            IsEnabled="{Binding IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
+                            IsEnabled="{Binding AlgorithmExecutor.IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
                             HorizontalContentAlignment="Center"
                             ToolTipService.ToolTip="Back"
                             Style="{StaticResource StylelessButton}"
@@ -186,7 +187,7 @@
                         <Path SnapsToDevicePixels="True" Height="18" Width="18" Stretch="Fill" Fill="Black" Data="M19,5V19H16V5M14,5V19L3,12"/>
                     </Button>
                     <RadioButton Margin="2, 0, 0, 0"
-                                 IsChecked="{Binding IsAlgorithmExecuting, Mode=OneWay}"
+                                 IsChecked="{Binding AlgorithmExecutor.IsAlgorithmExecuting, Mode=OneWay}"
                                  Width="35"
                                  VerticalContentAlignment="Center"
                                  HorizontalContentAlignment="Center"
@@ -227,7 +228,7 @@
                     </RadioButton>
                     <Button Margin="2, 0, 0, 0"
                             Width="35"
-                            IsEnabled="{Binding IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
+                            IsEnabled="{Binding AlgorithmExecutor.IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
                             HorizontalContentAlignment="Center"
                             ToolTipService.ToolTip="Next"
                             Style="{StaticResource StylelessButton}"
@@ -236,7 +237,7 @@
                     </Button>
                     <Button Margin="2, 0, 0, 0"
                             Width="35"
-                            IsEnabled="{Binding IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
+                            IsEnabled="{Binding AlgorithmExecutor.IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
                             HorizontalContentAlignment="Center"
                             ToolTipService.ToolTip="Restart"
                             Style="{StaticResource StylelessButton}"
@@ -245,7 +246,7 @@
                     </Button>
                     <Button Margin="2, 0, 0, 0"
                             Width="35"
-                            IsEnabled="{Binding IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
+                            IsEnabled="{Binding AlgorithmExecutor.IsAlgorithmExecuting, Converter={StaticResource InverseConverter}}"
                             HorizontalContentAlignment="Center"
                             ToolTipService.ToolTip="Stop"
                             Style="{StaticResource StylelessButton}"

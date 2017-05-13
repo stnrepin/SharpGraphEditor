@@ -112,6 +112,7 @@
     <Compile Include="Helpers\MultiKeyGesture.cs" />
     <Compile Include="Helpers\MultiKeyGestureConverter.cs" />
     <Compile Include="Helpers\ShortcutParser.cs" />
+    <Compile Include="Models\AlgorithmExecutionManager.cs" />
     <Compile Include="Models\CursorModeManager.cs" />
     <Compile Include="Models\Edge.cs" />
     <Compile Include="Models\GraphDocument.cs" />

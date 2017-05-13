@@ -32,8 +32,6 @@ namespace SharpGraphEditor.Models
     {
         // Fields
         //
-        private UndoRedoManager _undoRedoManager;
-
         public ObservableCollection<IVertex> ObservableVertices { get; private set; }
         public ObservableCollection<IEdge> ObservableEdges { get; private set; }
 
@@ -42,16 +40,16 @@ namespace SharpGraphEditor.Models
 
         public event EventHandler<GraphDocumentChangedEventArgs> GraphDocumentChanged;
 
-        public UndoRedoManager UndoRedoManager => _undoRedoManager;
+        public UndoRedoManager UndoRedoManager { get; private set; }
 
         // Constructor
         //
         public GraphDocument()
         {
-            _undoRedoManager = new UndoRedoManager();
-
             ObservableVertices = new ObservableCollection<IVertex>();
             ObservableEdges = new ObservableCollection<IEdge>();
+
+            UndoRedoManager = new UndoRedoManager();
         }
 
         // Public properties 
@@ -77,7 +75,7 @@ namespace SharpGraphEditor.Models
                 {
                     ObservableEdges.ForEach(x => x.IsDirected = value);
                 };
-                _undoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+                UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
                 OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             }
         }
@@ -102,7 +100,7 @@ namespace SharpGraphEditor.Models
                 Remove(element, false);
             };
 
-            _undoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+            UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
             OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             return element;
         }
@@ -209,7 +207,7 @@ namespace SharpGraphEditor.Models
 
                 if (useUndoRedo)
                 {
-                    _undoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+                    UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
                 }
                 else
                 {
@@ -232,7 +230,7 @@ namespace SharpGraphEditor.Models
 
                 if (useUndoRedo)
                 {
-                    _undoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+                    UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
                 }
                 else
                 {
@@ -255,14 +253,14 @@ namespace SharpGraphEditor.Models
                 vertex.Color = oldColor;
             };
 
-            _undoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+            UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
         }
 
         public void Clear()
         {
             Execute.OnUIThread(() => ObservableEdges.Clear());
             Execute.OnUIThread(() => ObservableVertices.Clear());
-            _undoRedoManager.Clear();
+            UndoRedoManager.Clear();
         }
 
         public Object Clone()
