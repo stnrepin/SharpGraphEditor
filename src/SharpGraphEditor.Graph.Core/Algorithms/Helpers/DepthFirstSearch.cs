@@ -28,7 +28,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms.Helpers
         {
             _graph = graph;
             _adjList = graph.ToAdjList();
-            _verticesCount = graph.Vertices.Count();
+            _verticesCount = graph.Vertices.Max(x => x.Index);
 
             _isDiscovered = new bool[_verticesCount];
             _isProcessed = new bool[_verticesCount];

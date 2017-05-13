@@ -25,7 +25,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms.Helpers
         {
             _graph = graph;
 
-            _verticesCount = graph.Vertices.Count();
+            _verticesCount = graph.Vertices.Max(x => x.Index);
             _processed = new bool[_verticesCount];
             _discovered = new bool[_verticesCount];
             _parent = new IVertex[_verticesCount];
