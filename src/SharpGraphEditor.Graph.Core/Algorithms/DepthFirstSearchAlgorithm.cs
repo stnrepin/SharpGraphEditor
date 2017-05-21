@@ -13,11 +13,11 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
 
         public string Description => "Depth first search";
 
-        public void Run(IGraph graph, AlgorithmParameter p)
+        public AlgorithmResult Run(IGraph graph, IAlgorithmHost host)
         {
             if (graph.Vertices.Count() == 0)
             {
-                return;
+                return new AlgorithmResult(false, false);
             }
 
             graph.ChangeColor(graph.Vertices.ElementAt(0), VertexColor.Gray);
@@ -36,6 +36,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
                 }
             };
             dfs.Run(graph.Vertices.First());
+            return new AlgorithmResult();
         }
     }
 }

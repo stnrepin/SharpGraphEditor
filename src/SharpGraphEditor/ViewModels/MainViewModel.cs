@@ -11,10 +11,11 @@ using SharpGraphEditor.Controls;
 using SharpGraphEditor.Graph.Core.Elements;
 using SharpGraphEditor.Graph.Core.Algorithms;
 using System.Threading;
+using SharpGraphEditor.Graph.Core;
 
 namespace SharpGraphEditor.ViewModels
 {
-    public class MainViewModel : PropertyChangedBase
+    public class MainViewModel : PropertyChangedBase, IAlgorithmHost
     {
         // Constants
         //
@@ -30,13 +31,14 @@ namespace SharpGraphEditor.ViewModels
         private IGraphElement _selectedElement;
         private IEdge _newEdge;
 
+        private AutoResetEvent _eventWaiter;
+
         private string _title;
         private bool _isAlgorithmRun;
+        private bool _isAlgorithmControlPanelEnabled;
         private bool _isOutputHide;
 
         public bool IsModified { get; private set; }
-
-        public AlgorithmParameter AlgorithmParameter { get; set; }
 
         public IWindowManager WindowManager { get; }
         public IDialogsPresenter DialogPresenter { get; }
@@ -45,23 +47,30 @@ namespace SharpGraphEditor.ViewModels
 
         public List<IAlgorithm> Algorithms { get; set; }
 
+        public IAlgorithmOutput Output { get; set; }
+        public double MinElementX { get; set; }
+        public double MinElementY { get; set; }
+        public double MaxElementX { get; set; }
+        public double MaxElementY { get; set; }
+
         // Constructors
         //
         public MainViewModel(IWindowManager windowManager, IDialogsPresenter dialogsPresenter)
         {
             Document = new GraphDocument();
-            AlgorithmParameter = new AlgorithmParameter();
             Algorithms = AlgorithmProvider.Instance.Algorithms;
 
             _repository = new GraphRepository();
             _cursorModeManager = new CursorModeManager();
             _zoomManager = new ZoomManager();
 
+            _eventWaiter = new AutoResetEvent(false);
+
             WindowManager = windowManager;
             DialogPresenter = dialogsPresenter;
 
-            AlgorithmParameter.MinElementX = 30;
-            AlgorithmParameter.MinElementY = 30;
+            MinElementX = 30;
+            MinElementY = 30;
 
             Document.GraphDocumentChanged += (_, __) => { IsModified = true; };
             Init();
@@ -70,12 +79,18 @@ namespace SharpGraphEditor.ViewModels
         private void Init()
         {
             Title = ProjectName;
-            IsAlgorithmRun = false;
             CurrentCursorMode = CursorMode.Default;
             SelectedElement = null;
             NewEdge = null;
             IsModified = false;
+
+            if (IsAlgorithmRun)
+            {
+                StopAlgorithm();
+            }
             AlgorithmExecutor = null;
+
+            PropertyChanged -= SelectedElementPropertyChanged;
         }
 
         // Actions
@@ -133,8 +148,6 @@ namespace SharpGraphEditor.ViewModels
             Terminal?.WriteLine(ProjectName);
             Terminal?.WriteLine("(c) Stepan Repin, 2017");
             Terminal?.WriteLine();
-
-            AlgorithmParameter.Output = Terminal;
         }
 
         public async System.Threading.Tasks.Task ClearGraphAsync()
@@ -384,8 +397,9 @@ namespace SharpGraphEditor.ViewModels
 
         public void StopAlgorithm()
         {
-            AlgorithmExecutor.Stop();
+            AlgorithmExecutor.Stop(false);
             IsAlgorithmRun = false;
+            IsAlgorithmControlPanelEnabled = false;
         }
 
         public void ContinueOrPauseAlgorithm()
@@ -406,6 +420,7 @@ namespace SharpGraphEditor.ViewModels
             }
 
             SelectedElement = null;
+            Output = Terminal;
             AlgorithmExecutor = new AlgorithmExecutionManager(Document);
 
             if (!checkGraphForClearing || await CheckGraphForClearingAsync())
@@ -413,8 +428,9 @@ namespace SharpGraphEditor.ViewModels
                 try
                 {
                     IsAlgorithmRun = true;
+                    IsAlgorithmControlPanelEnabled = true;
                     Terminal?.WriteLine($"{algorithm.Name} starting...");
-                    IsAlgorithmRun = !(await AlgorithmExecutor.Run(algorithm, AlgorithmParameter));
+                    IsAlgorithmRun = !(await AlgorithmExecutor.Run(algorithm, this));
                     Terminal?.WriteLine("Algorithm finished successfully.\n");
                 }
                 catch (Exception e)
@@ -437,6 +453,25 @@ namespace SharpGraphEditor.ViewModels
         public void ClearTerminalText()
         {
             Terminal?.Clear();
+        }
+
+        public IVertex GetSelectedVertex()
+        {
+            _cursorModeManager.Change(CursorMode.Default);
+            NotifyOfPropertyChange(() => CurrentCursorMode);
+
+            IsAlgorithmControlPanelEnabled = false;
+            PropertyChanged += SelectedElementPropertyChanged;
+            _eventWaiter.WaitOne();
+            while (!(SelectedElement is IVertex))
+            {
+                _eventWaiter.WaitOne();
+            }
+
+            PropertyChanged -= SelectedElementPropertyChanged;
+
+            IsAlgorithmControlPanelEnabled = true;
+            return SelectedElement as IVertex;
         }
 
         // Properties
@@ -487,6 +522,16 @@ namespace SharpGraphEditor.ViewModels
                     _isAlgorithmRun = value;
                     NotifyOfPropertyChange(() => IsAlgorithmRun);
                 }
+            }
+        }
+
+        public bool IsAlgorithmControlPanelEnabled
+        {
+            get { return _isAlgorithmControlPanelEnabled; }
+            set
+            {
+                _isAlgorithmControlPanelEnabled = value;
+                NotifyOfPropertyChange(() => IsAlgorithmControlPanelEnabled);
             }
         }
 
@@ -597,6 +642,16 @@ namespace SharpGraphEditor.ViewModels
             }
 
             DialogPresenter.ShowErrorAsync(ex.Message, ProjectName, ex.GetType());
+        }
+
+
+        private void SelectedElementPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.PropertyName, nameof(SelectedElement));
+            if (e.PropertyName == nameof(SelectedElement))
+            {
+                _eventWaiter.Set();
+            }
         }
     }
 }

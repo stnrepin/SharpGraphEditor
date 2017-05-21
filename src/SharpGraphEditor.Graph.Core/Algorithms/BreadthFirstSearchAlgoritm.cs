@@ -12,12 +12,12 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
         public string Name => "Breadth-first search";
         public string Description => "Breadth-first search";
 
-        public void Run(IGraph graph, AlgorithmParameter p)
+        public AlgorithmResult Run(IGraph graph, IAlgorithmHost host)
         {
             if (graph.Vertices.Count() == 0)
             {
-                p.Output.WriteLine("Graph is Empty.");
-                return;
+                host.Output.WriteLine("Graph is Empty.");
+                return new AlgorithmResult(false, false);
             }
 
             graph.ChangeColor(graph.Vertices.ElementAt(0), VertexColor.Gray);
@@ -34,6 +34,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
             };
             
             bfs.Run(graph.Vertices.First());
+            return new AlgorithmResult();
         }
     }
 }

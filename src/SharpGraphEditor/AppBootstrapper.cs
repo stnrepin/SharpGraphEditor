@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
+using System.Security.Permissions;
 
 using Caliburn.Micro;
 
@@ -26,6 +27,13 @@ namespace SharpGraphEditor
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
             DisplayRootViewFor<ViewModels.MainViewModel>();
+        }
+
+        protected override void OnUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            var message = e.Exception?.ToString();
+            System.IO.File.WriteAllText(Environment.CurrentDirectory + "\\SharpGraphEditor_unhandled_exception_log.txt", message);
+            e.Handled = false;
         }
 
         protected override void Configure()

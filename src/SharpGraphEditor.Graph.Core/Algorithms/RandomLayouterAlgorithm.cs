@@ -12,13 +12,14 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
         public string Name { get; } = "Random layouter";
         public string Description { get; } = "Randomize vertices position";
 
-        public void Run(IGraph graph, AlgorithmParameter p)
+        public AlgorithmResult Run(IGraph graph, IAlgorithmHost host)
         {
             foreach (var v in graph.Vertices)
             {
-                v.X = _random.Next((int)p.MinElementX, (int)(p.MaxElementX - p.MinElementX));
-                v.Y = _random.Next((int)p.MinElementY, (int)(p.MaxElementY - p.MinElementY));
+                v.X = _random.Next((int)host.MinElementX, (int)(host.MaxElementX - host.MinElementX));
+                v.Y = _random.Next((int)host.MinElementY, (int)(host.MaxElementY - host.MinElementY));
             }
+            return new AlgorithmResult(true, false);
         }
     }
 }

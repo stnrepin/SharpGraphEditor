@@ -41,7 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithms\AlgorithmParameter.cs" />
+    <Compile Include="Algorithms\AlgorithmResult.cs" />
+    <Compile Include="Algorithms\IAlgorithmHost.cs" />
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
     <Compile Include="Algorithms\BreadthFirstSearchAlgoritm.cs" />
     <Compile Include="Algorithms\DepthFirstSearchAlgorithm.cs" />

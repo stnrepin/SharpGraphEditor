@@ -10,27 +10,27 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
         public string Name { get; } = "Ellipse layouter";
         public string Description { get; } = "Has vertices on the boundary of the ellipse";
 
-        public void Run(IGraph graph, AlgorithmParameter p)
+        public AlgorithmResult Run(IGraph graph, IAlgorithmHost host)
         {
-            var width = p.MaxElementX;
-            var height = p.MaxElementY;
+            var width = host.MaxElementX;
+            var height = host.MaxElementY;
             var vertices = graph.Vertices;
 
             var vCount = vertices.Count();
             if (vCount == 0)
             {
-                return;
+                return new AlgorithmResult(false, false);
             }
             else if (vCount == 1)
             {
                 var v = vertices.First();
-                v.X = p.MaxElementX / 2;
-                v.Y = p.MaxElementY / 2;
-                return;
+                v.X = host.MaxElementX / 2;
+                v.Y = host.MaxElementY / 2;
+                return new AlgorithmResult(true, false);
             }
 
-            var minWidth = p.MinElementX;
-            var minHeight = p.MinElementY;
+            var minWidth = host.MinElementX;
+            var minHeight = host.MinElementY;
 
             width -= minWidth * 2.25;
             height -= minHeight * 2.25;
@@ -46,6 +46,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
                 v.HasPosition = true;
                 i++;
             }
+            return new AlgorithmResult(true, false);
         }
     }
 }

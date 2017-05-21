@@ -10,6 +10,6 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
         string Name { get; }
         string Description { get; }
 
-        void Run(IGraph graph, AlgorithmParameter p);
+        AlgorithmResult Run(IGraph graph, IAlgorithmHost host);
     }
 }

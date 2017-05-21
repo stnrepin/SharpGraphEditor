@@ -13,9 +13,12 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
 
         public String Name { get; } = "Test algorithm";
 
-        public void Run(IGraph graph, AlgorithmParameter p)
+        public AlgorithmResult Run(IGraph graph, IAlgorithmHost host)
         {
-            graph.ChangeColor(graph.Vertices.ElementAt(1), VertexColor.Gray);
+            host.Output.WriteLine("Please, select vertex.");
+            var selectedVertex = host.GetSelectedVertex();
+            graph.ChangeColor(selectedVertex, VertexColor.Red);
+            return new AlgorithmResult(true, false);
         }
     }
 }
