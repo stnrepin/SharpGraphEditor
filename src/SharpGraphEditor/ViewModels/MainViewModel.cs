@@ -37,6 +37,8 @@ namespace SharpGraphEditor.ViewModels
         private bool _isAlgorithmRun;
         private bool _isAlgorithmControlPanelEnabled;
         private bool _isOutputHide;
+        private string _commentText;
+        private bool _isCommentVisible;
 
         public bool IsModified { get; private set; }
 
@@ -91,6 +93,9 @@ namespace SharpGraphEditor.ViewModels
             AlgorithmExecutor = null;
 
             PropertyChanged -= SelectedElementPropertyChanged;
+
+            ClearComment();
+            HideComment();
         }
 
         // Actions
@@ -439,7 +444,8 @@ namespace SharpGraphEditor.ViewModels
                     Terminal?.WriteLine($"  {e.Message}\n");
                     StopAlgorithm();
                 }
-
+                ClearComment();
+                HideComment();
                 AlgorithmExecutor.IsAlgorithmExecuting = false;
                 await EllipseVerticesPositionIfNeedAsync();
             }
@@ -462,16 +468,38 @@ namespace SharpGraphEditor.ViewModels
 
             IsAlgorithmControlPanelEnabled = false;
             PropertyChanged += SelectedElementPropertyChanged;
-            _eventWaiter.WaitOne();
-            while (!(SelectedElement is IVertex))
+
+            do
             {
                 _eventWaiter.WaitOne();
             }
+            while (!(SelectedElement is IVertex));
 
             PropertyChanged -= SelectedElementPropertyChanged;
 
             IsAlgorithmControlPanelEnabled = true;
             return SelectedElement as IVertex;
+        }
+
+        public void ShowComment()
+        {
+            IsCommentVisible = true;
+        }
+
+        public void ShowComment(string text)
+        {
+            CommentText = text;
+            ShowComment();
+        }
+
+        public void HideComment()
+        {
+            IsCommentVisible = false;
+        }
+
+        public void ClearComment()
+        {
+            CommentText = String.Empty;
         }
 
         // Properties
@@ -586,6 +614,26 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
+        public bool IsCommentVisible
+        {
+            get { return _isCommentVisible; }
+            set
+            {
+                _isCommentVisible = value;
+                NotifyOfPropertyChange(() => IsCommentVisible);
+            }
+        }
+
+        public string CommentText
+        {
+            get { return _commentText; }
+            set
+            {
+                _commentText = value;
+                NotifyOfPropertyChange(() => CommentText);
+            }
+        }
+
         // Methods
         //
         private async System.Threading.Tasks.Task<bool> CheckGraphForClearingAsync()
@@ -647,7 +695,6 @@ namespace SharpGraphEditor.ViewModels
 
         private void SelectedElementPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine(e.PropertyName, nameof(SelectedElement));
             if (e.PropertyName == nameof(SelectedElement))
             {
                 _eventWaiter.Set();

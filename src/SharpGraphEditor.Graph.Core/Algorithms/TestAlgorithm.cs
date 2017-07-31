@@ -15,7 +15,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
 
         public AlgorithmResult Run(IGraph graph, IAlgorithmHost host)
         {
-            host.Output.WriteLine("Please, select vertex.");
+            host.ShowComment("Please, select vertex.");
             var selectedVertex = host.GetSelectedVertex();
             graph.ChangeColor(selectedVertex, VertexColor.Red);
             return new AlgorithmResult(true, false);

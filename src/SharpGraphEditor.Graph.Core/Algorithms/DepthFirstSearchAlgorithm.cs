@@ -20,7 +20,10 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
                 return new AlgorithmResult(false, false);
             }
 
-            graph.ChangeColor(graph.Vertices.ElementAt(0), VertexColor.Gray);
+            host.ShowComment("Please, select vertex.");
+            var selectedVertex = host.GetSelectedVertex();
+
+            graph.ChangeColor(selectedVertex, VertexColor.Gray);
             var dfs = new Helpers.DepthFirstSearch(graph)
             {
                 ProcessEdge = (v1, v2) =>
@@ -35,7 +38,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
                     graph.ChangeColor(v, VertexColor.Black);
                 }
             };
-            dfs.Run(graph.Vertices.First());
+            dfs.Run(selectedVertex);
             return new AlgorithmResult();
         }
     }
