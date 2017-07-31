@@ -27,7 +27,7 @@ namespace SharpGraphEditor.Models
             set
             {
                 _source = value;
-                NotifyOfPropertyChange(() => Source);
+                NotifyOfPropertyChange("Source");
             }
         }
 
@@ -37,7 +37,7 @@ namespace SharpGraphEditor.Models
             set
             {
                 _target = value;
-                NotifyOfPropertyChange(() => Target);
+                NotifyOfPropertyChange("Target");
             }
         }
 
@@ -47,7 +47,7 @@ namespace SharpGraphEditor.Models
             set
             {
                 _isAdding = value;
-                NotifyOfPropertyChange(() => IsAdding);
+                NotifyOfPropertyChange("IsAdding");
             }
         }
 
@@ -57,7 +57,7 @@ namespace SharpGraphEditor.Models
             set
             {
                 _isDirected = value;
-                NotifyOfPropertyChange(() => IsDirected);
+                NotifyOfPropertyChange("IsDirected");
             }
         }
 

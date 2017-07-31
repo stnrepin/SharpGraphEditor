@@ -43,7 +43,7 @@ namespace SharpGraphEditor.Models
             set
             {
                 _x = Math.Round(value);
-                NotifyOfPropertyChange(() => X);
+                NotifyOfPropertyChange("X");
             }
         }
 
@@ -53,7 +53,7 @@ namespace SharpGraphEditor.Models
             set
             {
                 _y = Math.Round(value);
-                NotifyOfPropertyChange(() => Y);
+                NotifyOfPropertyChange("Y");
             }
         }
 
@@ -63,7 +63,7 @@ namespace SharpGraphEditor.Models
             private set
             {
                 _index = value;
-                NotifyOfPropertyChange(() => Index);
+                NotifyOfPropertyChange("Index");
             }
         }
 
@@ -73,7 +73,7 @@ namespace SharpGraphEditor.Models
             set
             {
                 _title = value;
-                NotifyOfPropertyChange(() => Title);
+                NotifyOfPropertyChange("Title");
             }
         }
 
@@ -83,7 +83,7 @@ namespace SharpGraphEditor.Models
             set
             {
                 _color = value;
-                NotifyOfPropertyChange(() => Color);
+                NotifyOfPropertyChange("Color");
             }
         }
 

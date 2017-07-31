@@ -322,13 +322,23 @@ namespace SharpGraphEditor.Models
 
         // Private methods
         //
+
+        // Use binary search algorithm: https://ru.wikipedia.org/wiki/%D0%94%D0%B2%D0%BE%D0%B8%D1%87%D0%BD%D1%8B%D0%B9_%D0%BF%D0%BE%D0%B8%D1%81%D0%BA
         private int GetNewVertexIndex()
         {
-            var newIndex = 1;
-            while (FindVertexByIndex(newIndex) != null)
+            IVertex[] arr = ObservableVertices.OrderBy(x => x.Index).ToArray();
+
+            int newIndex = arr.Length + 1;
+            for (int i = 0; i < arr.Length; i++)
             {
-                newIndex++;
+                // Difference between array index and vertex index must be 1.
+                if (arr[i].Index - i != 1)
+                {
+                    newIndex = i + 1;
+                    break;
+                }
             }
+
             return newIndex;
         }
 
