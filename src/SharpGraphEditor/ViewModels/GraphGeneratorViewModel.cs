@@ -12,7 +12,6 @@ namespace SharpGraphEditor.ViewModels
     {
         private static Random _random = new Random();
         private double _dense;
-        private int[] _vertices;
         private int _verticesCount;
         private bool _canGenerate;
 
@@ -32,19 +31,41 @@ namespace SharpGraphEditor.ViewModels
 
         public void Generate(IClose closableWindow)
         {
-            _vertices = Enumerable.Range(1, VerticesCount).ToArray();
-
             var edgesList = new StringBuilder();
             var directedEdgesCount = (int)Math.Floor(Dense * VerticesCount * (VerticesCount - 1));
             var edgesCount = directedEdgesCount / 2;
 
+            var allEdges = new List<Tuple<int, int>>();
+
+            for (int i = 1; i <= VerticesCount; i++)
+            {
+                for (int j = i; j <= VerticesCount; j++)
+                {
+                    if (i != j)
+                    {
+                        allEdges.Add(new Tuple<int, int>(i, j));
+                    }
+                }
+            }
+
+            var indexes = new List<int>();
             for (int i = 0; i < edgesCount; i++)
             {
-                var sourceIndex = _vertices[_random.Next(0, VerticesCount)];
-                var targetIndex = _vertices[_random.Next(0, VerticesCount)];
+                while (true)
+                {
+                    var index = _random.Next(0, allEdges.Count);
+                    if (!indexes.Contains(index))
+                    {
+                        indexes.Add(index);
 
-                edgesList.AppendLine($"{sourceIndex} {targetIndex}");
-                edgesList.AppendLine($"{targetIndex} {sourceIndex}");
+                        var sourceIndex = allEdges[index].Item1;
+                        var targetIndex = allEdges[index].Item2;
+
+                        edgesList.AppendLine($"{sourceIndex} {targetIndex}");
+                        edgesList.AppendLine($"{targetIndex} {sourceIndex}");
+                        break;
+                    }
+                }
             }
 
             ResultEdgesList = edgesList.ToString();
@@ -56,7 +77,6 @@ namespace SharpGraphEditor.ViewModels
             get { return _dense; }
             set
             {
-                System.Diagnostics.Debug.WriteLine(value);
                 _dense = value;
                 NotifyOfPropertyChange(() => Dense);
                 CanGenerate = true;
