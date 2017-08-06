@@ -56,6 +56,19 @@ namespace SharpGraphEditor.Models
             _index++;
         }
 
+        public void AppendLast(IOperation operation)
+        {
+            CutOff();
+            var lastOp = _operations.LastOrDefault();
+            lastOp?.Append(operation);
+        }
+
+        public void AppendLastAndExecute(IOperation operation)
+        {
+            AppendLast(operation);
+            operation.Redo();
+        }
+
         public void RemoveLast()
         {
             _operations.RemoveAt(_operations.Count - 1);
@@ -72,7 +85,9 @@ namespace SharpGraphEditor.Models
         {
             int index = _index + 1;
             if (index < _operations.Count)
+            {
                 _operations.RemoveRange(index, _operations.Count - index);
+            }
         }
     }
 }

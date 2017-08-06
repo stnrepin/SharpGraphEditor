@@ -466,6 +466,9 @@ namespace SharpGraphEditor.ViewModels
             _cursorModeManager.Change(CursorMode.Default);
             NotifyOfPropertyChange(() => CurrentCursorMode);
 
+            CommentText = "Please, select vertex.";
+            ShowComment();
+
             IsAlgorithmControlPanelEnabled = false;
             PropertyChanged += SelectedElementPropertyChanged;
 
@@ -478,6 +481,7 @@ namespace SharpGraphEditor.ViewModels
             PropertyChanged -= SelectedElementPropertyChanged;
 
             IsAlgorithmControlPanelEnabled = true;
+            HideComment();
             return SelectedElement as IVertex;
         }
 
@@ -488,8 +492,14 @@ namespace SharpGraphEditor.ViewModels
 
         public void ShowComment(string text)
         {
-            CommentText = text;
-            ShowComment();
+            var op = CreateCommentingOperation(text);
+            Document.UndoRedoManager.AddAndExecute(op);
+        }
+
+        public void ShowCommentForLastAction(string text)
+        {
+            var op = CreateCommentingOperation(text);
+            Document.UndoRedoManager.AppendLastAndExecute(op);
         }
 
         public void HideComment()
@@ -699,6 +709,31 @@ namespace SharpGraphEditor.ViewModels
             {
                 _eventWaiter.Set();
             }
+        }
+
+        private IOperation CreateCommentingOperation(string text)
+        {
+            var tempComment = CommentText;
+            var tempIsCommentVisible = IsCommentVisible;
+            System.Action redo = () =>
+            {
+                CommentText = text;
+                ShowComment();
+            };
+            System.Action undo = () =>
+            {
+                CommentText = tempComment;
+                if (tempIsCommentVisible)
+                {
+                    ShowComment();
+                }
+                else
+                {
+                    HideComment();
+                }
+            };
+
+            return new SimpleOperation(redo, undo);
         }
     }
 }

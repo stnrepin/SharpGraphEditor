@@ -20,6 +20,7 @@ namespace SharpGraphEditor.Graph.Core
 
         void ShowComment();
         void ShowComment(string text);
+        void ShowCommentForLastAction(string text);
         void HideComment();
         void ClearComment();
     }
