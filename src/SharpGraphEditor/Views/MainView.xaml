@@ -37,7 +37,10 @@
                                [Shortcut Control+Y] = [Action Redo];
                                [Shortcut Control+V,P] = [Action ShowVertexProperties(null)];
                                [Shortcut Control+T] = [Action ChangeOutputVisibility('true')];
-                               [Shortcut Control+N] = [Action ClearGraphAsync]">
+                               [Shortcut Control+N] = [Action ClearGraphAsync];
+                               [Shortcut D1] = [Action SetCurrentCursorMode('Default')];
+                               [Shortcut D2] = [Action SetCurrentCursorMode('Add')];
+                               [Shortcut D3] = [Action SetCurrentCursorMode('Remove')];">
     <metroControls:MetroWindow.Resources>
         <ResourceDictionary>
             <ContextMenu x:Key="VertexContextMenu"

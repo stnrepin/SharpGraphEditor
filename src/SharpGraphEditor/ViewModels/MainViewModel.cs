@@ -478,6 +478,13 @@ namespace SharpGraphEditor.ViewModels
             Terminal?.Clear();
         }
 
+        public void SetCurrentCursorMode(string mode)
+        {
+            _cursorModeManager.Change(mode);
+            OnCursorModeChanged();
+            NotifyOfPropertyChange(() => CurrentCursorMode);
+        }
+
         public IVertex GetSelectedVertex()
         {
             _cursorModeManager.Change(CursorMode.Default);

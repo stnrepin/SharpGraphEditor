@@ -31,6 +31,7 @@ namespace SharpGraphEditor.Models
             if (Enum.TryParse(newModeName, out CursorMode newValue))
             {
                 Current = newValue;
+                return;
             }
             throw new ArgumentException("incorrect name of CursorMode");
         }
