@@ -95,6 +95,7 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="Behaviors\InputBindingTrigger.cs" />
+    <Compile Include="Behaviors\ListViewWithGridViewBehavior.cs" />
     <Compile Include="Controls\AutoSizeCanvas.cs" />
     <Compile Include="Controls\ConnectorShape.cs" />
     <Compile Include="Controls\ITerminal.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Converters\InverseConverter.cs" />
     <Compile Include="Converters\IsEquals.cs" />
     <Compile Include="Converters\VertexColorToColorConverter.cs" />
+    <Compile Include="Extentions\ObservableCollectionExtentions.cs" />
     <Compile Include="Helpers\AsyncOperation.cs" />
     <Compile Include="Helpers\BindingErrorTraceListener.cs" />
     <Compile Include="Helpers\MultiKeyBinding.cs" />
@@ -132,6 +134,7 @@
     <Compile Include="ViewModels\FileDialogViewModel.cs" />
     <Compile Include="ViewModels\GraphGeneratorViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Models\TableRow.cs" />
     <Compile Include="ViewModels\TextViewerViewModel.cs" />
     <Compile Include="ViewModels\VertexPropertiesViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">

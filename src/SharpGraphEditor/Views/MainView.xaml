@@ -10,7 +10,7 @@
                            xmlns:models="clr-namespace:SharpGraphEditor.Models"
                            xmlns:ge="clr-namespace:SharpGraphEditor.Controls.GraphElements"
                            xmlns:controls="clr-namespace:SharpGraphEditor.Controls"
-                           xmlns:helpers="clr-namespace:SharpGraphEditor.Helpers"
+                           xmlns:behaviors="clr-namespace:SharpGraphEditor.Behaviors"
         
                            mc:Ignorable="d"
                            x:Name="MainWindow"
@@ -309,8 +309,45 @@
                     <Button Tag="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z "
                             Margin="5" Height="15" Width="15" Style="{StaticResource PathButtonStyle}"
                             HorizontalAlignment="Right"
-                            cal:Message.Attach="HideComment()"/>
+                            cal:Message.Attach="HideComment()" />
                 </Grid>
+            </Border>
+
+            <Border BorderThickness="1"
+                    BorderBrush="LightSlateGray"
+                    Margin="0, 0, 5, 0"
+                    Visibility="{Binding IsTableVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    DockPanel.Dock="Right">
+                <ListView MinWidth="45" behaviors:ListViewWithGridViewBehavior.MatrixSource="{Binding TableRows}">
+                    <ListView.View>
+                        <GridView>
+                            <GridView.ColumnHeaderContainerStyle>
+                                <Style TargetType="GridViewColumnHeader">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </Style>
+                            </GridView.ColumnHeaderContainerStyle>
+                        </GridView>
+                    </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <Border BorderBrush="Transparent" BorderThickness="0" Background="{TemplateBinding Background}">
+                                            <GridViewRowPresenter HorizontalAlignment="Stretch" 
+                                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                  Width="Auto"
+                                                                  Margin="0" 
+                                                                  Content="{TemplateBinding Content}" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
             </Border>
 
             <Border BorderThickness="1" BorderBrush="LightSlateGray" Margin="5, 0, 5, 0">

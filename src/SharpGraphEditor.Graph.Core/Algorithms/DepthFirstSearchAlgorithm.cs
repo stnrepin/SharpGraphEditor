@@ -30,6 +30,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
                     {
                         graph.ChangeColor(v2, VertexColor.Gray);
                         host.ShowCommentForLastAction($"Edge connected vertices {v1.Index} and {v2.Index} exists. Add vertex {v2.Index} to stack.");
+                        host.AddToTableForLastAction(v2.Index.ToString());
                     }
                 },
                 ProcessVertexLate = (v) =>
@@ -37,10 +38,12 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
                     graph.ChangeColor(v, VertexColor.Black);
                     host.ShowCommentForLastAction($"Vertex {v.Index} has not unvisited adjacent vertices.");
                     host.ShowComment("Returns to last vertex.");
+                    host.RemoveRowFromTableForLastAction(v.Index.ToString());
                 }
             };
             graph.ChangeColor(selectedVertex, VertexColor.Gray);
             host.ShowCommentForLastAction($"Start DFS from vertex {selectedVertex.Index}.");
+            host.AddToTableForLastAction(selectedVertex.Index.ToString());
 
             dfs.Run(selectedVertex);
             host.ShowComment("DFS has been finished.");

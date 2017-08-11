@@ -24,21 +24,24 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
 
             var bfs = new Helpers.BreadthFirstSearch(graph)
             {
-                ProcessEdge = (v1, v2) =>
+                ProcessChild = (vParent, vChild) =>
                 {
-                    graph.ChangeColor(v2, VertexColor.Gray);
-                    host.ShowCommentForLastAction($"Edge connected vertices {v1.Index} and {v2.Index} exists. Add vertex {v2.Index} to queue.");
+                    graph.ChangeColor(vChild, VertexColor.Gray);
+                    host.ShowCommentForLastAction($"Edge connected vertices {vParent.Index} and {vChild.Index} exists. Add vertex {vChild.Index} to queue.");
+                    host.AddToTableForLastAction(vChild.Index.ToString());
                 },
                 ProcessVertexLate = (v) =>
                 {
                     graph.ChangeColor(v, VertexColor.Black);
                     host.ShowCommentForLastAction($"Vertex {v.Index} has not unvisited adjacent vertices.");
                     host.ShowComment($"Remove vertex {v.Index} from queue.");
+                    host.RemoveRowFromTableForLastAction(v.Index.ToString());
                 }
             };
 
             graph.ChangeColor(selectedVertex, VertexColor.Gray);
             host.ShowCommentForLastAction($"Start BFS from vertex {selectedVertex.Index}.");
+            host.AddToTableForLastAction(selectedVertex.Index.ToString());
 
             bfs.Run(selectedVertex);
             host.ShowComment("BFS has been finished.");

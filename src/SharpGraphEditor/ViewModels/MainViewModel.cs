@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 
 using Caliburn.Micro;
+
+using SharpGraphEditor.Graph.Core.Elements;
+using SharpGraphEditor.Graph.Core.Algorithms;
+using SharpGraphEditor.Graph.Core;
 
 using SharpGraphEditor.Models;
 using SharpGraphEditor.Services;
 using SharpGraphEditor.Controls;
-
-using SharpGraphEditor.Graph.Core.Elements;
-using SharpGraphEditor.Graph.Core.Algorithms;
-using System.Threading;
-using SharpGraphEditor.Graph.Core;
+using SharpGraphEditor.Extentions;
 
 namespace SharpGraphEditor.ViewModels
 {
@@ -39,6 +41,9 @@ namespace SharpGraphEditor.ViewModels
         private bool _isOutputHide;
         private string _commentText;
         private bool _isCommentVisible;
+        private bool _isTableVisible;
+
+        public ObservableCollection<TableRow> TableRows { get; private set; }
 
         public bool IsModified { get; private set; }
 
@@ -68,6 +73,8 @@ namespace SharpGraphEditor.ViewModels
 
             _eventWaiter = new AutoResetEvent(false);
 
+            TableRows = new ObservableCollection<TableRow>();
+
             WindowManager = windowManager;
             DialogPresenter = dialogsPresenter;
 
@@ -96,6 +103,9 @@ namespace SharpGraphEditor.ViewModels
 
             ClearComment();
             HideComment();
+
+            ClearTable();
+            HideTable();
         }
 
         // Actions
@@ -153,6 +163,11 @@ namespace SharpGraphEditor.ViewModels
             Terminal?.WriteLine(ProjectName);
             Terminal?.WriteLine("(c) Stepan Repin, 2017");
             Terminal?.WriteLine();
+
+            // It's important line. Without it PropertyChangedCallback in MatrixSourceProperty in ListViewWithGridViewBehavior WILL NOT be fired.
+            // Do not remove same line in constructor, too.
+            // Magic O_o
+            TableRows = new ObservableCollection<TableRow>();
         }
 
         public async System.Threading.Tasks.Task ClearGraphAsync()
@@ -446,6 +461,8 @@ namespace SharpGraphEditor.ViewModels
                 }
                 ClearComment();
                 HideComment();
+                ClearTable();
+                HideTable();
                 AlgorithmExecutor.IsAlgorithmExecuting = false;
                 await EllipseVerticesPositionIfNeedAsync();
             }
@@ -510,6 +527,69 @@ namespace SharpGraphEditor.ViewModels
         public void ClearComment()
         {
             CommentText = String.Empty;
+        }
+
+        public void ShowTable()
+        {
+            IsTableVisible = true;
+        }
+
+        public void AddToTable(string row)
+        {
+            var op = CreateAddingToTableOperation(row);
+            Document.UndoRedoManager.AddAndExecute(op);
+        }
+
+        public void AddToTableForLastAction(string row)
+        {
+            var op = CreateAddingToTableOperation(row);
+            Document.UndoRedoManager.AppendLastAndExecute(op);
+        }
+
+        public void AddToTable(string[] row)
+        {
+            var op = CreateAddingToTableOperation(row);
+            Document.UndoRedoManager.AddAndExecute(op);
+        }
+
+        public void AddToTableForLastAction(string[] row)
+        {
+            var op = CreateAddingToTableOperation(row);
+            Document.UndoRedoManager.AppendLastAndExecute(op);
+        }
+
+        public void RemoveRowFromTable(string row)
+        {
+            var op = CreateRowRemovingFromTableOperation(new[] { row });
+            Document.UndoRedoManager.AddAndExecute(op);
+        }
+
+        public void RemoveRowFromTableForLastAction(string row)
+        {
+            var op = CreateRowRemovingFromTableOperation(new[] { row });
+            Document.UndoRedoManager.AppendLastAndExecute(op);
+        }
+
+        public void RemoveRowFromTable(string[] row)
+        {
+            var op = CreateRowRemovingFromTableOperation(row);
+            Document.UndoRedoManager.AddAndExecute(op);
+        }
+
+        public void RemoveRowFromTableForLastAction(string[] row)
+        {
+            var op = CreateRowRemovingFromTableOperation(row);
+            Document.UndoRedoManager.AppendLastAndExecute(op);
+        }
+
+        public void HideTable()
+        {
+            IsTableVisible = false;
+        }
+
+        public void ClearTable()
+        {
+            TableRows.Clear();
         }
 
         // Properties
@@ -644,6 +724,16 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
+        public bool IsTableVisible
+        {
+            get { return _isTableVisible; }
+            set
+            {
+                _isTableVisible = value;
+                NotifyOfPropertyChange(() => IsTableVisible);
+            }
+        }
+
         // Methods
         //
         private async System.Threading.Tasks.Task<bool> CheckGraphForClearingAsync()
@@ -731,6 +821,69 @@ namespace SharpGraphEditor.ViewModels
                 {
                     HideComment();
                 }
+            };
+
+            return new SimpleOperation(redo, undo);
+        }
+
+        private IOperation CreateAddingToTableOperation(params string[] row)
+        {
+            var tempIsTableVisibile = IsTableVisible;
+            var newRow = new TableRow(row);
+            System.Action redo = () =>
+            {
+                Execute.OnUIThread(() =>
+                {
+                    TableRows.Add(newRow);
+                    NotifyOfPropertyChange(() => TableRows);
+                });
+                ShowTable();
+            };
+            System.Action undo = () =>
+            {
+                Execute.OnUIThread(() =>
+                {
+                    TableRows.RemoveLast(newRow);
+                    NotifyOfPropertyChange(() => TableRows);
+                });
+                if (tempIsTableVisibile)
+                {
+                    ShowTable();
+                }
+                else
+                {
+                    HideTable();
+                }
+            };
+
+            return new SimpleOperation(redo, undo);
+        }
+
+        private IOperation CreateRowRemovingFromTableOperation(string[] row)
+        {
+            TableRow tempDeletedRow = new TableRow(row);
+            System.Action redo = () =>
+            {
+                Execute.OnUIThread(() =>
+                {
+                    if (!TableRows.Remove(new TableRow(row)))
+                    {
+                        tempDeletedRow = null;
+                        return;
+                    }
+                    NotifyOfPropertyChange(() => TableRows);
+                });
+            };
+            System.Action undo = () =>
+            {
+                Execute.OnUIThread(() =>
+                {
+                    if (tempDeletedRow != null)
+                    {
+                        TableRows.Add(tempDeletedRow);
+                        NotifyOfPropertyChange(() => TableRows);
+                    }
+                });
             };
 
             return new SimpleOperation(redo, undo);

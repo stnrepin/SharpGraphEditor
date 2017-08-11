@@ -23,5 +23,17 @@ namespace SharpGraphEditor.Graph.Core
         void ShowCommentForLastAction(string text);
         void HideComment();
         void ClearComment();
+
+        void ShowTable();
+        void AddToTable(string row);
+        void AddToTableForLastAction(string row);
+        void AddToTable(string[] row);
+        void AddToTableForLastAction(string[] row);
+        void RemoveRowFromTable(string row);
+        void RemoveRowFromTableForLastAction(string row);
+        void RemoveRowFromTable(string[] row);
+        void RemoveRowFromTableForLastAction(string[] row);
+        void HideTable();
+        void ClearTable();
     }
 }
