@@ -23,11 +23,6 @@ namespace SharpGraphEditor.Models
         HierarchicalRtf
     }
 
-    public class GraphDocumentChangedEventArgs : EventArgs
-    {
-
-    }
-
     public class GraphDocument : PropertyChangedBase, IGraph, ICloneable
     {
         // Fields
@@ -37,8 +32,6 @@ namespace SharpGraphEditor.Models
 
         public IEnumerable<IVertex> Vertices => (ObservableVertices);
         public IEnumerable<IEdge> Edges => (ObservableEdges);
-
-        public event EventHandler<GraphDocumentChangedEventArgs> GraphDocumentChanged;
 
         public UndoRedoManager UndoRedoManager { get; private set; }
 
@@ -76,7 +69,6 @@ namespace SharpGraphEditor.Models
                     ObservableEdges.ForEach(x => x.IsDirected = value);
                 };
                 UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
-                OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             }
         }
 
@@ -101,7 +93,6 @@ namespace SharpGraphEditor.Models
             };
 
             UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
-            OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             return element;
         }
 
@@ -213,8 +204,6 @@ namespace SharpGraphEditor.Models
                 {
                     redo();
                 }
-
-                OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             }
             else if (element is IEdge)
             {
@@ -236,8 +225,6 @@ namespace SharpGraphEditor.Models
                 {
                     redo();
                 }
-
-                OnGraphDocumentChanged(new GraphDocumentChangedEventArgs());
             }
         }
 
@@ -340,11 +327,6 @@ namespace SharpGraphEditor.Models
             }
 
             return newIndex;
-        }
-
-        private void OnGraphDocumentChanged(GraphDocumentChangedEventArgs e)
-        {
-            GraphDocumentChanged?.Invoke(this, e);
         }
     }
 }

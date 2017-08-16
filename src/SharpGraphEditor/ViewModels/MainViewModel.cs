@@ -36,6 +36,7 @@ namespace SharpGraphEditor.ViewModels
         private AutoResetEvent _eventWaiter;
 
         private string _title;
+        private int _lastSavingUndoRedoOperationsCount;
         private bool _isAlgorithmRun;
         private bool _isAlgorithmControlPanelEnabled;
         private bool _isOutputHide;
@@ -43,9 +44,10 @@ namespace SharpGraphEditor.ViewModels
         private bool _isCommentVisible;
         private bool _isTableVisible;
 
-        public ObservableCollection<TableRow> TableRows { get; private set; }
+        public bool IsModified => _lastSavingUndoRedoOperationsCount != Document.UndoRedoManager.Position;
 
-        public bool IsModified { get; private set; }
+
+        public ObservableCollection<TableRow> TableRows { get; private set; }
 
         public IWindowManager WindowManager { get; }
         public IDialogsPresenter DialogPresenter { get; }
@@ -81,7 +83,6 @@ namespace SharpGraphEditor.ViewModels
             MinElementX = 30;
             MinElementY = 30;
 
-            Document.GraphDocumentChanged += (_, __) => { IsModified = true; };
             Init();
         }
 
@@ -91,7 +92,8 @@ namespace SharpGraphEditor.ViewModels
             CurrentCursorMode = CursorMode.Default;
             SelectedElement = null;
             NewEdge = null;
-            IsModified = false;
+
+            UnmodifyDocument();
 
             if (IsAlgorithmRun)
             {
@@ -277,7 +279,7 @@ namespace SharpGraphEditor.ViewModels
             {
                 _repository.SaveToFile(Document, _repository.SourceFile, _repository.SourceType);
                 Title = ProjectName + $" - {_repository.SourceFile}";
-                IsModified = false;
+                UnmodifyDocument();
             }
             catch (Exception e)
             {
@@ -301,7 +303,7 @@ namespace SharpGraphEditor.ViewModels
 
                     _repository.SaveToFile(Document, fileName, dialog.SourceType);
                     Title = ProjectName + $" - {fileName}";
-                    IsModified = false;
+                    UnmodifyDocument();
                 }
             }
             catch (Exception e)
@@ -762,6 +764,11 @@ namespace SharpGraphEditor.ViewModels
                 }
             }
             return true;
+        }
+
+        private void UnmodifyDocument()
+        {
+            _lastSavingUndoRedoOperationsCount = Document.UndoRedoManager.Position;
         }
 
         private async System.Threading.Tasks.Task EllipseVerticesPositionIfNeedAsync()
