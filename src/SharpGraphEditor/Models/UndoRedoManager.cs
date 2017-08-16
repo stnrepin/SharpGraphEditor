@@ -7,6 +7,8 @@ namespace SharpGraphEditor.Models
 {
     public class UndoRedoManager
     {
+        private static UndoRedoManager _instance = new UndoRedoManager();
+
         private List<IOperation> _operations;
         private int _index;
 
@@ -19,6 +21,14 @@ namespace SharpGraphEditor.Models
         {
             _operations = new List<IOperation>();
             _index = -1;
+        }
+
+        public static UndoRedoManager Instance
+        {
+            get
+            {
+                return _instance;
+            }
         }
 
         public void Redo()

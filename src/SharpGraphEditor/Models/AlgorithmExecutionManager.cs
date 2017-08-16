@@ -12,7 +12,6 @@ namespace SharpGraphEditor.Models
 {
     public class AlgorithmExecutionManager : Caliburn.Micro.PropertyChangedBase
     {
-        private GraphDocument _doc;
         private CancellationTokenSource _algorithmTaskCancellationTokenSource;
         private bool _isAlgorithmExecuting;
         private int _undoRedoStartPosition;
@@ -20,10 +19,9 @@ namespace SharpGraphEditor.Models
 
         public int StepInterval { get; set; }
 
-        public AlgorithmExecutionManager(GraphDocument doc)
+        public AlgorithmExecutionManager()
         {
-            _doc = doc;
-            _undoRedoStartPosition = _doc.UndoRedoManager.Position;
+            _undoRedoStartPosition = UndoRedoManager.Instance.Position;
             IsAlgorithmExecuting = false;
             _algorithmTaskCancellationTokenSource = new CancellationTokenSource();
 
@@ -46,10 +44,10 @@ namespace SharpGraphEditor.Models
         public void Restart()
         {
             IsAlgorithmExecuting = true;
-            while (_doc.UndoRedoManager.Position > _undoRedoStartPosition)
+            while (UndoRedoManager.Instance.Position > _undoRedoStartPosition)
             {
 
-                _doc.UndoRedoManager.Undo();
+                UndoRedoManager.Instance.Undo();
             }
             IsAlgorithmExecuting = false;
         }
@@ -57,7 +55,7 @@ namespace SharpGraphEditor.Models
         public void StepNext()
         {
             IsAlgorithmExecuting = true;
-            _doc.UndoRedoManager.Redo();
+            UndoRedoManager.Instance.Redo();
             IsAlgorithmExecuting = false;
         }
 
@@ -65,9 +63,9 @@ namespace SharpGraphEditor.Models
         {
             IsAlgorithmExecuting = true;
             
-            if (_doc.UndoRedoManager.Position > _undoRedoStartPosition)
+            if (UndoRedoManager.Instance.Position > _undoRedoStartPosition)
             {
-                _doc.UndoRedoManager.Undo();
+                UndoRedoManager.Instance.Undo();
             }
             IsAlgorithmExecuting = false;
         }
@@ -77,7 +75,7 @@ namespace SharpGraphEditor.Models
             if (!saveChanges)
             {
                 Restart();
-                _doc.UndoRedoManager.CutOff();
+                UndoRedoManager.Instance.CutOff();
                 _undoRedoStartPosition = -1;
             }
             _algorithmTaskCancellationTokenSource.Cancel();
@@ -97,13 +95,13 @@ namespace SharpGraphEditor.Models
                 _algorithmTaskCancellationTokenSource = new CancellationTokenSource();
                 var task = Task.Factory.StartNew(() =>
                 {
-                    while (_doc.UndoRedoManager.CanRedo)
+                    while (UndoRedoManager.Instance.CanRedo)
                     {
                         if (_algorithmTaskCancellationTokenSource.IsCancellationRequested)
                         {
                             break;
                         }
-                        _doc.UndoRedoManager.Redo();
+                        UndoRedoManager.Instance.Redo();
                         Thread.Sleep(StepInterval);
                     }
                     IsAlgorithmExecuting = false;
@@ -111,14 +109,14 @@ namespace SharpGraphEditor.Models
             }
         }
 
-        public Task<bool> Run(IAlgorithm algorithm, IAlgorithmHost host)
+        public Task<bool> Run(IAlgorithm algorithm, IGraph graph, IAlgorithmHost host)
         {
             _algorithmTask = Task.Factory.StartNew<bool>(() =>
             {
                 IsAlgorithmExecuting = true;
-                var res = algorithm?.Run(_doc, host);
+                var res = algorithm?.Run(graph, host);
 
-                if (!res.ExecuteStepByStep || _undoRedoStartPosition == _doc.UndoRedoManager.Position)
+                if (!res.ExecuteStepByStep || _undoRedoStartPosition == UndoRedoManager.Instance.Position)
                 {
                     Stop(res.SaveChanges);
                     return true;

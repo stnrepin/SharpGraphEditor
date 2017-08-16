@@ -33,16 +33,12 @@ namespace SharpGraphEditor.Models
         public IEnumerable<IVertex> Vertices => (ObservableVertices);
         public IEnumerable<IEdge> Edges => (ObservableEdges);
 
-        public UndoRedoManager UndoRedoManager { get; private set; }
-
         // Constructor
         //
         public GraphDocument()
         {
             ObservableVertices = new ObservableCollection<IVertex>();
             ObservableEdges = new ObservableCollection<IEdge>();
-
-            UndoRedoManager = new UndoRedoManager();
         }
 
         // Public properties 
@@ -68,7 +64,7 @@ namespace SharpGraphEditor.Models
                 {
                     ObservableEdges.ForEach(x => x.IsDirected = value);
                 };
-                UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+                UndoRedoManager.Instance.AddAndExecute(new SimpleOperation(redo, undo));
             }
         }
 
@@ -92,7 +88,7 @@ namespace SharpGraphEditor.Models
                 Remove(element, false);
             };
 
-            UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+            UndoRedoManager.Instance.AddAndExecute(new SimpleOperation(redo, undo));
             return element;
         }
 
@@ -198,7 +194,7 @@ namespace SharpGraphEditor.Models
 
                 if (useUndoRedo)
                 {
-                    UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+                    UndoRedoManager.Instance.AddAndExecute(new SimpleOperation(redo, undo));
                 }
                 else
                 {
@@ -219,7 +215,7 @@ namespace SharpGraphEditor.Models
 
                 if (useUndoRedo)
                 {
-                    UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+                    UndoRedoManager.Instance.AddAndExecute(new SimpleOperation(redo, undo));
                 }
                 else
                 {
@@ -240,14 +236,14 @@ namespace SharpGraphEditor.Models
                 vertex.Color = oldColor;
             };
 
-            UndoRedoManager.AddAndExecute(new SimpleOperation(redo, undo));
+            UndoRedoManager.Instance.AddAndExecute(new SimpleOperation(redo, undo));
         }
 
         public void Clear()
         {
             Execute.OnUIThread(() => ObservableEdges.Clear());
             Execute.OnUIThread(() => ObservableVertices.Clear());
-            UndoRedoManager.Clear();
+            UndoRedoManager.Instance.Clear();
         }
 
         public Object Clone()

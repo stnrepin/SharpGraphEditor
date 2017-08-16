@@ -44,7 +44,7 @@ namespace SharpGraphEditor.ViewModels
         private bool _isCommentVisible;
         private bool _isTableVisible;
 
-        public bool IsModified => _lastSavingUndoRedoOperationsCount != Document.UndoRedoManager.Position;
+        public bool IsModified => _lastSavingUndoRedoOperationsCount != UndoRedoManager.Instance.Position;
 
 
         public ObservableCollection<TableRow> TableRows { get; private set; }
@@ -189,7 +189,7 @@ namespace SharpGraphEditor.ViewModels
             {
                 return;
             }
-            Document.UndoRedoManager.Redo();
+            UndoRedoManager.Instance.Redo();
         }
 
         public void Undo()
@@ -198,7 +198,7 @@ namespace SharpGraphEditor.ViewModels
             {
                 return;
             }
-            Document.UndoRedoManager.Undo();
+            UndoRedoManager.Instance.Undo();
         }
 
         public void ChangeZoomByPercents(double percents)
@@ -227,7 +227,7 @@ namespace SharpGraphEditor.ViewModels
                         _repository.LoadFromFile(Document, fileName, dialog.SourceType);
 
                         await EllipseVerticesPositionIfNeedAsync();
-                        Document.UndoRedoManager.Clear();
+                        UndoRedoManager.Instance.Clear();
                         Init();
                         Title = ProjectName + $" - {fileName}";
                     }
@@ -255,7 +255,7 @@ namespace SharpGraphEditor.ViewModels
                         {
                             _repository.LoadFromText(Document, textViewer.Text, dialog.SourceType);
                             await EllipseVerticesPositionIfNeedAsync();
-                            Document.UndoRedoManager.Clear();
+                            UndoRedoManager.Instance.Clear();
                             Init();
                         }
                     }
@@ -443,7 +443,7 @@ namespace SharpGraphEditor.ViewModels
 
             SelectedElement = null;
             Output = Terminal;
-            AlgorithmExecutor = new AlgorithmExecutionManager(Document);
+            AlgorithmExecutor = new AlgorithmExecutionManager();
 
             if (!checkGraphForClearing || await CheckGraphForClearingAsync())
             {
@@ -452,7 +452,7 @@ namespace SharpGraphEditor.ViewModels
                     IsAlgorithmRun = true;
                     IsAlgorithmControlPanelEnabled = true;
                     Terminal?.WriteLine($"{algorithm.Name} starting...");
-                    IsAlgorithmRun = !(await AlgorithmExecutor.Run(algorithm, this));
+                    IsAlgorithmRun = !(await AlgorithmExecutor.Run(algorithm, Document, this));
                     Terminal?.WriteLine("Algorithm finished successfully.\n");
                 }
                 catch (Exception e)
@@ -519,13 +519,13 @@ namespace SharpGraphEditor.ViewModels
         public void ShowComment(string text)
         {
             var op = CreateCommentingOperation(text);
-            Document.UndoRedoManager.AddAndExecute(op);
+            UndoRedoManager.Instance.AddAndExecute(op);
         }
 
         public void ShowCommentForLastAction(string text)
         {
             var op = CreateCommentingOperation(text);
-            Document.UndoRedoManager.AppendLastAndExecute(op);
+            UndoRedoManager.Instance.AppendLastAndExecute(op);
         }
 
         public void HideComment()
@@ -546,49 +546,49 @@ namespace SharpGraphEditor.ViewModels
         public void AddToTable(string row)
         {
             var op = CreateAddingToTableOperation(row);
-            Document.UndoRedoManager.AddAndExecute(op);
+            UndoRedoManager.Instance.AddAndExecute(op);
         }
 
         public void AddToTableForLastAction(string row)
         {
             var op = CreateAddingToTableOperation(row);
-            Document.UndoRedoManager.AppendLastAndExecute(op);
+            UndoRedoManager.Instance.AppendLastAndExecute(op);
         }
 
         public void AddToTable(string[] row)
         {
             var op = CreateAddingToTableOperation(row);
-            Document.UndoRedoManager.AddAndExecute(op);
+            UndoRedoManager.Instance.AddAndExecute(op);
         }
 
         public void AddToTableForLastAction(string[] row)
         {
             var op = CreateAddingToTableOperation(row);
-            Document.UndoRedoManager.AppendLastAndExecute(op);
+            UndoRedoManager.Instance.AppendLastAndExecute(op);
         }
 
         public void RemoveRowFromTable(string row)
         {
             var op = CreateRowRemovingFromTableOperation(new[] { row });
-            Document.UndoRedoManager.AddAndExecute(op);
+            UndoRedoManager.Instance.AddAndExecute(op);
         }
 
         public void RemoveRowFromTableForLastAction(string row)
         {
             var op = CreateRowRemovingFromTableOperation(new[] { row });
-            Document.UndoRedoManager.AppendLastAndExecute(op);
+            UndoRedoManager.Instance.AppendLastAndExecute(op);
         }
 
         public void RemoveRowFromTable(string[] row)
         {
             var op = CreateRowRemovingFromTableOperation(row);
-            Document.UndoRedoManager.AddAndExecute(op);
+            UndoRedoManager.Instance.AddAndExecute(op);
         }
 
         public void RemoveRowFromTableForLastAction(string[] row)
         {
             var op = CreateRowRemovingFromTableOperation(row);
-            Document.UndoRedoManager.AppendLastAndExecute(op);
+            UndoRedoManager.Instance.AppendLastAndExecute(op);
         }
 
         public void HideTable()
@@ -768,7 +768,7 @@ namespace SharpGraphEditor.ViewModels
 
         private void UnmodifyDocument()
         {
-            _lastSavingUndoRedoOperationsCount = Document.UndoRedoManager.Position;
+            _lastSavingUndoRedoOperationsCount = UndoRedoManager.Instance.Position;
         }
 
         private async System.Threading.Tasks.Task EllipseVerticesPositionIfNeedAsync()
