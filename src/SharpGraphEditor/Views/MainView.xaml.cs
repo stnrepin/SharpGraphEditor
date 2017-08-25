@@ -7,8 +7,9 @@ using System.Windows.Media;
 
 using MahApps.Metro.Controls;
 
-using SharpGraphEditor.ViewModels;
 using SharpGraphEditor.Graph.Core.Elements;
+
+using SharpGraphEditor.ViewModels;
 
 namespace SharpGraphEditor.Views
 {
@@ -29,7 +30,7 @@ namespace SharpGraphEditor.Views
 
         private void MainWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (Vm.NewEdge != null)
+            if (Vm.IsNewEdgeEnabled)
             {
                 var pos = e.GetPosition(GraphControl);
                 Vm.NewEdge.Target.X = pos.X;
@@ -45,10 +46,7 @@ namespace SharpGraphEditor.Views
 
         private void GraphControl_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (Vm.NewEdge != null)
-            {
-                Vm.NewEdge = null;
-            }
+            Vm.IsNewEdgeEnabled = false;
         }
 
         private async void MainWindow_ClosingAsync(object sender, System.ComponentModel.CancelEventArgs e)

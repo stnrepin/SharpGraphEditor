@@ -99,6 +99,7 @@
     <Compile Include="Controls\AutoSizeCanvas.cs" />
     <Compile Include="Controls\ConnectorShape.cs" />
     <Compile Include="Controls\ITerminal.cs" />
+    <Compile Include="Controls\NewEdgeShape.cs" />
     <Compile Include="Controls\Terminal.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\CompositeCollectionConverter.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Models\GraphDocument.cs" />
     <Compile Include="Models\GraphRepository.cs" />
     <Compile Include="Models\IOperation.cs" />
+    <Compile Include="Models\NewEdge.cs" />
     <Compile Include="Models\SimpleOperation.cs" />
     <Compile Include="Models\UndoRedoManager.cs" />
     <Compile Include="Models\Vertex.cs" />

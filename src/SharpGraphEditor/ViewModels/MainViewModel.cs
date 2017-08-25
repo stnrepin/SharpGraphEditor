@@ -31,7 +31,7 @@ namespace SharpGraphEditor.ViewModels
         private CursorModeManager _cursorModeManager;
         private AlgorithmExecutionManager _algorithmExecutor;
         private IGraphElement _selectedElement;
-        private IEdge _newEdge;
+        private NewEdge _newEdge;
 
         private AutoResetEvent _eventWaiter;
 
@@ -43,9 +43,9 @@ namespace SharpGraphEditor.ViewModels
         private string _commentText;
         private bool _isCommentVisible;
         private bool _isTableVisible;
+        private bool _isNewEdgeExists;
 
         public bool IsModified => _lastSavingUndoRedoOperationsCount != UndoRedoManager.Instance.Position;
-
 
         public ObservableCollection<TableRow> TableRows { get; private set; }
 
@@ -83,6 +83,9 @@ namespace SharpGraphEditor.ViewModels
             MinElementX = 30;
             MinElementY = 30;
 
+            IsNewEdgeEnabled = true;
+            NewEdge = new NewEdge(new Vertex(0, 0), 0, 0);
+
             Init();
         }
 
@@ -91,7 +94,7 @@ namespace SharpGraphEditor.ViewModels
             Title = ProjectName;
             CurrentCursorMode = CursorMode.Default;
             SelectedElement = null;
-            NewEdge = null;
+            IsNewEdgeEnabled = false;
 
             UnmodifyDocument();
 
@@ -342,14 +345,16 @@ namespace SharpGraphEditor.ViewModels
             }
             else if (mode == CursorMode.Add)
             {
-                if (NewEdge == null)
+                if (!IsNewEdgeEnabled)
                 {
                     if (element is Vertex)
                     {
-                        var sourceVertex = element as IVertex;
+                        var sourceVertex = element as Vertex;
                         SelectedElement = sourceVertex;
-                        var targetVertex = new Vertex(mousePositionX, mousePositionY) { IsAdding = true };
-                        NewEdge = new Edge(sourceVertex, targetVertex, false) { IsAdding = true };
+                        NewEdge.Source = sourceVertex;
+                        NewEdge.Target.X = mousePositionX;
+                        NewEdge.Target.Y = mousePositionY;
+                        IsNewEdgeEnabled = true;
                         return;
                     }
                     else
@@ -366,11 +371,11 @@ namespace SharpGraphEditor.ViewModels
                     else
                     {
                         var sourceVertex = NewEdge.Source;
-                        NewEdge = null;
+                        IsNewEdgeEnabled = false;
                         var targetVertex = Document.AddVertex(mousePositionX, mousePositionY);
                         Document.AddEdge(sourceVertex, targetVertex);
                     }
-                    NewEdge = null;
+                    IsNewEdgeEnabled = false;
                 }
             }
             else if (mode == CursorMode.Remove)
@@ -387,7 +392,7 @@ namespace SharpGraphEditor.ViewModels
                 return;
             }
 
-            NewEdge = null;
+            IsNewEdgeEnabled = false;
             SelectedElement = null;
             Document.Remove(element);
         }
@@ -618,8 +623,10 @@ namespace SharpGraphEditor.ViewModels
             get { return _selectedElement; }
             set
             {
-                if (NewEdge != null)
+                if (IsNewEdgeEnabled)
+                {
                     return;
+                }
 
                 if (value != _selectedElement)
                 {
@@ -629,13 +636,29 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
-        public IEdge NewEdge
+        public NewEdge NewEdge
         {
             get { return _newEdge; }
             set
             {
                 _newEdge = value;
-                NotifyOfPropertyChange(() => NewEdge);
+                if (IsNewEdgeEnabled)
+                {
+                    NotifyOfPropertyChange(() => NewEdge);
+                }
+            }
+        }
+
+        public bool IsNewEdgeEnabled
+        {
+            get { return _isNewEdgeExists; }
+            set
+            {
+                if (_isNewEdgeExists != value)
+                {
+                    _isNewEdgeExists = value;
+                    NotifyOfPropertyChange(() => IsNewEdgeEnabled);
+                }
             }
         }
 
