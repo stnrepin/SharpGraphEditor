@@ -136,22 +136,27 @@ namespace SharpGraphEditor.ViewModels
             WindowManager?.ShowDialog(new VertexPropertiesViewModel(vertex));
         }
 
-        public async System.Threading.Tasks.Task ShowGraphGeneratorAsync()
+        public async System.Threading.Tasks.Task GenerateGraphAsync()
         {
-            if (await CheckGraphForClearingAsync())
+            var generatorDialog = new GraphGeneratorViewModel(Document.ObservableVertices.Count);
+            var res = WindowManager.ShowDialog(generatorDialog);
+            if (res.HasValue && res.Value)
             {
-                Init();
-                var generator = new GraphGeneratorViewModel(Document.ObservableVertices.Count);
-                WindowManager.ShowDialog(generator);
-                var edgesList = generator.ResultEdgesList;
-                _repository.LoadFromText(Document, edgesList, GraphSourceType.EdgesList);
-
-                for (int i = 1; i <= generator.VerticesCount; i++)
+                var generator = new GraphGenerator();
+                var edgesList = generator.GenerateEdgesList(generatorDialog.Dense, generatorDialog.VerticesCount);
+                if (await CheckGraphForClearingAsync())
                 {
-                    Document.AddVertex(i);
-                }
+                    Init();
+                    _repository.LoadFromText(Document, edgesList, GraphSourceType.EdgesList);
 
-                await EllipseVerticesPositionIfNeedAsync();
+                    // if some vertices have not edges.
+                    for (int i = 1; i <= generatorDialog.VerticesCount; i++)
+                    {
+                        Document.AddVertex(i);
+                    }
+
+                    await EllipseVerticesPositionIfNeedAsync();
+                }
             }
         }
 

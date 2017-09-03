@@ -15,8 +15,6 @@ namespace SharpGraphEditor.ViewModels
         private int _verticesCount;
         private bool _canGenerate;
 
-        public string ResultEdgesList { get; private set; }
-
         public GraphGeneratorViewModel(int verticesCount)
         {
             if (!IsNatural(verticesCount))
@@ -31,50 +29,12 @@ namespace SharpGraphEditor.ViewModels
 
         public void Generate(IClose closableWindow)
         {
-            var edgesList = new StringBuilder();
-            var directedEdgesCount = (int)Math.Floor(Dense * VerticesCount * (VerticesCount - 1));
-            var edgesCount = directedEdgesCount / 2;
-
-            var allEdges = new List<Tuple<int, int>>();
-
-            for (int i = 1; i <= VerticesCount; i++)
-            {
-                for (int j = i; j <= VerticesCount; j++)
-                {
-                    if (i != j)
-                    {
-                        allEdges.Add(new Tuple<int, int>(i, j));
-                    }
-                }
-            }
-
-            var indexes = new List<int>();
-            for (int i = 0; i < edgesCount; i++)
-            {
-                while (true)
-                {
-                    var index = _random.Next(0, allEdges.Count);
-                    if (!indexes.Contains(index))
-                    {
-                        indexes.Add(index);
-
-                        var sourceIndex = allEdges[index].Item1;
-                        var targetIndex = allEdges[index].Item2;
-
-                        edgesList.AppendLine($"{sourceIndex} {targetIndex}");
-                        edgesList.AppendLine($"{targetIndex} {sourceIndex}");
-                        break;
-                    }
-                }
-            }
-
-            ResultEdgesList = edgesList.ToString();
-            closableWindow.TryClose();
+            closableWindow.TryClose(true);
         }
 
         public void Cancel(IClose closableWindow)
         {
-            closableWindow.TryClose();
+            closableWindow.TryClose(false);
         }
 
         public double Dense

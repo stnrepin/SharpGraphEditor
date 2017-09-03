@@ -119,6 +119,7 @@
     <Compile Include="Models\CursorModeManager.cs" />
     <Compile Include="Models\Edge.cs" />
     <Compile Include="Models\GraphDocument.cs" />
+    <Compile Include="Models\GraphGenerator.cs" />
     <Compile Include="Models\GraphRepository.cs" />
     <Compile Include="Models\IOperation.cs" />
     <Compile Include="Models\NewEdge.cs" />

@@ -130,7 +130,7 @@
             </MenuItem>
 
             <MenuItem Header="Graph" IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}">
-                <MenuItem Header="Generate..." cal:Message.Attach="ShowGraphGeneratorAsync" />
+                <MenuItem Header="Generate..." cal:Message.Attach="GenerateGraphAsync" />
                 <Separator />
                 <CheckBox x:Name="IsDirectedChB"
                           Content="Directed" 
