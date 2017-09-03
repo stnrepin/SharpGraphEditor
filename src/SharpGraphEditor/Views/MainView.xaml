@@ -113,8 +113,8 @@
                 </MenuItem>
                 <MenuItem Header="Save" cal:Message.Attach="Save" InputGestureText="Ctrl+S" />
                 <MenuItem Header="Save as">
-                    <MenuItem Header="To File..." cal:Message.Attach="SaveAs" InputGestureText="Ctrl+S, F" />
-                    <MenuItem Header="To Text..." cal:Message.Attach="SaveAsText" InputGestureText="Ctrl+S, T" />
+                    <MenuItem Header="To File..." cal:Message.Attach="SaveAs" InputGestureText="Ctrl+Shift+S, F" />
+                    <MenuItem Header="To Text..." cal:Message.Attach="SaveAsText" InputGestureText="Ctrl+Shift+S, T" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Exit" cal:Message.Attach="ExitAsync" InputGestureText="Alt+F4" />
