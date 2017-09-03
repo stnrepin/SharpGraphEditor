@@ -37,6 +37,7 @@
                                [Shortcut Control+Y] = [Action Redo];
                                [Shortcut Control+V,P] = [Action ShowVertexProperties(null)];
                                [Shortcut Control+T] = [Action ChangeOutputVisibility('true')];
+                               [Shortcut Control+V, C] = [Action ShowComment];
                                [Shortcut Control+N] = [Action ClearGraphAsync];
                                [Shortcut D1] = [Action SetCurrentCursorMode('Default')];
                                [Shortcut D2] = [Action SetCurrentCursorMode('Add')];
@@ -127,6 +128,7 @@
             <MenuItem Header="View">
                 <MenuItem Header="Properties..." cal:Message.Attach="[Event Click] = [Action ShowVertexProperties(null)]" InputGestureText="Ctrl+V, P" />
                 <MenuItem Header="Output" cal:Message.Attach="[Event Click] = [Action ChangeOutputVisibility('true')]" InputGestureText="Ctrl+T" />
+                <MenuItem Header="Comment" cal:Message.Attach="[Event Click] = [Action ShowComment]" InputGestureText="Ctrl+V, C" />
             </MenuItem>
 
             <MenuItem Header="Graph" IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}">

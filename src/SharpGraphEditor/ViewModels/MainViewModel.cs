@@ -523,7 +523,10 @@ namespace SharpGraphEditor.ViewModels
 
         public void ShowComment()
         {
-            IsCommentVisible = true;
+            if (!String.IsNullOrEmpty(CommentText))
+            {
+                IsCommentVisible = true;
+            }
         }
 
         public void ShowComment(string text)
