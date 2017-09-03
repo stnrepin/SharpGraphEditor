@@ -45,6 +45,7 @@
             </TextBox>
 
             <ComboBox IsEditable="True" Margin="5" Grid.Row="1" Grid.Column="1" SelectedValuePath="Content" Validation.Error="ValidationError">
+                <ComboBoxItem Content="0" />
                 <ComboBoxItem Content="0.1" />
                 <ComboBoxItem Content="0.2" />
                 <ComboBoxItem Content="0.3" />
@@ -66,7 +67,9 @@
             </ComboBox>
         </Grid>
 
-        <Button x:Name="GenerateBt" IsDefault="True" IsEnabled="{Binding CanGenerate}" Content="Generate" Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Right" 
-                cal:Message.Attach="Generate($view)"/>
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button x:Name="GenerateBt" IsDefault="True" IsEnabled="{Binding CanGenerate}" Content="Generate" Margin="5" cal:Message.Attach="Generate($view)"/>
+            <Button x:Name="CancelBt" Content="Cancel" Margin="0, 5, 5, 5" cal:Message.Attach="Cancel($view)" />
+        </StackPanel>
     </StackPanel>
 </metroControls:MetroWindow>

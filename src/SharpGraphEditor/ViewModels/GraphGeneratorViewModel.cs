@@ -72,6 +72,11 @@ namespace SharpGraphEditor.ViewModels
             closableWindow.TryClose();
         }
 
+        public void Cancel(IClose closableWindow)
+        {
+            closableWindow.TryClose();
+        }
+
         public double Dense
         {
             get { return _dense; }
