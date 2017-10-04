@@ -34,7 +34,7 @@
             <ComboBoxItem Content="Adjacency matrix" Tag="AdjMatrix" />
             <ComboBoxItem Content="Edges list" Tag="EdgesList" />
             <ComboBoxItem Content="Incidence matrix" Tag="IncidenceMatrix" />
-            <ComboBoxItem Content="GraphViz plain text (ext)" Tag="GraphVizPlainTextExt" Visibility="{Binding IsOpenMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=1}" />
+            <ComboBoxItem Content="GraphViz plain-ext" Tag="GraphVizPlainExt" />
             <ComboBoxItem Content="Hierarchical rtf" Tag="HierarchicalRtf" Visibility="{Binding IsOpenMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </ComboBox>
 

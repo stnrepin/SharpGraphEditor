@@ -41,7 +41,7 @@ namespace SharpGraphEditor.Models
                 case GraphSourceType.IncidenceMatrix:
                     (new IncidenceMatrixFormatStorage()).Open(path, graph);
                     break;
-                case GraphSourceType.GraphVizPlainTextExt:
+                case GraphSourceType.GraphVizPlainExt:
                     (new GraphVizPlainExtFormatStorage()).Open(path, graph);
                     break;
                 default:
@@ -75,7 +75,7 @@ namespace SharpGraphEditor.Models
                     case GraphSourceType.IncidenceMatrix:
                         (new IncidenceMatrixFormatStorage()).Open(stringReader, graph);
                         break;
-                    case GraphSourceType.GraphVizPlainTextExt:
+                    case GraphSourceType.GraphVizPlainExt:
                         (new GraphVizPlainExtFormatStorage()).Open(stringReader, graph);
                         break;
                     default:
@@ -104,6 +104,9 @@ namespace SharpGraphEditor.Models
                     break;
                 case GraphSourceType.IncidenceMatrix:
                     (new IncidenceMatrixFormatStorage()).Save(path, graph);
+                    break;
+                case GraphSourceType.GraphVizPlainExt:
+                    (new GraphVizPlainExtFormatStorage()).Save(path, graph);
                     break;
                 case GraphSourceType.HierarchicalRtf:
                     (new HierarchicalRtfFormatStorage()).Save(path, graph);
@@ -140,6 +143,9 @@ namespace SharpGraphEditor.Models
                     case GraphSourceType.IncidenceMatrix:
                         (new IncidenceMatrixFormatStorage()).Save(stringWriter, graph);
                         break;
+                    case GraphSourceType.GraphVizPlainExt:
+                        (new GraphVizPlainExtFormatStorage()).Save(stringWriter, graph);
+                        break;
                     case GraphSourceType.HierarchicalRtf:
                         (new HierarchicalRtfFormatStorage()).Save(stringWriter, graph);
                         break;
@@ -162,7 +168,7 @@ namespace SharpGraphEditor.Models
                 case GraphSourceType.AdjMatrix:
                 case GraphSourceType.EdgesList:
                 case GraphSourceType.IncidenceMatrix:
-                case GraphSourceType.GraphVizPlainTextExt:
+                case GraphSourceType.GraphVizPlainExt:
                     filter = "TXT files (*.txt) | *.txt";
                     break;
                 case GraphSourceType.HierarchicalRtf:

@@ -19,7 +19,7 @@ namespace SharpGraphEditor.Models
         AdjMatrix,
         EdgesList,
         IncidenceMatrix,
-        GraphVizPlainTextExt,
+        GraphVizPlainExt,
         HierarchicalRtf
     }
 
