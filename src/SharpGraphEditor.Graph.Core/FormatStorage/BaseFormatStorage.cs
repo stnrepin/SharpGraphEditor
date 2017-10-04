@@ -7,6 +7,8 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
 {
     public abstract class BaseFormatStorage
     {
+        public string CurrentFile { get; private set; }
+
         public void Open(string path, IGraph graph)
         {
             try
@@ -15,6 +17,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
                 {
                     using (var stream = new StreamReader(fileStream))
                     {
+                        CurrentFile = path;
                         Open(stream, graph);
                     }
                 }
@@ -38,6 +41,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             {
                 try
                 {
+                    CurrentFile = path;
                     Save(stream, graph);
                 }
                 catch

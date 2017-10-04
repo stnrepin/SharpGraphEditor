@@ -44,6 +44,9 @@ namespace SharpGraphEditor.Models
                 case GraphSourceType.GraphVizPlainExt:
                     (new GraphVizPlainExtFormatStorage()).Open(path, graph);
                     break;
+                case GraphSourceType.Dot:
+                    (new DotFormatStorage()).Open(path, graph);
+                    break;
                 default:
                     throw new NotSupportedException($"{sourceType.ToString()} not support");
             }
@@ -77,6 +80,9 @@ namespace SharpGraphEditor.Models
                         break;
                     case GraphSourceType.GraphVizPlainExt:
                         (new GraphVizPlainExtFormatStorage()).Open(stringReader, graph);
+                        break;
+                    case GraphSourceType.Dot:
+                        (new DotFormatStorage()).Open(stringReader, graph);
                         break;
                     default:
                         throw new NotSupportedException($"{sourceType.ToString()} not support");
@@ -173,6 +179,9 @@ namespace SharpGraphEditor.Models
                     break;
                 case GraphSourceType.HierarchicalRtf:
                     filter = "Rtf file (*.rtf) | *.rtf";
+                    break;
+                case GraphSourceType.Dot:
+                    filter = "Dot file (*.gv, *.dot) | *.gv; *.dot";
                     break;
                 default:
                     throw new ArgumentException("Unknown file type");

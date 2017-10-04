@@ -20,7 +20,8 @@ namespace SharpGraphEditor.Models
         EdgesList,
         IncidenceMatrix,
         GraphVizPlainExt,
-        HierarchicalRtf
+        HierarchicalRtf,
+        Dot
     }
 
     public class GraphDocument : PropertyChangedBase, IGraph, ICloneable

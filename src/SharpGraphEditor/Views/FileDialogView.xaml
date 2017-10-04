@@ -36,6 +36,7 @@
             <ComboBoxItem Content="Incidence matrix" Tag="IncidenceMatrix" />
             <ComboBoxItem Content="GraphViz plain-ext" Tag="GraphVizPlainExt" />
             <ComboBoxItem Content="Hierarchical rtf" Tag="HierarchicalRtf" Visibility="{Binding IsOpenMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <ComboBoxItem Content="Dot" Tag="Dot" Visibility="{Binding IsOpenMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=1}" />
         </ComboBox>
 
         <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Right">
