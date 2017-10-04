@@ -4,7 +4,6 @@
 
     <conv:CompositeCollectionConverter x:Key="CompositeCollectionConverter" />
     <conv:IsEquals x:Key="IsEquals" />
-    <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <conv:CursorModeEnumToBooleanConverter x:Key="CursorModeEnumToBooleanConverter" />
     <conv:VertexColorToColorConverter x:Key="VertexColorToColorConverter" />
     <conv:ContrastColorConverter x:Key="ContrastColorConverter" />

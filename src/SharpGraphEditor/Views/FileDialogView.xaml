@@ -7,6 +7,7 @@
                            xmlns:system="clr-namespace:System;assembly=mscorlib"
                            xmlns:cal="http://www.caliburnproject.org"
                            xmlns:metroControls="http://metro.mahapps.com/winfx/xaml/controls"
+                           xmlns:conv="clr-namespace:SharpGraphEditor.Converters"
                            mc:Ignorable="d"
                            Title="FileDialogView" 
                            Width="300"
@@ -19,6 +20,10 @@
                            SizeToContent="Height"
                            BorderBrush="{StaticResource SelectionColor}">
 
+    <metroControls:MetroWindow.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </metroControls:MetroWindow.Resources>
+
     <StackPanel Margin="10">
         <TextBlock Text="Format: " Margin="0, 0, 10, 0" VerticalAlignment="Top" />
         <ComboBox Margin="0, 0, 5, 5" 
@@ -29,8 +34,8 @@
             <ComboBoxItem Content="Adjacency matrix" Tag="AdjMatrix" />
             <ComboBoxItem Content="Edges list" Tag="EdgesList" />
             <ComboBoxItem Content="Incidence matrix" Tag="IncidenceMatrix" />
-            <ComboBoxItem Content="GraphViz plain text (ext)" Tag="GraphVizPlainTextExt" Visibility="{Binding IsOpenMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=1}"/>
-            <ComboBoxItem Content="Hierarchical rtf" Tag="HierarchicalRtf" Visibility="{Binding IsOpenMode, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <ComboBoxItem Content="GraphViz plain text (ext)" Tag="GraphVizPlainTextExt" Visibility="{Binding IsOpenMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=1}" />
+            <ComboBoxItem Content="Hierarchical rtf" Tag="HierarchicalRtf" Visibility="{Binding IsOpenMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </ComboBox>
 
         <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Right">
