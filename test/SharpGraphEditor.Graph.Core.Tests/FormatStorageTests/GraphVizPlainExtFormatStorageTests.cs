@@ -11,7 +11,7 @@ using SharpGraphEditor.Graph.Core.FormatStorage;
 namespace SharpGraphEditor.Graph.Core.Tests.FormatStorageTests
 {
     [TestClass]
-    public class GraphVizPlainTextExtFormatStorageTests
+    public class GraphVizPlainExtFormatStorageTests
     {
         [TestMethod]
         public void Open_ValidText_Graph()
@@ -22,7 +22,7 @@ namespace SharpGraphEditor.Graph.Core.Tests.FormatStorageTests
                        "edge vertex2 vertex1 <n> <x1> <y1> <..> <xn> <yn> [<label> <xl> <yl>] <style> <color>\n" +
                        "stop";
 
-            var storage = new GraphVizPlainTextExtFormatStorage();
+            var storage = new GraphVizPlainExtFormatStorage();
             var graphMock = new Mock<IGraph>();
 
             graphMock.Setup(g => g.FindVertexByName(It.IsAny<string>()))
@@ -45,7 +45,7 @@ namespace SharpGraphEditor.Graph.Core.Tests.FormatStorageTests
         [ExpectedException(typeof(NotImplementedException))]
         public void Save_ValidGraph_RaiseException()
         {
-            var storage = new GraphVizPlainTextExtFormatStorage();
+            var storage = new GraphVizPlainExtFormatStorage();
             var graphMock = new Mock<IGraph>();
 
             var sb = new StringBuilder();

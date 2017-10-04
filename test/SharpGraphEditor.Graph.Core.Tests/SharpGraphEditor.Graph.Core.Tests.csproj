@@ -46,7 +46,7 @@
     <Compile Include="FormatStorageTests\AdjListFormatStorageTests.cs" />
     <Compile Include="FormatStorageTests\AdjMatrixFormatStorageTests.cs" />
     <Compile Include="FormatStorageTests\EdgesListFormatStorageTests.cs" />
-    <Compile Include="FormatStorageTests\GraphVizPlainTextExtFormatStorageTests.cs" />
+    <Compile Include="FormatStorageTests\GraphVizPlainExtFormatStorageTests.cs" />
     <Compile Include="FormatStorageTests\GxmlFormatStorageTests.cs" />
     <Compile Include="FormatStorageTests\HierarchicalRtfFormatStorageTests.cs" />
     <Compile Include="FormatStorageTests\IncidenceMatrixFormatStorageTests.cs" />

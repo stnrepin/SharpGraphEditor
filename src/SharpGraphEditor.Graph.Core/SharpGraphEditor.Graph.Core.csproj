@@ -62,7 +62,7 @@
     <Compile Include="FormatStorage\AdjMatrixFormatStorage.cs" />
     <Compile Include="FormatStorage\BaseFormatStorage.cs" />
     <Compile Include="FormatStorage\EdgesListFormatStorage.cs" />
-    <Compile Include="FormatStorage\GraphVizPlainTextExtFormatStorage.cs" />
+    <Compile Include="FormatStorage\GraphVizPlainExtFormatStorage.cs" />
     <Compile Include="FormatStorage\GxmlFormatStorage.cs" />
     <Compile Include="FormatStorage\HierarchicalRtfFormatStorage.cs" />
     <Compile Include="FormatStorage\IncidenceMatrixFormatStorage.cs" />

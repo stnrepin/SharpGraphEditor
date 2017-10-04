@@ -10,7 +10,7 @@ using static SharpGraphEditor.Graph.Core.Utils.FormatStorageUtils;
 namespace SharpGraphEditor.Graph.Core.FormatStorage
 {
     // http://www.graphviz.org/doc/info/output.html#d:plain-ext
-    public class GraphVizPlainTextExtFormatStorage : BaseFormatStorage
+    public class GraphVizPlainExtFormatStorage : BaseFormatStorage
     {
         public double MonitorDpi { get; set; } = 96;
 

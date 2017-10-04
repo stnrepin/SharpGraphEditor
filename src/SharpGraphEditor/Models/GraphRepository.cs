@@ -42,7 +42,7 @@ namespace SharpGraphEditor.Models
                     (new IncidenceMatrixFormatStorage()).Open(path, graph);
                     break;
                 case GraphSourceType.GraphVizPlainTextExt:
-                    (new GraphVizPlainTextExtFormatStorage()).Open(path, graph);
+                    (new GraphVizPlainExtFormatStorage()).Open(path, graph);
                     break;
                 default:
                     throw new NotSupportedException($"{sourceType.ToString()} not support");
@@ -76,7 +76,7 @@ namespace SharpGraphEditor.Models
                         (new IncidenceMatrixFormatStorage()).Open(stringReader, graph);
                         break;
                     case GraphSourceType.GraphVizPlainTextExt:
-                        (new GraphVizPlainTextExtFormatStorage()).Open(stringReader, graph);
+                        (new GraphVizPlainExtFormatStorage()).Open(stringReader, graph);
                         break;
                     default:
                         throw new NotSupportedException($"{sourceType.ToString()} not support");
