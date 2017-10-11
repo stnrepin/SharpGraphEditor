@@ -19,6 +19,8 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
         {
             base.Open(reader, graph);
 
+            double graphHeight = 0.0;
+
             int verticesCount = 0;
             foreach (var line in ReadAllLines(reader))
             {
@@ -27,6 +29,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
                 parts = parts.Skip(1).ToArray();
                 if (statementType == "graph")
                 {
+                    graphHeight = ParseStringTo<double>(parts[2]) * MonitorDpi;
                     if (parts.Length != 3)
                     {
                         throw new InputFileFormatException("Properties count of \"graph\" must be 3");
@@ -48,7 +51,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
                         label = label.Substring(1, label.Length - 2);
                     }
 
-                    graph.AddVertex(x * MonitorDpi, y * MonitorDpi, ++verticesCount, name, label);
+                    graph.AddVertex(x * MonitorDpi, (graphHeight - y * MonitorDpi), ++verticesCount, name, label);
                 }
                 else if (statementType == "edge")
                 {
