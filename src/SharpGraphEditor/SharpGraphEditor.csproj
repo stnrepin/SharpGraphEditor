@@ -120,6 +120,7 @@
     <Compile Include="Models\Edge.cs" />
     <Compile Include="Models\GraphDocument.cs" />
     <Compile Include="Models\GraphGenerator.cs" />
+    <Compile Include="Models\GraphProperties.cs" />
     <Compile Include="Models\GraphRepository.cs" />
     <Compile Include="Models\IOperation.cs" />
     <Compile Include="Models\NewEdge.cs" />
@@ -136,6 +137,7 @@
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\FileDialogViewModel.cs" />
     <Compile Include="ViewModels\GraphGeneratorViewModel.cs" />
+    <Compile Include="ViewModels\GraphPropertiesViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Models\TableRow.cs" />
     <Compile Include="ViewModels\TextViewerViewModel.cs" />
@@ -154,6 +156,9 @@
     </Compile>
     <Compile Include="Views\GraphGeneratorView.xaml.cs">
       <DependentUpon>GraphGeneratorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GraphPropertiesView.xaml.cs">
+      <DependentUpon>GraphPropertiesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
@@ -213,6 +218,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GraphGeneratorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GraphPropertiesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

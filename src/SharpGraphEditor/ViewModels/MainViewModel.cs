@@ -160,6 +160,12 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
+        public void ShowGraphProperties()
+        {
+            var graphPropertiesView = new GraphPropertiesViewModel(Document);
+            WindowManager?.ShowDialog(graphPropertiesView);
+        }
+
         public async System.Threading.Tasks.Task ExitAsync()
         {
             if (await CheckGraphForClearingAsync())

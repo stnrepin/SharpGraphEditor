@@ -31,6 +31,13 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
         public override void Save(TextWriter writer, IGraph graph)
         {
             var verticesCount = graph.Vertices.Count();
+            var matrix = ToAdjMatrix(graph);
+            PrintMatrix(writer, matrix, verticesCount, verticesCount);
+        }
+
+        public static int[,] ToAdjMatrix(IGraph graph)
+        {
+            var verticesCount = graph.Vertices.Count();
             var matrix = new int[verticesCount, verticesCount];
 
             foreach (var pair in graph.ToAdjList())
@@ -41,8 +48,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
                     matrix[index - 1, adjVertex.Index - 1] = 1;
                 }
             }
-
-            PrintMatrix(writer, matrix, verticesCount, verticesCount);
+            return matrix;
         }
     }
 }
