@@ -27,7 +27,7 @@
                            WindowStartupLocation="CenterScreen"
                            
                            cal:Message.Attach="
-                               [Shortcut Control+R] = [Action RemoveElement(MainWindow.DataContext.SelectedElement)];
+                               [Shortcut Delete] = [Action RemoveElement(MainWindow.DataContext.SelectedElement)];
                                [Shortcut Control+S] = [Action Save];
                                [Shortcut Control+Shift+S,T] = [Action SaveAsText];
                                [Shortcut Control+Shift+S,F] = [Action SaveAs];
