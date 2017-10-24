@@ -68,6 +68,12 @@ namespace SharpGraphEditor.Models
             var edgesCount = _graph.Edges.Count();
             var verticesCount = _verticesCount;
 
+            if (verticesCount < 2)
+            {
+                Dense = 0;
+                return;
+            }
+
             Dense = Math.Round((double)(2 * edgesCount) / (verticesCount * (verticesCount - 1)), 3);
             NotifyOfPropertyChange(nameof(Dense));
         }
