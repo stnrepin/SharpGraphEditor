@@ -281,7 +281,7 @@
             <Border BorderBrush="LightSlateGray"
                     BorderThickness="1"
                     Margin="5, 5, 5, 0"
-                    Visibility="{Binding Visibility, ElementName=OutputTerminal}"
+                    Visibility="{Binding IsOutputVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}"
                     DockPanel.Dock="Bottom">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -297,8 +297,7 @@
                                        Focusable="False"
                                        ShowOnWrite="True"
                                        Height="100"
-                                       BorderThickness="0"
-                                       Visibility="{Binding IsOutputHide, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}"/>
+                                       BorderThickness="0" />
                 </StackPanel>
             </Border>
 

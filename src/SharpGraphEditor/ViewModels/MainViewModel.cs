@@ -39,7 +39,7 @@ namespace SharpGraphEditor.ViewModels
         private int _lastSavingUndoRedoOperationsCount;
         private bool _isAlgorithmRun;
         private bool _isAlgorithmControlPanelEnabled;
-        private bool _isOutputHide;
+        private bool _isOutputVisible;
         private string _commentText;
         private bool _isCommentVisible;
         private bool _isTableVisible;
@@ -179,6 +179,8 @@ namespace SharpGraphEditor.ViewModels
             Terminal?.WriteLine(ProjectName);
             Terminal?.WriteLine("(c) Stepan Repin, 2017");
             Terminal?.WriteLine();
+
+            IsOutputVisible = false;
 
             // It's important line. Without it PropertyChangedCallback in MatrixSourceProperty in ListViewWithGridViewBehavior WILL NOT be fired.
             // Do not remove same line in constructor, too.
@@ -488,7 +490,7 @@ namespace SharpGraphEditor.ViewModels
 
         public void ChangeOutputVisibility(bool value)
         {
-            IsOutputHide = value;
+            IsOutputVisible = value;
         }
 
         public void ClearTerminalText()
@@ -699,13 +701,13 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
-        public bool IsOutputHide
+        public bool IsOutputVisible
         {
-            get { return _isOutputHide; }
+            get { return _isOutputVisible; }
             set
             {
-                _isOutputHide = value;
-                NotifyOfPropertyChange(() => IsOutputHide);
+                _isOutputVisible = value;
+                NotifyOfPropertyChange(() => IsOutputVisible);
             }
         }
 
