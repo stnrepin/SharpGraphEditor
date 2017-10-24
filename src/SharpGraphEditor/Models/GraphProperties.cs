@@ -58,7 +58,7 @@ namespace SharpGraphEditor.Models
                 {
                     currentEccentricity = Math.Max(currentEccentricity, _distances[i, j]);
                 }
-                eccentricities.Add(Tuple.Create(v, currentEccentricity));
+                eccentricities.Add(Tuple.Create(v, currentEccentricity == Graph.Core.Algorithms.Helpers.FloydWarshall.MaxDistance ? 0 : currentEccentricity));
             }
             Eccentricity = new ObservableCollection<Tuple<IVertex, int>>(eccentricities.OrderBy(x => x.Item1.Index));
         }

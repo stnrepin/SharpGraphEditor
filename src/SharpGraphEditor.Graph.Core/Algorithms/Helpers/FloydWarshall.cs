@@ -4,6 +4,8 @@ namespace SharpGraphEditor.Graph.Core.Algorithms.Helpers
 {
     public class FloydWarshall
     {
+        public const int MaxDistance = 99999;
+
         public int[,] Run(IGraph graph, int verticesCount)
         {
             var graphMatrix = FormatStorage.AdjMatrixFormatStorage.ToAdjMatrix(graph);
@@ -17,7 +19,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms.Helpers
                     distance[i, j] = graphMatrix[i, j];
                     if (distance[i, j] == 0)
                     {
-                        distance[i, j] = 99999;
+                        distance[i, j] = MaxDistance;
                     }
                 }
             }
