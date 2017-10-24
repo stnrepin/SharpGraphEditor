@@ -824,6 +824,7 @@ namespace SharpGraphEditor.ViewModels
         private void OnCursorModeChanged()
         {
             SelectedElement = null;
+            IsNewEdgeEnabled = false;
         }
 
         private void ShowError(Exception ex)
