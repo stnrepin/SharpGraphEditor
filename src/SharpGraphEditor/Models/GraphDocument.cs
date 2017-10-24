@@ -71,7 +71,7 @@ namespace SharpGraphEditor.Models
 
         // Public methods
         //
-        public T Add<T>(T element) where T : IGraphElement
+        public T Add<T>(T element, bool addToUndoRedo) where T : IGraphElement
         {
             System.Action redo = () =>
             {
@@ -89,7 +89,14 @@ namespace SharpGraphEditor.Models
                 Remove(element, false);
             };
 
-            UndoRedoManager.Instance.AddAndExecute(new SimpleOperation(redo, undo));
+            if (addToUndoRedo)
+            {
+                UndoRedoManager.Instance.AddAndExecute(new SimpleOperation(redo, undo));
+            }
+            else
+            {
+                redo();
+            }
             return element;
         }
 
@@ -134,7 +141,7 @@ namespace SharpGraphEditor.Models
                 Title = title
             };
 
-            return Add(v);
+            return Add(v, true);
         }
 
         public IEdge AddEdge(IVertex source, IVertex target, bool makeNotDirectedIfreversedExisted = false)
@@ -163,7 +170,7 @@ namespace SharpGraphEditor.Models
                 }
 
                 var newEdge = new Edge(source, target, isDirected);
-                return Add(newEdge);
+                return Add(newEdge, true);
             }
             return null;
         }
@@ -190,7 +197,7 @@ namespace SharpGraphEditor.Models
                 System.Action undo = () =>
                 {
                     AddVertex(vertex);
-                    edges.ForEach(x => Add(x));
+                    edges.ForEach(x => Add(x, false));
                 };
 
                 if (useUndoRedo)
@@ -211,7 +218,7 @@ namespace SharpGraphEditor.Models
                 };
                 System.Action undo = () =>
                 {
-                    Add(edge);
+                    Add(edge, false);
                 };
 
                 if (useUndoRedo)

@@ -12,7 +12,7 @@ namespace SharpGraphEditor.Graph.Core
 
         bool IsDirected { get; set; }
 
-        T Add<T>(T element) where T : IGraphElement;
+        T Add<T>(T element, bool addToUndoRedo) where T : IGraphElement;
 
         IVertex AddVertex(int index);
 
