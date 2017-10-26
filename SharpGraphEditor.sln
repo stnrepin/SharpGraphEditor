@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26014.0
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGraphEditor", "src\SharpGraphEditor\SharpGraphEditor.csproj", "{008B49DD-97B1-40BD-8BFF-F6AC2C71003C}"
 EndProject
@@ -22,6 +22,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A5BBD540-0134-4934-A702-021EBA86C584}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGraphEditor.Graph.Core.Tests", "test\SharpGraphEditor.Graph.Core.Tests\SharpGraphEditor.Graph.Core.Tests.csproj", "{881BDFB3-F85D-409D-A23A-EA1525D9BD90}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{E10798EB-A50B-4DDA-A205-9F1700297CF7}"
+	ProjectSection(SolutionItems) = preProject
+		assets\SharpGraphEditor.ico = assets\SharpGraphEditor.ico
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,5 +54,8 @@ Global
 		{008B49DD-97B1-40BD-8BFF-F6AC2C71003C} = {055112F0-58E0-4C91-925C-D1815CAB8EAD}
 		{047F5AB2-2F0F-45C5-B5B7-DE08ACD7DA0A} = {055112F0-58E0-4C91-925C-D1815CAB8EAD}
 		{881BDFB3-F85D-409D-A23A-EA1525D9BD90} = {A5BBD540-0134-4934-A702-021EBA86C584}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6383CF6B-2F5D-4A32-BA2B-750BC6BB0349}
 	EndGlobalSection
 EndGlobal
