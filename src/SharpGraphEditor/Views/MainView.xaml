@@ -14,7 +14,7 @@
         
                            mc:Ignorable="d"
                            x:Name="MainWindow"
-                           Closing="MainWindow_ClosingAsync"
+                           Closing="MainWindow_Closing"
                            PreviewMouseMove="MainWindow_PreviewMouseMove"
                            MinHeight="640"
                            MinWidth="900"
@@ -31,14 +31,14 @@
                                [Shortcut Control+S] = [Action Save];
                                [Shortcut Control+Shift+S,T] = [Action SaveAsText];
                                [Shortcut Control+Shift+S,F] = [Action SaveAs];
-                               [Shortcut Control+O,T] = [Action LoadGraphFromTextAsync];
-                               [Shortcut Control+O,F] = [Action LoadGraphFromFileAsync];
+                               [Shortcut Control+O,T] = [Action LoadGraphFromText];
+                               [Shortcut Control+O,F] = [Action LoadGraphFromFile];
                                [Shortcut Control+Z] = [Action Undo];
                                [Shortcut Control+Y] = [Action Redo];
                                [Shortcut Control+V,P] = [Action ShowVertexProperties(null)];
                                [Shortcut Control+T] = [Action ChangeOutputVisibility('true')];
                                [Shortcut Control+V, C] = [Action ShowComment];
-                               [Shortcut Control+N] = [Action ClearGraphAsync];
+                               [Shortcut Control+N] = [Action ClearGraph];
                                [Shortcut D1] = [Action SetCurrentCursorMode('Default')];
                                [Shortcut D2] = [Action SetCurrentCursorMode('Add')];
                                [Shortcut D3] = [Action SetCurrentCursorMode('Remove')];">
@@ -105,11 +105,11 @@
 
         <Menu Grid.Row="0" Background="White">
             <MenuItem Header="File">
-                <MenuItem Header="New" cal:Message.Attach="ClearGraphAsync" InputGestureText="Ctrl+N" />
+                <MenuItem Header="New" cal:Message.Attach="ClearGraph" InputGestureText="Ctrl+N" />
                 <Separator />
                 <MenuItem Header="Open">
-                    <MenuItem Header="From File..." cal:Message.Attach="LoadGraphFromFileAsync" InputGestureText="Ctrl+O, F" />
-                    <MenuItem Header="From Text..." cal:Message.Attach="LoadGraphFromTextAsync" InputGestureText="Ctrl+O, T" />
+                    <MenuItem Header="From File..." cal:Message.Attach="LoadGraphFromFile" InputGestureText="Ctrl+O, F" />
+                    <MenuItem Header="From Text..." cal:Message.Attach="LoadGraphFromText" InputGestureText="Ctrl+O, T" />
                 </MenuItem>
                 <MenuItem Header="Save" cal:Message.Attach="Save" InputGestureText="Ctrl+S" />
                 <MenuItem Header="Save as">
@@ -117,7 +117,7 @@
                     <MenuItem Header="To Text..." cal:Message.Attach="SaveAsText" InputGestureText="Ctrl+Shift+S, T" />
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Exit" cal:Message.Attach="ExitAsync" InputGestureText="Alt+F4" />
+                <MenuItem Header="Exit" cal:Message.Attach="Exit" InputGestureText="Alt+F4" />
             </MenuItem>
 
             <MenuItem Header="Edit" IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}">
@@ -132,7 +132,7 @@
             </MenuItem>
 
             <MenuItem Header="Graph" IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}">
-                <MenuItem Header="Generate..." cal:Message.Attach="GenerateGraphAsync" />
+                <MenuItem Header="Generate..." cal:Message.Attach="GenerateGraph" />
                 <MenuItem Header="Properties..." cal:Message.Attach="ShowGraphProperties" />
                 <Separator />
                 <CheckBox x:Name="IsDirectedChB"
@@ -143,7 +143,7 @@
             <MenuItem Header="Algorithms" 
                       ItemsSource="{Binding Algorithms}" 
                       IsEnabled="{Binding IsAlgorithmRun, Converter={StaticResource InverseConverter}}"
-                      cal:Message.Attach="[Event Click] = [Action RunAlgorithmAsync($originalsourcecontext)]">
+                      cal:Message.Attach="[Event Click] = [Action RunAlgorithm($originalsourcecontext)]">
                 <MenuItem.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="TextBlock" Text="{Binding Name}" />

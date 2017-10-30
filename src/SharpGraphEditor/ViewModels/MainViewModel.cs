@@ -136,7 +136,7 @@ namespace SharpGraphEditor.ViewModels
             WindowManager?.ShowDialog(new VertexPropertiesViewModel(vertex));
         }
 
-        public async System.Threading.Tasks.Task GenerateGraphAsync()
+        public void GenerateGraph()
         {
             var generatorDialog = new GraphGeneratorViewModel(Document.ObservableVertices.Count);
             var res = WindowManager.ShowDialog(generatorDialog);
@@ -144,7 +144,7 @@ namespace SharpGraphEditor.ViewModels
             {
                 var generator = new GraphGenerator();
                 var edgesList = generator.GenerateEdgesList(generatorDialog.Dense, generatorDialog.VerticesCount);
-                if (await CheckGraphForClearingAsync())
+                if (CheckGraphForClearing())
                 {
                     Init();
                     _repository.LoadFromText(Document, edgesList, GraphSourceType.EdgesList);
@@ -155,7 +155,7 @@ namespace SharpGraphEditor.ViewModels
                         Document.AddVertex(i);
                     }
 
-                    await EllipseVerticesPositionIfNeedAsync();
+                    EllipseVerticesPositionIfNeed();
                 }
             }
         }
@@ -166,9 +166,9 @@ namespace SharpGraphEditor.ViewModels
             WindowManager?.ShowDialog(graphPropertiesView);
         }
 
-        public async System.Threading.Tasks.Task ExitAsync()
+        public void Exit()
         {
-            if (await CheckGraphForClearingAsync())
+            if (CheckGraphForClearing())
             {
                 Environment.Exit(0);
             }
@@ -188,9 +188,9 @@ namespace SharpGraphEditor.ViewModels
             TableRows = new ObservableCollection<TableRow>();
         }
 
-        public async System.Threading.Tasks.Task ClearGraphAsync()
+        public void ClearGraph()
         {
-            if (await CheckGraphForClearingAsync())
+            if (CheckGraphForClearing())
             {
                 Terminal?.Clear();
                 ViewLoaded();
@@ -224,9 +224,9 @@ namespace SharpGraphEditor.ViewModels
             NotifyOfPropertyChange(() => CurrentZoomInPercents);
         }
 
-        public async System.Threading.Tasks.Task LoadGraphFromFileAsync()
+        public void LoadGraphFromFile()
         {
-            if (await CheckGraphForClearingAsync())
+            if (CheckGraphForClearing())
             {
                 try
                 {
@@ -242,7 +242,7 @@ namespace SharpGraphEditor.ViewModels
 
                         _repository.LoadFromFile(Document, fileName, dialog.SourceType);
 
-                        await EllipseVerticesPositionIfNeedAsync();
+                        EllipseVerticesPositionIfNeed();
                         UndoRedoManager.Instance.Clear();
                         Init();
                         Title = ProjectName + $" - {fileName}";
@@ -255,9 +255,9 @@ namespace SharpGraphEditor.ViewModels
             }
         }
 
-        public async System.Threading.Tasks.Task LoadGraphFromTextAsync()
+        public void LoadGraphFromText()
         {
-            if (await CheckGraphForClearingAsync())
+            if (CheckGraphForClearing())
             {
                 try
                 {
@@ -270,7 +270,7 @@ namespace SharpGraphEditor.ViewModels
                         if (textViewerResult.HasValue && textViewerResult.Value)
                         {
                             _repository.LoadFromText(Document, textViewer.Text, dialog.SourceType);
-                            await EllipseVerticesPositionIfNeedAsync();
+                            EllipseVerticesPositionIfNeed();
                             UndoRedoManager.Instance.Clear();
                             Init();
                         }
@@ -447,12 +447,12 @@ namespace SharpGraphEditor.ViewModels
             AlgorithmExecutor.ContinueOrPause();
         }
 
-        public async System.Threading.Tasks.Task RunAlgorithmAsync(IAlgorithm algolithm)
+        public void RunAlgorithm(IAlgorithm algolithm)
         {
-            await RunAlgorithmAsync(algolithm, true);
+            RunAlgorithm(algolithm, true);
         }
 
-        public async System.Threading.Tasks.Task RunAlgorithmAsync(IAlgorithm algorithm, bool checkGraphForClearing)
+        public void RunAlgorithm(IAlgorithm algorithm, bool checkGraphForClearing)
         {
             if (Document.ObservableVertices.Count == 0)
             {
@@ -463,28 +463,28 @@ namespace SharpGraphEditor.ViewModels
             Output = Terminal;
             AlgorithmExecutor = new AlgorithmExecutionManager();
 
-            if (!checkGraphForClearing || await CheckGraphForClearingAsync())
+            if (!checkGraphForClearing || CheckGraphForClearing())
             {
+                IsAlgorithmRun = true;
+                IsAlgorithmControlPanelEnabled = true;
+                Terminal?.WriteLine($"{algorithm.Name} starting...");
+
                 try
                 {
-                    IsAlgorithmRun = true;
-                    IsAlgorithmControlPanelEnabled = true;
-                    Terminal?.WriteLine($"{algorithm.Name} starting...");
-                    IsAlgorithmRun = !(await AlgorithmExecutor.Run(algorithm, Document, this));
-                    Terminal?.WriteLine("Algorithm finished successfully.\n");
+                    AlgorithmExecutor.RunAsync(algorithm, Document, this).ContinueWith((x) =>
+                    {
+                        IsAlgorithmRun = !x.Result;
+                        Terminal?.WriteLine("Algorithm finished successfully.\n");
+                        FinishAlgorithmExecution();
+                    });
                 }
                 catch (Exception e)
                 {
                     Terminal?.WriteLine("During algorithm working an error occured:");
                     Terminal?.WriteLine($"  {e.Message}\n");
                     StopAlgorithm();
+                    FinishAlgorithmExecution();
                 }
-                ClearComment();
-                HideComment();
-                ClearTable();
-                HideTable();
-                AlgorithmExecutor.IsAlgorithmExecuting = false;
-                await EllipseVerticesPositionIfNeedAsync();
             }
         }
 
@@ -784,11 +784,11 @@ namespace SharpGraphEditor.ViewModels
 
         // Methods
         //
-        private async System.Threading.Tasks.Task<bool> CheckGraphForClearingAsync()
+        private bool CheckGraphForClearing()
         {
             if (IsModified)
             {
-                var res = await DialogPresenter.ShowMessaeBoxYesNoCancelAsync("Graph has been modified. Save changes?", ProjectName);
+                var res = DialogPresenter.ShowMessaeBoxYesNoCancel("Graph has been modified. Save changes?", ProjectName);
                 switch (res)
                 {
                     case MessageBoxResult.Yes:
@@ -810,7 +810,7 @@ namespace SharpGraphEditor.ViewModels
             _lastSavingUndoRedoOperationsCount = UndoRedoManager.Instance.Position;
         }
 
-        private async System.Threading.Tasks.Task EllipseVerticesPositionIfNeedAsync()
+        private void EllipseVerticesPositionIfNeed()
         {
             if (Document.Vertices.All(x => !x.HasPosition))
             {
@@ -819,7 +819,7 @@ namespace SharpGraphEditor.ViewModels
                 {
                     throw new ArgumentNullException("Cant find Ellipse layouter algorithm");
                 }
-                await RunAlgorithmAsync(alg, false);
+                RunAlgorithm(alg, false);
             }
         }
 
@@ -843,9 +843,18 @@ namespace SharpGraphEditor.ViewModels
                 while (exCopy != null);
             }
 
-            DialogPresenter.ShowErrorAsync(ex.Message, ProjectName, ex.GetType());
+            DialogPresenter.ShowError(ex.Message, ProjectName, ex.GetType());
         }
 
+        private void FinishAlgorithmExecution()
+        {
+            ClearComment();
+            HideComment();
+            ClearTable();
+            HideTable();
+            AlgorithmExecutor.IsAlgorithmExecuting = false;
+            EllipseVerticesPositionIfNeed();
+        }
 
         private void SelectedElementPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {

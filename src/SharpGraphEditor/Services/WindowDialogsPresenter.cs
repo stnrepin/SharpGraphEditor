@@ -1,28 +1,24 @@
 ﻿using System;
-using System.Text;
 using System.Windows;
 
 using Microsoft.Win32;
-
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 
 namespace SharpGraphEditor.Services
 {
     public class WindowDialogsPresenter : IDialogsPresenter
     {
-        public async System.Threading.Tasks.Task<MessageBoxResult> ShowMessaeBoxYesNoCancelAsync(string message, string caption)
+        public MessageBoxResult ShowMessaeBoxYesNoCancel(string message, string caption)
         {
-            var mainMetroWindow = Application.Current.MainWindow as MetroWindow;
-            var dialogSettings = new MetroDialogSettings() { AnimateHide = false, AnimateShow = false, AffirmativeButtonText = "Yes", NegativeButtonText = "No", FirstAuxiliaryButtonText = "Cancel", };
-            var res = await mainMetroWindow.ShowMessageAsync(caption, message, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, dialogSettings);
+            var mainWindow = Application.Current.MainWindow;
+
+            var res = MessageBox.Show(mainWindow, message, caption, MessageBoxButton.YesNoCancel);
             switch (res)
             {
-                case MessageDialogResult.Affirmative:
+                case System.Windows.MessageBoxResult.Yes:
                     return MessageBoxResult.Yes;
-                case MessageDialogResult.Negative:
+                case System.Windows.MessageBoxResult.No:
                     return MessageBoxResult.No;
-                case MessageDialogResult.FirstAuxiliary:
+                case System.Windows.MessageBoxResult.Cancel:
                     return MessageBoxResult.Cancel;
                 default:
                     throw new ArgumentException("Invalid message box result");
@@ -30,12 +26,12 @@ namespace SharpGraphEditor.Services
 
         }
 
-        public async System.Threading.Tasks.Task ShowErrorAsync(string message, string caption, Type exType)
+        public void ShowError(string message, string caption, Type exType)
         {
             var errorMessage = $"Sorry, but an error occured: \"{message}\".\nLook more in output.";
-            var mainMetroWindow = Application.Current.MainWindow as MetroWindow;
-            var dialogSettings = new MetroDialogSettings() { AnimateHide = false, AnimateShow = false, AffirmativeButtonText = "OK" };
-            var res = await mainMetroWindow.ShowMessageAsync(caption, errorMessage, MessageDialogStyle.Affirmative, dialogSettings);
+            var mainWindow = Application.Current.MainWindow;
+
+            MessageBox.Show(mainWindow, errorMessage, caption, MessageBoxButton.OK);
         }
 
         public string ShowFileOpenDialog(string filter = "")

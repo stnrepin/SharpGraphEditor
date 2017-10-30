@@ -49,10 +49,10 @@ namespace SharpGraphEditor.Views
             Vm.IsNewEdgeEnabled = false;
         }
 
-        private async void MainWindow_ClosingAsync(object sender, System.ComponentModel.CancelEventArgs e)
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
-            await Vm.ExitAsync();
+            Vm.Exit();
         }
 
         private void GraphElement_DragDelta(object sender, DragDeltaEventArgs e)

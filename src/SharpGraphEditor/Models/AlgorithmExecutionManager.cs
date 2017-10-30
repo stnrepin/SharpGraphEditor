@@ -109,7 +109,7 @@ namespace SharpGraphEditor.Models
             }
         }
 
-        public Task<bool> Run(IAlgorithm algorithm, IGraph graph, IAlgorithmHost host)
+        public Task<bool> RunAsync(IAlgorithm algorithm, IGraph graph, IAlgorithmHost host)
         {
             _algorithmTask = Task.Factory.StartNew<bool>(() =>
             {

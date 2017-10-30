@@ -12,9 +12,9 @@ namespace SharpGraphEditor.Services
 
     public interface IDialogsPresenter
     {
-        Task<MessageBoxResult> ShowMessaeBoxYesNoCancelAsync(string message, string caption);
+        MessageBoxResult ShowMessaeBoxYesNoCancel(string message, string caption);
 
-        Task ShowErrorAsync(string message, string caption,  Type exType);
+        void ShowError(string message, string caption,  Type exType);
 
         string ShowFileOpenDialog(string filter);
 
