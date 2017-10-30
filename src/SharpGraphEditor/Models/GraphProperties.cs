@@ -6,6 +6,7 @@ using System.Linq;
 using Caliburn.Micro;
 
 using SharpGraphEditor.Graph.Core;
+using SharpGraphEditor.Graph.Core.Algorithms.Helpers;
 using SharpGraphEditor.Graph.Core.Elements;
 
 namespace SharpGraphEditor.Models
@@ -14,7 +15,6 @@ namespace SharpGraphEditor.Models
     {
         private IGraph _graph;
         private int _verticesCount;
-        private int[,] _distances;
 
         public int Radius { get; private set; }
         public int Diameter { get; private set; }
@@ -30,9 +30,6 @@ namespace SharpGraphEditor.Models
 
         public void EvaluteAll()
         {
-            var fw = new Graph.Core.Algorithms.Helpers.FloydWarshall();
-            _distances = fw.Run(_graph, _verticesCount);
-
             EvaluteDense();
             EvaluteEccentricity();
             EvaluteRadiusAndDiameter();
@@ -42,23 +39,30 @@ namespace SharpGraphEditor.Models
         {
             foreach(var v in _graph.Vertices)
             {
-                Radius = Math.Min(Radius, Eccentricity[v.Index - 1].Item2);
-                Diameter = Math.Max(Diameter, Eccentricity[v.Index - 1].Item2);
+                Radius = Eccentricity.Max(x => x.Item2);
+                Diameter = Eccentricity.Min(x => x.Item2);
             }
         }
 
         private void EvaluteEccentricity()
         {
             var eccentricities = new List<Tuple<IVertex, int>>();
-            foreach(var v in _graph.Vertices)
+
+            var adjList = _graph.ToAdjList();
+            var djAlgorithm = new DijkstraAlgorithm(_graph, adjList);
+
+            foreach (var pair in adjList)
             {
-                var i = v.Index  - 1;
-                var currentEccentricity = 0;
-                for (int j = 0; j < _verticesCount; j++)
+                var v = pair.Key;
+                var neighbors = pair.Value;
+
+                var maxEccentricity = djAlgorithm.GetShortestPaths(v).Where(x => x.Value != DijkstraAlgorithm.MaxDistance)
+                                                                    ?.Max(y => y.Value);
+                if (maxEccentricity.HasValue)
                 {
-                    currentEccentricity = Math.Max(currentEccentricity, _distances[i, j]);
+                    var meValue = maxEccentricity.Value;
+                    eccentricities.Add(Tuple.Create(v, meValue == DijkstraAlgorithm.MaxDistance ? 0 : meValue));
                 }
-                eccentricities.Add(Tuple.Create(v, currentEccentricity == Graph.Core.Algorithms.Helpers.FloydWarshall.MaxDistance ? 0 : currentEccentricity));
             }
             Eccentricity = new ObservableCollection<Tuple<IVertex, int>>(eccentricities.OrderBy(x => x.Item1.Index));
         }

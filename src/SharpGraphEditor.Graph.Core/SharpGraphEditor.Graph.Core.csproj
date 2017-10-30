@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\AlgorithmResult.cs" />
-    <Compile Include="Algorithms\Helpers\FloydWarshall.cs" />
+    <Compile Include="Algorithms\Helpers\DijkstraAlgorithm.cs" />
     <Compile Include="FormatStorage\DotFormatStorage.cs" />
     <Compile Include="IAlgorithmHost.cs" />
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
