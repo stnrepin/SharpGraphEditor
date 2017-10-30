@@ -64,7 +64,6 @@ namespace SharpGraphEditor.Services
                 ValidateNames = true,
                 DereferenceLinks = true,
                 OverwritePrompt = true,
-                CreatePrompt = true,
                 AddExtension = true,
                 Filter = filter
             };
