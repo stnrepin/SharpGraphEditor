@@ -138,7 +138,8 @@ namespace SharpGraphEditor.Models
             var v = new Vertex(x, y, index)
             {
                 Name = name,
-                Title = title
+                Title = title,
+                Color = color
             };
 
             return Add(v, true);
