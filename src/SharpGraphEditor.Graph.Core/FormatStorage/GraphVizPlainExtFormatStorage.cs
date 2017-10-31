@@ -57,7 +57,7 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
                 {
                     if (parts.Length < 7)
                     {
-                        throw new InputFileFormatException("Properties count of \"node\" must be more then 7");
+                        throw new InputFileFormatException("Properties count of \"edge\" must be more then 7");
                     }
                     var tailName = parts[0];
                     var headName = parts[1];
@@ -75,19 +75,18 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
         {
             var peWriter = new PlainExtWriter(writer);
 
-            peWriter.WriteGraph(1.0, graph.Vertices.Max(x => x.X), graph.Vertices.Max(x => x.Y));
+            var graphHeight = graph.Vertices.Max(x => x.Y) / MonitorDpi;
+            var graphWidth = graph.Vertices.Max(x => x.X) / MonitorDpi;
+            peWriter.WriteGraph(1.0, graphWidth, graphHeight);
             foreach (var vertex in graph.Vertices)
             {
-                peWriter.WriteNode(vertex.Name, vertex.X, vertex.Y, 0, 0, vertex.Title, "", "", vertex.Color.ToString(), "white");
+                peWriter.WriteNode(vertex.Name, vertex.X / MonitorDpi, (vertex.Y + graphHeight) / MonitorDpi, 0, 0, "\"" + vertex.Title + "\"", "default", "default", vertex.Color.ToString().ToLower(), "white");
             }
 
             foreach (var edge in graph.Edges)
             {
-                var points = new List<Tuple<double, double>>()
-                {
-
-                };
-                peWriter.WriteEdge(edge.Source.Name, edge.Target.Name, points, "", 0, 0, "", "black");
+                var points = new List<Tuple<double, double>>(Enumerable.Empty<Tuple<double, double>>());
+                peWriter.WriteEdge(edge.Source.Name, edge.Target.Name, points, "1", 0, 0, "default", "black");
             }
             peWriter.WriteEnd();
         }
