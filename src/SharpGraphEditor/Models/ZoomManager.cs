@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Caliburn.Micro;
 
@@ -9,8 +6,8 @@ namespace SharpGraphEditor.Models
 {
     public class ZoomManager : PropertyChangedBase
     {
-
         public double MaxZoom { get; } = 2;
+        public double MinZoom { get; } = 0.3;
 
         public double CurrentZoom { get; private set; }
 
@@ -24,7 +21,7 @@ namespace SharpGraphEditor.Models
         public void ChangeCurrentZoom(double value)
         {
             var newZoom = CurrentZoom + value;
-            if (newZoom >= (1.0 / MaxZoom) && newZoom <= MaxZoom)
+            if (newZoom >= MinZoom && newZoom <= MaxZoom)
             {
                 CurrentZoom = Math.Round(newZoom, 2);
             }
