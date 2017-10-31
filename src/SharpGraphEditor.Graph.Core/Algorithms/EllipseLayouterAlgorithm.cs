@@ -26,6 +26,7 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
                 var v = vertices.First();
                 v.X = host.MaxElementX / 2;
                 v.Y = host.MaxElementY / 2;
+                v.HasPosition = true;
                 return new AlgorithmResult(true, false);
             }
 

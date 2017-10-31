@@ -469,22 +469,27 @@ namespace SharpGraphEditor.ViewModels
                 IsAlgorithmControlPanelEnabled = true;
                 Terminal?.WriteLine($"{algorithm.Name} starting...");
 
-                try
+                AlgorithmExecutor.RunAsync(algorithm, Document, this).ContinueWith((x) =>
                 {
-                    AlgorithmExecutor.RunAsync(algorithm, Document, this).ContinueWith((x) =>
+                    try
                     {
                         IsAlgorithmRun = !x.Result;
                         Terminal?.WriteLine("Algorithm finished successfully.\n");
-                        FinishAlgorithmExecution();
-                    });
-                }
-                catch (Exception e)
-                {
-                    Terminal?.WriteLine("During algorithm working an error occured:");
-                    Terminal?.WriteLine($"  {e.Message}\n");
-                    StopAlgorithm();
-                    FinishAlgorithmExecution();
-                }
+                    }
+                    catch (Exception e)
+                    {
+                        Terminal?.WriteLine("During algorithm working an error occured:");
+                        Terminal?.WriteLine($"  {e.Message}\n");
+                        StopAlgorithm();
+                    }
+                    finally
+                    {
+                        if (!IsAlgorithmRun)
+                        {
+                            FinishAlgorithmExecution();
+                        }
+                    }
+                });
             }
         }
 
@@ -812,7 +817,7 @@ namespace SharpGraphEditor.ViewModels
 
         private void EllipseVerticesPositionIfNeed()
         {
-            if (Document.Vertices.All(x => !x.HasPosition))
+            if (Document.Vertices.Any(x => !x.HasPosition))
             {
                 var alg = AlgorithmProvider.Instance.FindAlgorithmByName("Ellipse layouter");
                 if (alg == null)
@@ -852,7 +857,6 @@ namespace SharpGraphEditor.ViewModels
             HideComment();
             ClearTable();
             HideTable();
-            AlgorithmExecutor.IsAlgorithmExecuting = false;
             EllipseVerticesPositionIfNeed();
         }
 
