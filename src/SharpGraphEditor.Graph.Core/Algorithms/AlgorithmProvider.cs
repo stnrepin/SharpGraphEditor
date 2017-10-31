@@ -21,7 +21,6 @@ namespace SharpGraphEditor.Graph.Core.Algorithms
                 new RandomLayouterAlgorithm(),
                 new BreadthFirstSearchAlgoritm(),
                 new DepthFirstSearchAlgorithm(),
-                new TestAlgorithm()
             };
         }
 
