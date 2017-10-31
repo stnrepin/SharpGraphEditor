@@ -59,11 +59,18 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             var edgesCount = graph.Edges.Count();
             var matrix = new int[verticesCount, edgesCount];
             var edgeNumber = 0;
-            foreach (var edge in graph.Edges)
+            try
             {
-                matrix[edge.Source.Index - 1, edgeNumber] = 1;
-                matrix[edge.Target.Index - 1, edgeNumber] = edge.IsDirected ? -1 : 1;
-                edgeNumber++;
+                foreach (var edge in graph.Edges)
+                {
+                    matrix[edge.Source.Index - 1, edgeNumber] = 1;
+                    matrix[edge.Target.Index - 1, edgeNumber] = edge.IsDirected ? -1 : 1;
+                    edgeNumber++;
+                }
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                throw new ArgumentException($"graph must contains all vertices between 1 and {graph.Vertices.Max(x => x.Index)}", e);
             }
             PrintMatrix(writer, matrix, verticesCount, edgesCount);
         }

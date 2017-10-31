@@ -26,13 +26,20 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
 
             var rootVertices = graph.Vertices.ToArray();
 
-            foreach (var column in graph.ToAdjList())
+            try
             {
-                var parent = column.Key;
-                foreach (var child in column.Value)
+                foreach (var column in graph.ToAdjList())
                 {
-                    rootVertices[child.Index - 1] = null;
+                    var parent = column.Key;
+                    foreach (var child in column.Value)
+                    {
+                        rootVertices[child.Index - 1] = null;
+                    }
                 }
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                throw new ArgumentException($"graph must contains all vertices between 1 and {graph.Vertices.Max(x => x.Index)}", e);
             }
 
             rootVertices = rootVertices.Where(x => x != null).ToArray();

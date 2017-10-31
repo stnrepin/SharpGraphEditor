@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 
 using static SharpGraphEditor.Graph.Core.Utils.FormatStorageUtils;
@@ -40,13 +41,20 @@ namespace SharpGraphEditor.Graph.Core.FormatStorage
             var verticesCount = graph.Vertices.Count();
             var matrix = new int[verticesCount, verticesCount];
 
-            foreach (var pair in graph.ToAdjList())
+            try
             {
-                var index = pair.Key.Index;
-                foreach (var adjVertex in pair.Value)
+                foreach (var pair in graph.ToAdjList())
                 {
-                    matrix[index - 1, adjVertex.Index - 1] = 1;
+                    var index = pair.Key.Index;
+                    foreach (var adjVertex in pair.Value)
+                    {
+                        matrix[index - 1, adjVertex.Index - 1] = 1;
+                    }
                 }
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                throw new ArgumentException($"graph must contains all vertices between 1 and {graph.Vertices.Max(x => x.Index)}", e);
             }
             return matrix;
         }
