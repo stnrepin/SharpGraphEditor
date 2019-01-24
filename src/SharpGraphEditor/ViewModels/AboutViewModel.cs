@@ -23,7 +23,7 @@ namespace SharpGraphEditor.ViewModels
             Author = "Stepan Repin";
             Email = "stepan.repin@inbox.ru";
             CreationDate = GetPackageBuildingDate().ToShortDateString();
-            ProjectSite = "https://github.com/AceSkiffer/SharpGraphEditor";
+            ProjectSite = "https://github.com/stnrepin/SharpGraphEditor";
         }
 
         public string Title
